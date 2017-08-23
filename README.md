@@ -1,2 +1,20 @@
-# profile
-A package used to profile (de-identify, force conformance, e.g. research trials) DICOM Studies.
+# Profile
+
+A package for de-identifying and profiling DICOM Studies.
+
+## Usage (TODO)
+
+A simple usage example:
+
+    import 'package:untitled/untitled.dart';
+
+    main() {
+      var awesome = new Awesome();
+    }
+
+
+## Features and bugs (TODO)
+
+Please file feature requests and bugs at the [issue tracker][tracker].
+
+[tracker]: https://github.com/OpenDICOMweb/sdk/issues
