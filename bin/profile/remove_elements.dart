@@ -11,21 +11,24 @@ import 'package:dcm_convert/dcm.dart';
 
 import 'package:profile/profile.dart';
 import 'package:deid/dictionary.dart';
-import 'package:system/system.dart';
+import 'package:system/server.dart';
+
 
 /// A Program that reads a [File], decodes it into a [RootByteDataset],
 /// and then converts that into a [RootTagDataset].
 void main() {
-  log.level = Level.debug3;
-  System.log.level = Level.debug0;
+  Server.initialize(level: Level.debug2, throwOnError: true);
+
 
   // Edit this line
   var path = path0;
 
   File f = toFile(path, mustExist: true);
   log.debug2('Reading: $f');
-  RootByteDataset bRoot = ByteReader.readFile(f, fast: true);
-  log.debug('bRoot.isRoot: ${bRoot.isRoot}');
+  RootByteDataset rds = ByteReader.readFile(f, fast: true);
+  log.debug('bRoot.isRoot: ${rds.isRoot}');
+  Formatter z = new Formatter(maxDepth: -1);
+  rds.format(z);
 
   print('basicProfileRemoveCodes.length: ${basicProfileRemoveCodes.length}');
   print('basicProfile.removeCodes.length: ${BasicProfile.removeCodes.length}');
@@ -33,20 +36,40 @@ void main() {
   List<ByteElement> removeTargets = <ByteElement>[];
   List<ByteElement> removeResults = <ByteElement>[];
 
-  print(bRoot.summary);
+  print(rds.summary);
+
+
   for (int code in basicProfileRemoveCodes) {
-    List<ByteElement> results = bRoot.lookupRecursive(code);
+    List<ByteElement> results = rds.lookupRecursive(code);
     if (results != null && results.length != 0) removeTargets.addAll(results);
   }
-  print('removeTargets: [${removeTargets.length}]$removeTargets');
 
-  for (int code in basicProfileRemoveCodes) {
-    List<ByteElement> results = bRoot.remove(code);
-    if (results != null && results.length != 0) removeResults.addAll(results);
+  print('removeTargets: length(${removeTargets.length})');
+  int i = 0;
+  for(Element e in removeTargets) {
+    print('  $i: $e');
+    i++;
+  }
+
+  i = 0;
+  for (Element e in removeTargets) {
+    if (e.isSequence) {
+      var sq = e as SequenceMixin;
+      print('  $i: Sequence: total(${sq.total})');
+    } else {
+      print('  $i: Element: $e');}
+    Element result = rds.remove(e.code);
+    if (result != null && result.length != 0) removeResults.add(result);
+    i++;
+  }
+
+  print('results: length(${removeTargets.length})');
+  for(Element e in removeTargets) {
+    print('  $e');
   }
 
   for (int code in basicProfileRemoveCodes) {
-    var e = bRoot.lookup(code);
+    var e = rds.lookup(code);
     if (e != null) throw 'Element still present';
   }
 
@@ -60,11 +83,24 @@ void main() {
   }
 */
 
-  print(bRoot.summary);
+  print(rds.summary);
 
-  print('Removed ${removeResults.length} elements removed:');
-  for (Element e in removeResults)
-    print('  ${e.info}');
+  i = 0;
+  for (Element e in removeResults) {
+    if (e.isSequence) {
+      var sq = e as SequenceMixin;
+      i += sq.total;
+      print('  $i ${e.info}');
+      print('  Total: ${sq.total}');
+    } else {
+      print('  $i ${e.info}');
+      i++;
+    }
+
+  }
+  print('Removed $i elements removed:');
+
+
 
 /*
   log.info('patientID: "${bRoot.patientId}"');

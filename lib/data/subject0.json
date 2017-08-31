@@ -1,0 +1,21 @@
+{
+  "Patient Name": "001-001 FDG 1 Regional^4277^6688^^",
+  "Patient ID": "001-001 FDG 1 Regional",
+  "Accession Number": "0",
+  "Study Date": "20091110",
+  "Parameters": {
+    "Case Number": 1,
+    "Enrollment Date": "20091110",
+    "Trial Number": "6688",
+    "Trial Name": "PHASE II STUDY OF 3-DEOXY-3-18F FLUOROTHYMIDINE (FLT) IN INVASIVE BREAST CNCR",
+    "Site Number": "4277",
+    "Site Name": "Virginia Commonwealth University/Massey Cancer Center",
+    "Time Point ID": "",
+    "Time Point Description": "",
+    "Submission Type": "Clinical Trial",
+    "Additional Trial Input": "",
+    "Anonymization Profile": "Safe Harbor/Retain Patient Characteristics/Retain Safe Private",
+    "Validation Profile": "",
+    "User": "bbialecki"
+  }
+}

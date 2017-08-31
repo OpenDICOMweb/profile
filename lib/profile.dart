@@ -4,8 +4,8 @@
 /// Support for doing something awesome.
 ///
 //TODO: doc
-library profile;
 
 export 'package:profile/src/deidentifier.dart';
-export 'package:profile/src/errors.dart';
-export 'package:profile/src/profile.dart';
+export 'package:profile/src/profiles/profile_base.dart';
+export 'package:profile/src/profiler.dart';
+export 'package:profile/src/subject.dart';

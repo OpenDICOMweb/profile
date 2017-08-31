@@ -6,17 +6,18 @@
 
 import 'dart:io';
 
-import 'package:system/system.dart';
 import 'package:dcm_convert/data/test_files.dart';
 import 'package:dcm_convert/dcm.dart';
 import 'package:profile/profile.dart';
+import 'package:system/server.dart';
+import 'package:uid/uid.dart';
 
 /// A Program that reads a [File], decodes it into a [RootByteDataset],
 /// and then converts that into a [RootTagDataset].
 void main() {
-  log.level = Level.debug3;
-  System.log.level = Level.debug0;
-
+ Server.initialize(name: 'deid_replace_uids', level: Level.debug);
+   /// A [Map] from current to replacement [Uid]s.
+   Map<Uid, Uid> uid_cache = <Uid, Uid>{};
   // Edit this line
   var path = path0;
 
@@ -29,10 +30,10 @@ void main() {
   RootTagDataset rtds = new RootTagDataset();
    rtds = convertDataset(rbds, rtds);
 
-  var profile = new ProfileBase("foo", 'http:', null);
+  var profile = new Profiler("foo", 'http:', null, null);
   var map = profile.replaceUids(rtds);
   log.debug('Map: $map');
-  log.debug('replaced: ${profile.replacedElements}');
+  log.debug('replaced: ${profile.report.replacedElements}');
   log.debug('study: ${rtds.lookup(kStudyInstanceUID).info}');
   log.debug('series: ${rtds.lookup(kSeriesInstanceUID).info}');
   log.debug('instance: ${rtds.lookup(kSOPInstanceUID).info}');
