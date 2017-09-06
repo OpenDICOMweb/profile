@@ -9,8 +9,10 @@ import 'package:core/element.dart';
 typedef Element _Updater(Element element);
 
 abstract class Profile {
-  bool get removeAllPrivate;
-  bool get retainSafePrivate;
+  bool get removeAllPrivate => false; // TODO: is this the right default?
+  bool get retainSafePrivate => true; // TODO: is this the right default?
+  bool get removeAllCurves => true;
+  bool get removeAllOverlays => true;
   List<int> get requiredKeys;
   List<int> get groupsToRetain;
   List<int> get groupsToRemove;
