@@ -10,16 +10,16 @@ environment:
 dependencies:
   core:
     path: C:/odw/sdk/core
-    version: ^0.6.1
+    version: ^0.6.3
   dcm_convert:
     path: C:/odw/sdk/convert
-    version: ^0.6.0
+    version: ^0.6.3
   deid:
     path: C:/odw/sdk/deid
     version: ^0.6.0
   system:
     path: C:/odw/sdk/system
-    version: ^0.6.1
+    version: ^0.6.3
 
 dev_dependencies:
   benchmark_harness: ^1.0.4

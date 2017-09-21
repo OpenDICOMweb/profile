@@ -16,8 +16,9 @@ import 'package:uid/uid.dart';
 /// and then converts that into a [RootTagDataset].
 void main() {
  Server.initialize(name: 'deid_replace_uids', level: Level.debug);
+
    /// A [Map] from current to replacement [Uid]s.
-   Map<Uid, Uid> uid_cache = <Uid, Uid>{};
+   Map<Uid, Uid> uidCache = <Uid, Uid>{};
   // Edit this line
   var path = path0;
 
@@ -30,7 +31,7 @@ void main() {
   RootTagDataset rtds = new RootTagDataset();
    rtds = convertDataset(rbds, rtds);
 
-  var profile = new Profiler("foo", 'http:', null, null);
+  var profile = new Profiler("foo", 'http:', null, null, null);
   var map = profile.replaceUids(rtds);
   log.debug('Map: $map');
   log.debug('replaced: ${profile.report.replacedElements}');

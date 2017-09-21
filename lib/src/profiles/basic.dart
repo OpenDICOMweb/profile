@@ -10,17 +10,24 @@ class Basic extends Profile {
 
   Basic();
 
+  @override
   bool get removeAllPrivate => true;
+  @override
   bool get retainSafePrivate => false;
+  @override
   List<int> get requiredKeys => const <int>[];
+  @override
   List<int> get groupsToRetain => const <int>[];
+  @override
   List<int> get groupsToRemove => const <int>[];
 
+  @override
   List<int> get keysToDummy => const<int>[
     // No reformat
     0x00401101, 0x0040a073, 0x0040a075, 0x0040a123, 0x00700001
   ];
 
+  @override
   List<int> get keysToZero => const<int>[
     // No reformat
     0x00080020, 0x00080030, 0x00080050, 0x00080090, 0x00100010, 0x00100020,
@@ -28,6 +35,7 @@ class Basic extends Profile {
     0x00700084
   ];
 
+  @override
   List<int> get keysToRemove => const<int>[
     // No reformat
     // TODO: make the next one work
@@ -63,12 +71,13 @@ class Basic extends Profile {
     0x4008011a, 0x40080202, 0x40080300, 0x40084000, 0xfffafffa, 0xfffcfffc
   ];
 
-
+  @override
   List<int> get keysToRetain => const<int>[];
 
-
+  @override
   List<int> get keysToClean => const<int>[];
 
+  @override
   List<int> get keysToReplaceUid => const<int>[
     // No reformat
     0x00001001, 0x00020003, 0x00041511, 0x00080014, 0x00080018, 0x00080058,
@@ -78,12 +87,13 @@ class Basic extends Profile {
     0x0070031a, 0x00880140, 0x30060024, 0x300600c2, 0x300a0013
   ];
 
-
+  @override
   List<int> get keysToZeroOrDummy => const<int>[];
 
-
+  @override
   List<int> get keysToRemoveOrZero => const<int>[];
 
+  @override
   List<int> get keysToRemoveOrDummy => const<int>[
     // No reformat
     0x00080021, 0x00080022, 0x00080023, 0x0008002a, 0x00080031, 0x00080032,
@@ -91,11 +101,13 @@ class Basic extends Profile {
     0x00181400, 0x0018700a, 0x00321060, 0x300e0008
   ];
 
+  @override
   List<int> get keysToRemoveOrZeroOrDummy => const<int>[
     // No reformat
     0x00080080, 0x00080082, 0x00081010, 0x00081070, 0x00081111, 0x00181000
   ];
 
+  @override
   List<int> get keysToRemoveOrZeroOrReplaceUid => const<int>[
     // No reformat
     0x00081140, 0x00082112

@@ -4,32 +4,37 @@
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
+import 'package:date_time/date_time.dart';
+
 class SubjectDB {
-  final List<Subject> db;
+  final List<TrialSubject> db;
 
-  SubjectDB(List<Subject> subjects) : db = new List.from(subjects, growable: false);
+  SubjectDB(List<TrialSubject> subjects) : db = new List.from(subjects, growable: false);
 
-  Subject operator [](int i) => db[i];
+  TrialSubject operator [](int i) => db[i];
 
   int get length => db.length;
 
   String get json {
     var out = '[\n';
     List<String> sList = <String>[];
-    for(int i = 0; i < length; i++) sList.add(db[i].json);
+    for (int i = 0; i < length; i++) sList.add(db[i].json);
     out += sList.join(',\n');
     return out += '\n]\n';
   }
 }
 
-class Subject {
+class TrialSubject {
   final String name;
   final String id;
+  final Date enrollment;
   final String accession;
+
   final String studyDate;
   final Parameters parameters;
 
-  Subject(this.name, this.id, this.accession, this.studyDate, this.parameters);
+  TrialSubject(this.name, this.id, String enrollment, this.accession, this.studyDate,
+      this.parameters) : enrollment = Date.parse(enrollment);
 
 //  String operator [](String name)  => parameters[name];
   String get info => '''
@@ -47,8 +52,6 @@ Accession Number: "$accession"
   "Study Date": "$studyDate",
   "Parameters": ${parameters.json}
   }''';
-
-
 
   @override
   String toString() => 'name:"$name", id:"$id", date:"$studyDate", '

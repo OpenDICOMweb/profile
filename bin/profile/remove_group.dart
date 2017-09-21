@@ -22,7 +22,7 @@ void main() {
   log.debug2('Reading: $f');
   RootByteDataset rds = ByteReader.readFile(f, fast: true);
   log.debug('rds.isRoot: ${rds.isRoot}');
-  Formatter z = new Formatter(maxDepth: -1);
+  //Formatter z = new Formatter(maxDepth: -1);
   //print(rds.format(z));
 
   print('${rds.total} elements in Dataset');
@@ -41,7 +41,7 @@ void main() {
       // Urgent: this should be recursive it isn't
       var sq = e as SequenceMixin;
       for (Dataset item in sq.items) {
-        for (Element e in rds.map.values.toList(growable: false)) {
+        for (Element e in item.elements) {
           if (groups.contains(e.group)) {
             rds.remove(e.key);
             removed.add(e);

@@ -21,5 +21,5 @@ final Parameters _parameters = new Parameters(
     "",
     "bbialecki");
 
-final Subject subject0 = new Subject("001-001 FDG 1 Regional^4277^6688^^",
-    "001-001 FDG 1 Regional", "0", "20091110", _parameters);
+final TrialSubject subject0 = new TrialSubject("001-001 FDG 1 Regional^4277^6688^^",
+    "001-001 FDG 1 Regional", "0", "19900301",  "20091110", _parameters);

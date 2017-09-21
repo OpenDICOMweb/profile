@@ -33,47 +33,55 @@ void main() {
 
   File f = new File(path);
   log.debug2('Reading: $f');
-  RootByteDataset rds = ByteReader.readFile(f, fast: true);
-  log.debug('rds.isRoot: ${rds.isRoot}');
+  RootByteDataset sds = ByteReader.readFile(f, fast: true);
+  log.debug('rds.isRoot: ${sds.isRoot}');
 
   // Formatter z = new Formatter(maxDepth: -1);
   //print(rds.format(z));
   print('${basic.keysToRemove.length} keys in keysToRemove');
-  print('${rds.total} elements in dataset');
-  print(rds.summary);
+  print('${sds.total} elements in dataset');
+  print(sds.summary);
 
   //  profiler.replaceUids(rds, tagDS);
 
-  String enrollment = "19700101";
-  List<Element> daElements = <Element>[];
-  TagDataset tagDS = new RootTagDataset();
-  walkDates(rds.elements, daElements,  enrollment, tagDS);
+  Date enrollment = Date.parse("19700101");
+
+  TagDataset tds = new RootTagDataset();
+  walkDates(sds, tds,  enrollment);
 
   print('enrollment: "$enrollment"');
-  print('${daElements.length} Date Elements:');
+  print('${tds.length} Date Elements:');
   int i = 0;
-  for (Element e in daElements) {
+  for (Element e in tds.elements) {
     print('$i: $e\n   "${e.value}"');
     i++;
   }
 
-  print(tagDS.format(new Formatter()));
+  print(tds.format(new Formatter()));
 }
 
-void walkDates(Iterable<Element> elements, List<Element> daElements,
-    String enrollment, TagDataset tagDS) {
-  for (Element e in elements) {
-    if (e.vrCode == VR.kDA.code) {
-      normalizeDate(e, enrollment, tagDS);
-    } else if (e.isSequence) {
-      for (Dataset item in e.values) {
-        walkDates(item.elements, daElements, enrollment, tagDS);
+void walkDates(RootByteDataset sds, RootTagDataset tds, Date enrollment) {
+	TagDataset parent = tds;
+  for (Element be in sds.elements) {
+    if (be.vrCode == VR.kDA.code) {
+    	  var s = Date.normalizeStrings(be.values, enrollment);
+    } else if (be.isSequence) {
+    	  SQ sq = parent.lookup(be.code);
+    	  if (sq = null) {
+    	  	List<TagItem> items = new List<TagItem>(be.values.length);
+    	  	for(int i = 0; i < be.values.length; i++)
+    	  		//Urgent: add sequence to empty TagItem
+    	  		items[i] = new TagItem(parent, null, null);
+    	  	sq = new SQ(be.tag, parent, items);
+      for(ByteItem bItem in be.i)
+
+        walkDates(source, target, enrollment, tagDS);
       }
     }
   }
 }
 
-void normalizeDate(ByteElement be, String enrollment, TagDataset tagDS) {
+void normalizeDate(ByteElement be, Date enrollment, TagDataset tagDS) {
   if (be.vrCode == VR.kDA.code) {
     //    print('\nByteE: ${e.info}');
   //  replacedElements.add(be);

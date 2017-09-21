@@ -87,8 +87,7 @@ const List<int> basicProfileRemoveCodes = const [
   0xfffafffa, 0xfffcfffc // don't reformat
 ];
 
-typedef bool DeIdentifer(
-    TagDataset ds, int tag, Trial trial, List<String> values);
+typedef bool DeIdentifer(TagDataset ds, int tag, Trial trial, List<String> values);
 
 //TODO: add global rules
 class DeIdentifier {

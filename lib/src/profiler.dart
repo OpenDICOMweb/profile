@@ -6,14 +6,11 @@
 
 import 'dart:convert';
 
+import 'package:core/core.dart';
 import 'package:dcm_convert/dcm.dart';
-import 'package:core/dataset.dart';
-import 'package:core/element.dart';
 import 'package:system/system.dart';
 import 'package:uid/uid.dart';
 import 'package:tag/tag.dart';
-import 'package:core/tag_element.dart';
-import 'package:core/tag_dataset.dart';
 
 import 'profiles/basic.dart';
 import 'profile_report.dart';
@@ -34,7 +31,7 @@ class Profiler<K> {
 //  final List<String> lines;
 //    final GlobalRule globals;
   /// The subject of the [Dataset] being processed.
-  final Subject subject;
+  final TrialSubject subject;
 
   /// The [Parameters] related to [subject].
   final Map<String, RegExp> parameters;
@@ -71,18 +68,19 @@ class Profiler<K> {
       this.errors);
 
   /// Returns the modified Dataset after applying this profile to [rds].
-  Dataset process(Dataset rds) {
+  Dataset process(Dataset source) {
+  	  TagDataset target = new RootTagDataset();
     checkRetainRemoveGroupsConflict();
     checkRetainRemoveKeysConflict();
-    checkRequiredElements(rds);
-    processGroupsToRemove(rds);
-    processKeysToRemove(rds);
-    replaceUids(rds, );
-    replaceDates(rds);
-    processPatient(rds);
-    processKeysToBlank(rds);
-    processKeysToNoValue(rds);
-    return rds;
+    checkRequiredElements(source);
+    processGroupsToRemove(source);
+    processKeysToRemove(source);
+    replaceUids(source, target);
+    normalizeDates(source, target, subject.enrollmentDate);
+    processPatient(source, target);
+    processKeysToBlank(source target);
+    processKeysToNoValue(source, target);
+    return target;
   }
 
   /// Ensures that all required Elements are present with appropriate values.
@@ -147,6 +145,7 @@ class Profiler<K> {
   }
 
   int count = 0;
+
   /// Remove all Elements in the [keysToRemove] [List].
   List<Element> processKeysToRemove(Dataset ds,
       {bool recursive = true, bool required = false, int depth = 0}) {
@@ -157,7 +156,7 @@ class Profiler<K> {
       if (e.isSequence) {
         print('$depth sq: $e');
         for (Dataset item in e.values) {
-          processKeysToRemove(item, depth: depth++);
+          processKeysToRemove(item, depth: depth + 1);
         }
       }
     }
@@ -179,7 +178,7 @@ class Profiler<K> {
   }
 
   List<Element> processRemoveAllPrivate(Dataset ds,
-                                    {bool recursive = true, bool required = false, int depth = 0}) {
+      {bool recursive = true, bool required = false, int depth = 0}) {
     int i = 0;
     for (Element e in ds.elements.toList()) {
       if (e.isPrivate) {
@@ -192,24 +191,35 @@ class Profiler<K> {
     return report.removedElements;
   }
 
-  void normalizeDate(ByteElement be, String enrollment, TagDataset tagDS) {
-    if (be.vrCode == VR.kDA.code) {
+  void walkDataset(Dataset source, Dataset target, Updater update) =>
+  	  source.map.forEach((int key, Element e) => target.add(update(e)));
+
+  void walkDataset1(Dataset source, Dataset target, Updater update) {
+  	  for(Element e in source.elements) target.add(update(e)
+  }
+
+  void normalizeDates(Dataset source, Dataset target, String enrollment) {
+  	for(Element e in source.elements) target.add(normalizeDate(e, enrollment));
+  }
+
+  Element normalizeDate(ByteElement e, Date enrollment) {
+    if (e.vrCode == VR.kDA.code) {
       //    print('\nByteE: ${e.info}');
-      report.replacedElements.add(be);
-      DA te = ByteReader.makeTagElement(be);
+      report.replacedElements.add(e);
+      DA te = ByteReader.makeTagElement(e);
       te = te.normalize(enrollment);
       print('Normal: ${te.date}');
       print('Normal DA: $te');
-      tagDS.add(te);
+      return te;
     }
   }
 
-  Map<String, String> replaceUids(Dataset oldDS, [TagDataset tagDS, Map<Uid, Uid>
-  uidMap]) {
+  Map<String, String> replaceUids(Dataset oldDS,
+      [TagDataset tagDS, Map<Uid, Uid> uidMap]) {
     Uid study = new Uid();
     Uid series = new Uid();
     Uid instance = new Uid();
-    tagDS = (tagDS == null) ? new RootTagDataset();
+//    TagDataset ds = (tagDS == null) ? new RootTagDataset() : tagDS;
     Map<String, String> map = (uidMap == null) ? <String, String>{} : uidMap;
 
     // Create Map of old: new
@@ -221,8 +231,8 @@ class Profiler<K> {
     map[old] = instance.asString;
 
     // Replace Study UID
-    var oldE =
-        oldDS.replaceUid(kStudyInstanceUID, study.asString, recursive: true, required: true);
+    var oldE = oldDS.replaceUid(kStudyInstanceUID, study.asString,
+        recursive: true, required: true);
     report.replacedElements.add(oldE);
     // Replace Series UID
     oldE = oldDS.replaceUid(kSeriesInstanceUID, series.asString,

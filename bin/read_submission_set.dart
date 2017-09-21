@@ -7,6 +7,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:date_time/date_time.dart';
 import 'package:profile/profile.dart';
 
 void main() {
@@ -29,12 +30,12 @@ void main() {
 }
 
 SubjectDB parseSubmissionSet(List<Map<String, String>> sets) {
-  List<Subject> subjects = <Subject>[];
+  List<TrialSubject> subjects = <TrialSubject>[];
   int i = 0;
   for (Map set in sets) {
     i++;
 //     print('$i set: $set');
-    Subject subject = makeSubject(i, set);
+    TrialSubject subject = makeSubject(i, set);
 //    print('Subject: $subject');
     subjects.add(subject);
   }
@@ -42,15 +43,16 @@ SubjectDB parseSubmissionSet(List<Map<String, String>> sets) {
   return new SubjectDB(subjects);
 }
 
-Subject makeSubject(int index, Map data) {
+TrialSubject makeSubject(int index, Map data) {
   var name = data["Patient Name"];
   var id = data["Patient ID"];
+  var enrollmentDate = Date.parse("Enrollment Date");
   var accession = data["Accession Number"];
   var studyDate = data["Study Date"];
   List pList = data["parameters"];
   Map subjectMap = pList[0];
   var parameters = makeParameters(index, subjectMap);
-  return new Subject(name, id, accession, studyDate, parameters);
+  return new TrialSubject(name, id, enrollmentDate, accession, studyDate, parameters);
 }
 
 Parameters makeParameters(int index, Map map) {

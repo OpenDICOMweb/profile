@@ -4,9 +4,6 @@
 // Author: Jim Philbin <jfphilbin@gmail.edu> - 
 // See the AUTHORS file for other contributors.
 
-import 'package:core/element.dart';
-
-typedef Element _Updater(Element element);
 
 abstract class Profile {
   bool get removeAllPrivate => false; // TODO: is this the right default?

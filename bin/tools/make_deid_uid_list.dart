@@ -6,8 +6,6 @@
 
 import 'package:system/system.dart';
 
-import 'package:tag/tag.dart';
-
 import 'basic_profile.dart';
 
 void main() {

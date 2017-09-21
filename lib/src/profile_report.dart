@@ -11,7 +11,7 @@ import 'subject.dart';
 class ProfileReport {
   final String name;
   final Uri url;
-  final Subject subject;
+  final TrialSubject subject;
   final List<int> requiredKeysConflicts = <int>[];
   final List<int> groupRetainRemoveConflicts = <int>[];
   final List<int> keyRetainRemoveConflicts = <int>[];
