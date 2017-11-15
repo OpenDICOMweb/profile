@@ -4,7 +4,7 @@
 // Author: Jim Philbin <jfphilbin@gmail.edu> - 
 // See the AUTHORS file for other contributors.
 
-import 'package:core/element.dart';
+import 'package:element/element.dart';
 
 import 'subject.dart';
 

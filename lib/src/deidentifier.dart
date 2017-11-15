@@ -10,11 +10,17 @@
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
-import 'package:core/core.dart';
-import 'package:deid/profile.dart';
-import 'package:deid/dictionary.dart';
+
+//import 'package:deid/profile.dart';
+//import 'package:deid/dictionary.dart';
+import 'package:dataset/tag_dataset.dart';
+import 'package:element/element.dart';
 import 'package:system/system.dart';
 import 'package:tag/tag.dart';
+import 'package:uid/uid.dart';
+
+import 'package:profile/src/trial.dart';
+import 'package:profile/src/profiles/basic.dart';
 
 // In static frequency order
 /*
@@ -87,7 +93,7 @@ const List<int> basicProfileRemoveCodes = const [
   0xfffafffa, 0xfffcfffc // don't reformat
 ];
 
-typedef bool DeIdentifer(TagDataset ds, int tag, Trial trial, List<String> values);
+typedef bool DeIdentifer(Dataset ds, int tag, Trial trial, List<String> values);
 
 //TODO: add global rules
 class DeIdentifier {
@@ -108,13 +114,13 @@ class DeIdentifier {
 
   //List<String> getValues(Trial trial, List<String> values) {}
 
-  TagDataset fmi(TagDataset fmi) {
+  Dataset fmi(Dataset fmi) {
     print('FMI: $fmi');
     replaceUid(fmi, kMediaStorageSOPInstanceUID, trial, deIdInstanceUid);
     return fmi;
   }
 
-  TagDataset call(TagDataset ds) {
+  Dataset call(Dataset ds) {
     // ** ds.retainTags.addAll(trial.retainTags);
 
     /* TODO
@@ -123,7 +129,7 @@ class DeIdentifier {
     });
     */
     //replaceUids(ds);
-    ds.removePrivate();
+    ds.deletePrivate();
 
     List<BasicProfile> bpList = BasicProfile.map.values.toList(growable: false);
 
@@ -180,7 +186,7 @@ class DeIdentifier {
     return ds;
   }
 
-  bool remove(TagDataset ds, int tag, Trial trial, [List values]) {
+  bool remove(Dataset ds, int tag, Trial trial, [List values]) {
     Element a = ds[tag];
     if (a == null) return false;
     if (a is SQ) return removeSequence(a, tag, trial);
@@ -197,7 +203,7 @@ class DeIdentifier {
     return true;
   }
 
-  TagElement replaceUid(TagDataset ds, int code, Trial trial, String newUid) {
+  Element replaceUid(Dataset ds, int code, Trial trial, String newUid) {
     print('DS: $ds, tag: ${Tag.toDcm(code)}, values=$newUid');
     Tag tag = PTag.lookupByCode(code);
     if (tag.vr != VR.kUI) return null;
@@ -222,48 +228,48 @@ class DeIdentifier {
     return ds.replaceUidsByCode(code, [newUid]);
   }
 
-  void retain(TagDataset ds, Tag tag, Trial trial, [List values]) =>
+  void retain(Dataset ds, Tag tag, Trial trial, [List values]) =>
       ds.retain(tag);
 
-  TagElement dummy(TagDataset ds, int code, Trial trial, [List values]) =>
+  Element dummy(Dataset ds, int code, Trial trial, [List values]) =>
       ds.replaceCode(code, values);
 
-  TagElement zeroOrDummy(TagDataset ds, int code, Trial trial, [List values]) {
+  Element zeroOrDummy(Dataset ds, int code, Trial trial, [List values]) {
     //TODO: fix when we know ATypes
     return ds.replaceCode(code, values);
   }
 
-  TagElement clean(TagDataset ds, int tag, Trial trial, [List values]) {
+  Element clean(Dataset ds, int tag, Trial trial, [List values]) {
     return ds.replaceCode(tag, values);
   }
 
-  TagElement kZorD(TagDataset ds, int tag, Trial trial, [List values]) {
+  Element kZorD(Dataset ds, int tag, Trial trial, [List values]) {
     //TODO: fix when we know ATypes
     return dummy(ds, tag, trial, values);
   }
 
-  TagElement kXorZ(TagDataset ds, int tag, Trial trial, [List values]) {
+  Element kXorZ(Dataset ds, int tag, Trial trial, [List values]) {
     //TODO: fix when we know ATypes
     return zeroOrDummy(ds, tag, trial, values);
   }
 
-  TagElement kXorD(TagDataset ds, int tag, Trial trial, [List values]) {
+  Element kXorD(Dataset ds, int tag, Trial trial, [List values]) {
     //TODO: fix when we know ATypes
     return dummy(ds, tag, trial, values);
   }
 
-  TagElement kXorZorD(TagDataset ds, int tag, Trial trial, [List values]) {
+  Element kXorZorD(Dataset ds, int tag, Trial trial, [List values]) {
     //TODO: fix when we know ATypes
     return dummy(ds, tag, trial, values);
   }
 
-  TagElement kXorZorU(TagDataset ds, int code, Trial trial, [List values]) {
+  Element kXorZorU(Dataset ds, int code, Trial trial, [List values]) {
     //TODO: fix when we know ATypes
     // return  ds.replaceUidsByCode(code, values, trial);
     return ds.replaceUidsByCode(code, values);
   }
 
-  bool addIfMissing(TagDataset ds, List<String> values) {
+  bool addIfMissing(Dataset ds, List<String> values) {
     //TODO: finish
     return false;
   }

@@ -6,9 +6,9 @@
 
 import 'package:profile/src/profiles/profile_base.dart';
 
-class Basic extends Profile {
+class BasicProfile extends Profile {
 
-  Basic();
+  BasicProfile();
 
   @override
   bool get removeAllPrivate => true;

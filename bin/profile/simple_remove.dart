@@ -13,7 +13,7 @@
 import 'dart:io';
 
 import 'package:dcm_convert/data/test_files.dart';
-import 'package:dcm_convert/dcm.dart';
+import 'package:dcm_convert/byte_convert.dart';
 
 import 'package:profile/profiler.dart';
 
@@ -30,7 +30,7 @@ void main() {
 
   // Edit this line
   var path = path1;
-  Profile basic = new Basic();
+  Profile basic = new BasicProfile();
   Profiler profiler = new Profiler("basic", "", basic, subject0, {});
 
   File f = new File(path);

@@ -6,7 +6,7 @@
 
 import 'dart:convert';
 
-import 'package:core/dataset.dart';
+import 'package:dataset/dataset.dart';
 import 'package:date_time/date_time.dart';
 import 'package:system/system.dart';
 
@@ -128,7 +128,7 @@ class Subject {
   final String accession;
   final Date studyDate;
   final int caseNumber;      // Should be caseID
-  final String enrollmentDate;
+  final Date enrollmentDate;
   final String trialNumber;  // Should be trialID
   final String trialName;
   final String siteNumber; // Should be siteID
@@ -231,7 +231,7 @@ Additional Trial Input: "$additionalTrialInput",
   //TODO: explain normalization int ReadMe.
   /// Returns [true] if the Element corresponding to code was _normalized_.
   bool normalize(Dataset rds, int code) {
-    String oDate = rds.getStringByCode(code);
+    String oDate = rds.getString(code);
     if (oDate == null) return false;
     String nDate = Date.normalizeString(oDate, enrollmentDate);
     /// TODO: add replaceByCode to Dataset

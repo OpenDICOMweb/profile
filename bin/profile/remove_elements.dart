@@ -6,11 +6,12 @@
 
 import 'dart:io';
 
+import 'package:dataset/dataset.dart';
 import 'package:dcm_convert/data/test_files.dart';
-import 'package:dcm_convert/dcm.dart';
+import 'package:dcm_convert/byte_convert.dart';
 
 import 'package:profile/profiler.dart';
-import 'package:deid/dictionary.dart';
+//import 'package:deid/dictionary.dart';
 import 'package:system/server.dart';
 
 
@@ -25,7 +26,7 @@ void main() {
 
   File f = toFile(path, mustExist: true);
   log.debug2('Reading: $f');
-  RootByteDataset rds = ByteReader.readFile(f, fast: true);
+  RootDatasetByte rds = ByteReader.readFile(f, fast: true);
   log.debug('bRoot.isRoot: ${rds.isRoot}');
   Formatter z = new Formatter(maxDepth: -1);
   rds.format(z);
@@ -33,14 +34,14 @@ void main() {
   print('basicProfileRemoveCodes.length: ${basicProfileRemoveCodes.length}');
   print('basicProfile.removeCodes.length: ${BasicProfile.removeCodes.length}');
   print('basicProfile.removeCodes.length: ${BasicProfile.codes.length}');
-  List<ByteElement> removeTargets = <ByteElement>[];
-  List<ByteElement> removeResults = <ByteElement>[];
+  List<Element> removeTargets = <Element>[];
+  List<Element> removeResults = <Element>[];
 
   print(rds.summary);
 
 
   for (int code in basicProfileRemoveCodes) {
-    List<ByteElement> results = rds.lookupRecursive(code);
+    List<Element> results = rds.lookupRecursive(code);
     if (results != null && results.length != 0) removeTargets.addAll(results);
   }
 
@@ -104,7 +105,7 @@ void main() {
 
 /*
   log.info('patientID: "${bRoot.patientId}"');
-  ByteElement e = bRoot.remove(kPatientID);
+  Element e = bRoot.remove(kPatientID);
   log.info('removed: ${e.info}');
   if (bRoot[kPatientID] != null)
     log.error('kPatientID not removed: $e');
