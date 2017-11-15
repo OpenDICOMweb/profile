@@ -17,7 +17,7 @@ import 'package:dcm_convert/dcm.dart';
 import 'package:system/server.dart';
 import 'package:tag/tag.dart';
 
-import 'package:profile/profile.dart';
+import 'package:profile/profiler.dart';
 import 'package:profile/src/profiles/basic.dart';
 import 'package:profile/src/subject_0.dart';
 

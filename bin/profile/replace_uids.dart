@@ -17,14 +17,14 @@ import 'package:dcm_convert/dcm.dart';
 import 'package:system/server.dart';
 import 'package:tag/tag.dart';
 
-import 'package:profile/profile.dart';
+import 'package:profile/profiler.dart';
 import 'package:profile/src/profiles/basic.dart';
 import 'package:profile/src/subject_0.dart';
 
 /// A Program that reads a [File], decodes it into a [RootByteDataset],
 /// and then converts that into a [RootTagDataset].
 void main() {
-  Server.initialize(level: Level.debug2, throwOnError: true);
+  Server.initialize(name: 'replace_uids', level: Level.debug2, throwOnError: true);
 
   // Edit this line
   var path = path0;

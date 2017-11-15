@@ -8,15 +8,17 @@ import 'dart:io';
 
 import 'package:dcm_convert/data/test_files.dart';
 import 'package:dcm_convert/dcm.dart';
-import 'package:profile/profile.dart';
+import 'package:profile/profiler.dart';
 import 'package:system/server.dart';
 import 'package:uid/uid.dart';
+
+import 'package:profile/src/profiles/basic.dart';
+import 'package:profile/src/subject_0.dart';
 
 /// A Program that reads a [File], decodes it into a [RootByteDataset],
 /// and then converts that into a [RootTagDataset].
 void main() {
  Server.initialize(name: 'deid_replace_uids', level: Level.debug);
-
    /// A [Map] from current to replacement [Uid]s.
    Map<Uid, Uid> uidCache = <Uid, Uid>{};
   // Edit this line
@@ -31,10 +33,12 @@ void main() {
   RootTagDataset rtds = new RootTagDataset();
    rtds = convertDataset(rbds, rtds);
 
-  var profile = new Profiler("foo", 'http:', null, null, null);
-  var map = profile.replaceUids(rtds);
+ Profile basic = new Basic();
+ Profiler profiler = new Profiler("basic", "", basic, subject0, {});
+
+  var map = profiler.replaceUids(rtds);
   log.debug('Map: $map');
-  log.debug('replaced: ${profile.report.replacedElements}');
+  log.debug('replaced: ${profiler.report.replacedElements}');
   log.debug('study: ${rtds.lookup(kStudyInstanceUID).info}');
   log.debug('series: ${rtds.lookup(kSeriesInstanceUID).info}');
   log.debug('instance: ${rtds.lookup(kSOPInstanceUID).info}');

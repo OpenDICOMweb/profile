@@ -9,7 +9,7 @@ import 'dart:io';
 import 'package:dcm_convert/data/test_files.dart';
 import 'package:dcm_convert/dcm.dart';
 
-import 'package:profile/profile.dart';
+import 'package:profile/profiler.dart';
 import 'package:deid/dictionary.dart';
 import 'package:system/server.dart';
 
