@@ -6,12 +6,12 @@
 
 import 'dart:convert';
 
-import 'package:dcm_convert/dcm.dart';
+import 'package:dcm_convert/byte_convert.dart';
 import 'package:system/system.dart';
 import 'package:uid/uid.dart';
 import 'package:tag/tag.dart';
-import 'package:core/tag_element.dart';
-import 'package:core/tag_dataset.dart';
+import 'package:element/tag_element.dart';
+import 'package:dataset/tag_dataset.dart';
 
 import 'profiles/basic.dart';
 import 'profile_report.dart';
@@ -38,7 +38,7 @@ class Profiler<K> {
   final Map<String, RegExp> parameters;
 
   //make this profile
-  final Basic profile;
+  final BasicProfile profile;
 
   final ProfileReport report;
 
@@ -73,8 +73,8 @@ class Profiler<K> {
     checkRetainRemoveGroupsConflict();
     checkRetainRemoveKeysConflict();
     checkRequiredElements(rds);
-    processGroupsToRemove(rds);
-    processKeysToRemove(rds);
+    processGroupsToDelete(rds);
+    processKeysToDelete(rds);
     replaceUids(rds, );
     replaceDates(rds);
     processPatient(rds);
@@ -93,11 +93,11 @@ class Profiler<K> {
   /// [profile]groupsToRemove.[List]s.
   bool checkRetainRemoveGroupsConflict() {
     var conflicts =
-        _checkForListConflicts(profile.groupsToRetain, profile.groupsToRemove);
+        _checkForListConflicts(profile.groupsToRetain, profile.groupsToDelete);
     if (conflicts != null && conflicts.length != 0) {
       log.error('The following groups have conflicts in the '
           'retain and remove Lists: $conflicts');
-      report.groupRetainRemoveConflicts.addAll(conflicts);
+      report.groupRetainDeleteConflicts.addAll(conflicts);
       return false;
     }
     return true;
@@ -106,11 +106,11 @@ class Profiler<K> {
   /// Ensures that no groups are on both the [profile].keysToRetain and
   /// [profile].keysToRemove [List]s.
   bool checkRetainRemoveKeysConflict() {
-    var conflicts = _checkForListConflicts(profile.keysToRetain, profile.keysToRemove);
-    if (conflicts != null && conflicts.length != 0) {
+    final conflicts = _checkForListConflicts(profile.keysToRetain, profile.keysToDelete);
+    if (conflicts != null && conflicts.isNotEmpty) {
       log.error('The following _keys_ have conflicts in the '
           'retain and remove Lists: $conflicts');
-      report.keyRetainRemoveConflicts.addAll(conflicts);
+      report.keyRetainDeleteConflicts.addAll(conflicts);
       return false;
     }
     return true;
@@ -123,74 +123,74 @@ class Profiler<K> {
     return conflicts;
   }
 
-  /// Removes the groups in [profile].groupsToRemove from the [Dataset];
-  List<Element> processGroupsToRemove(Dataset ds,
+  /// Deletes the groups in [profile].groupsToDelete from the [Dataset];
+  List<Element> processGroupsToDelete(Dataset ds,
       {bool recursive = true, bool required = false}) {
     List<Element> eList;
-    for (int group in profile.groupsToRemove) {
+    for (var group in profile.groupsToDelete) {
       if (profile.groupsToRetain.contains(group)) {
         log.error('Tried to remove retainedGroup(${hex16(group)})');
         continue;
       }
-      for (Element e in ds.elements) {
+      for (var e in ds.elements) {
         if (Group.fromTag(e.code) == group) {
-          ds.remove(e.code, recursive: recursive, required: required);
-          report.removed.add(e);
+          ds.remove(e.code);
+          report.deleted.add(e);
         }
       }
     }
     // TODO: should we have a separate list for removed groups
-    report.removedElements.addAll(eList);
+    report.deletedElements.addAll(eList);
     return eList;
   }
 
   int count = 0;
-  /// Remove all Elements in the [keysToRemove] [List].
-  List<Element> processKeysToRemove(Dataset ds,
+  /// Delete all Elements in the [keysToDelete] [List].
+  List<Element> processKeysToDelete(Dataset ds,
       {bool recursive = true, bool required = false, int depth = 0}) {
-    for (int code in profile.keysToRemove)
-      _remove(ds, code, recursive: recursive, required: required);
+    for (var code in profile.keysToDelete)
+      _delete(ds, code, recursive: recursive, required: required);
 
-    for (Element e in ds.elements.toList()) {
-      if (e.isSequence) {
+    for (var e in ds.elements.toList()) {
+      if (e is SQ) {
         print('$depth sq: $e');
         for (Dataset item in e.values) {
-          processKeysToRemove(item, depth: depth++);
+          processKeysToDelete(item, depth: depth++);
         }
       }
     }
 
-    return report.removedElements;
+    return report.deletedElements;
   }
 
   //Enhancement: code should become key
-  /// Remove the Element corresponding to [code].
-  Element _remove(Dataset ds, int code, {bool recursive = true, bool required = false}) {
+  /// delete the Element corresponding to [code].
+  Element _delete(Dataset ds, int code, {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
-    Element e = ds.remove(code, recursive: recursive, required: required);
+    Element e = ds.delete(code);
     if (e != null) {
-      report.removedElements.add(e);
+      report.deletedElements.add(e);
       count++;
-      print('$count: _remove: ${e.dcm} ${e.vr} ${e.keyword}');
+      print('$count: _delete: ${e.dcm} ${e.vr} ${e.keyword}');
     }
     return e;
   }
 
-  List<Element> processRemoveAllPrivate(Dataset ds,
+  List<Element> processdeleteAllPrivate(Dataset ds,
                                     {bool recursive = true, bool required = false, int depth = 0}) {
     int i = 0;
     for (Element e in ds.elements.toList()) {
       if (e.isPrivate) {
-        _remove(ds, e.code, recursive: recursive, required: required);
+        _delete(ds, e.code);
         print('$i private: $e');
         i++;
       }
     }
 
-    return report.removedElements;
+    return report.deletedElements;
   }
 
-  void normalizeDate(ByteElement be, String enrollment, TagDataset tagDS) {
+  void normalizeDate(Element be, String enrollment, Dataset tagDS) {
     if (be.vrCode == VR.kDA.code) {
       //    print('\nByteE: ${e.info}');
       report.replacedElements.add(be);
@@ -202,12 +202,12 @@ class Profiler<K> {
     }
   }
 
-  Map<String, String> replaceUids(Dataset oldDS, [TagDataset tagDS, Map<Uid, Uid>
+  Map<String, String> replaceUids(Dataset oldDS, [Dataset tagDS, Map<Uid, Uid>
   uidMap]) {
     Uid study = new Uid();
     Uid series = new Uid();
     Uid instance = new Uid();
-    tagDS = (tagDS == null) ? new RootTagDataset() : tagDS;
+    tagDS = (tagDS == null) ? new RootDatasetTag() : tagDS;
     Map<String, String> map = (uidMap == null) ? <String, String>{} : uidMap;
 
     // Create Map of old: new
@@ -220,15 +220,15 @@ class Profiler<K> {
 
     // Replace Study UID
     var oldE =
-        oldDS.replaceUid(kStudyInstanceUID, study.asString, recursive: true, required: true);
+        oldDS.replaceUid(kStudyInstanceUID, study, required: true);
     report.replacedElements.add(oldE);
     // Replace Series UID
-    oldE = oldDS.replaceUid(kSeriesInstanceUID, series.asString,
-        recursive: true, required: true);
+    oldE = oldDS.replaceUid(kSeriesInstanceUID, [series],
+        required: true);
     report.replacedElements.add(oldE);
     // Replace Instance UID
-    oldE = oldDS.replaceUid(kSOPInstanceUID, instance.asString,
-        recursive: true, required: true);
+    oldE = oldDS.replaceUid(kSOPInstanceUID, [instance],
+        required: true);
     report.replacedElements.add(oldE);
 
     print('replaced: $oldE');
@@ -300,9 +300,9 @@ class Profiler<K> {
       {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
 
-    for (int code in profile.keysToZero) {
-      Element e = ds.noValues(code, required: required);
-      if (e != null) report.removedElements.add(e);
+    for (var code in profile.keysToZero) {
+      final e = ds.noValues(code);
+      if (e != null) report.deletedElements.add(e);
     }
     return report.zeroed;
   }
@@ -311,8 +311,8 @@ class Profiler<K> {
   List<Element> noValuesAll(Dataset ds, {bool recursive = true, bool required = false}) {
     List<Element> eList;
     for (int code in profile.keysToZero)
-      eList = noValue(ds, code, recursive: recursive, required: required);
-    report.removedElements.addAll(eList);
+      eList = noValue(ds, code, r required: required);
+    report.deletedElements.addAll(eList);
     return eList;
   }
 */
@@ -412,9 +412,9 @@ class Profiler<K> {
 //            map["trialMap"],
         map["parameters"],
         map["retainGroups"],
-        map["removeGroups"],
+        map["deleteGroups"],
         map["retainTags"],
-        map["removeTags"],
+        map["deleteTags"],
         map["updateMap"],
         map["comments"],
 //            map["rules"],

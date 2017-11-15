@@ -19,7 +19,7 @@ class BasicProfile extends Profile {
   @override
   List<int> get groupsToRetain => const <int>[];
   @override
-  List<int> get groupsToRemove => const <int>[];
+  List<int> get groupsToDelete => const <int>[];
 
   @override
   List<int> get keysToDummy => const<int>[
@@ -36,7 +36,7 @@ class BasicProfile extends Profile {
   ];
 
   @override
-  List<int> get keysToRemove => const<int>[
+  List<int> get keysToDelete => const<int>[
     // No reformat
     // TODO: make the next one work
     // 0x00001000,

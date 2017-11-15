@@ -13,28 +13,28 @@ class ProfileReport {
   final Uri url;
   final TrialSubject subject;
   final List<int> requiredKeysConflicts = <int>[];
-  final List<int> groupRetainRemoveConflicts = <int>[];
-  final List<int> keyRetainRemoveConflicts = <int>[];
+  final List<int> groupRetainDeleteConflicts = <int>[];
+  final List<int> keyRetainDeleteConflicts = <int>[];
   final List<int> retainedGroups = <int>[];
-  final List<int> removedGroups = <int>[];
+  final List<int> deletedGroups = <int>[];
   final List<Element> dummied= <Element>[];
   final List<Element> zeroed = <Element>[];
-  final List<Element> removed = <Element>[];
+  final List<Element> deleted = <Element>[];
   final List<Element> retained = <Element>[];
   final List<Element> cleaned = <Element>[];
   final List<Element> replacedUids = <Element>[];
   final List<Element> zeroedOrDummied = <Element>[];
-  final List<Element> removedOrZeroed = <Element>[];
-  final List<Element> removedElements = <Element>[];
-  final List<Element> removedOrDummied = <Element>[];
-  final List<Element> removedOrZeroedOrDummied = <Element>[];
-  final List<Element> removedOrZeroedOrReplacedUid = <Element>[];
+  final List<Element> deletedOrZeroed = <Element>[];
+  final List<Element> deletedElements = <Element>[];
+  final List<Element> deletedOrDummied = <Element>[];
+  final List<Element> deletedOrZeroedOrDummied = <Element>[];
+  final List<Element> deletedOrZeroedOrReplacedUid = <Element>[];
   final List<Element> blankedElements = <Element>[];
   final List<Element> replacedElements = <Element>[];
   final List<Element> addedElements = <Element>[];
 
-  bool removedAllPrivateElements = false;
-  bool removedSafePrivateElements = false;
+  bool deletedAllPrivateElements = false;
+  bool deletedSafePrivateElements = false;
 
   ProfileReport(this.name, String url, this.subject) : url = new Uri.file(url);
 

@@ -10,7 +10,8 @@ import 'package:dataset/dataset.dart';
 import 'package:dcm_convert/data/test_files.dart';
 import 'package:dcm_convert/byte_convert.dart';
 
-import 'package:profile/profiler.dart';
+import 'package:profile/src/profiler.dart';
+import 'package:profile/src/profiles/basic.dart';
 //import 'package:deid/dictionary.dart';
 import 'package:system/server.dart';
 

@@ -38,7 +38,7 @@ void main() {
 
   // Formatter z = new Formatter(maxDepth: -1);
   //print(rds.format(z));
-  print('${basic.keysToRemove.length} keys in keysToRemove');
+  print('${basic.keysToDelete.length} keys in keysToRemove');
   print('${rds.total} elements in dataset');
   print(rds.summary);
 

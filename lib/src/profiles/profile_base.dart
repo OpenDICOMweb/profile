@@ -12,10 +12,10 @@ abstract class Profile {
   bool get removeAllOverlays => true;
   List<int> get requiredKeys;
   List<int> get groupsToRetain;
-  List<int> get groupsToRemove;
+  List<int> get groupsToDelete;
   List<int> get keysToDummy;
   List<int> get keysToZero;
-  List<int> get keysToRemove;
+  List<int> get keysToDelete;
 
   List<int> get keysToRetain;
   List<int> get keysToClean;
