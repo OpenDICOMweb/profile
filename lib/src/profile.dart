@@ -7,10 +7,8 @@
 import 'dart:convert';
 
 import 'package:core/core.dart';
-import 'package:system/system.dart';
-import 'package:tag/tag.dart';
 
-import 'errors.dart';
+import 'package:profile/src/errors.dart';
 
 typedef Element Updater(Element element);
 
@@ -79,13 +77,16 @@ class ProfileBase<K> {
       this.errors);
 
   Map<String, String> replaceUids(Dataset ds, [Map<Uid, Uid> uidMap]) {
-    Uid study = new Uid();
-    Uid series = new Uid();
-    Uid instance = new Uid();
-    Map<String, String> map = (uidMap == null) ? <String, String>{} : uidMap;
+    final idedStudy = ds.lookup(kStudyInstanceUID);
+    final study = new Uid();
+    final series = new Uid();
+    final instance = new Uid();
+    final map = (uidMap == null) ? <String, String>{} : uidMap;
+
+    final uids = <Uid>[study, series, instance];
 
     // Create Map of old: new
-    String old = getUid(ds, kStudyInstanceUID);
+    var old = getUid(ds, kStudyInstanceUID);
     map[old] = study.asString;
     old = getUid(ds, kSeriesInstanceUID);
     map[old] = series.asString;
@@ -93,8 +94,8 @@ class ProfileBase<K> {
     map[old] = instance.asString;
 
     // Replace Study UID
-    var oldE = ds.replaceUid(kStudyInstanceUID, study.asString,
-        recursive: true, required: true);
+/* TODO rewrite
+    var oldE = ds.replaceAllUids(kStudyInstanceUID, uids);
     replacedElements.add(oldE);
     // Replace Series UID
     oldE = ds.replaceUid(kSeriesInstanceUID, series.asString,
@@ -104,39 +105,38 @@ class ProfileBase<K> {
     oldE = ds.replaceUid(kSOPInstanceUID, instance.asString,
         recursive: true, required: true);
     replacedElements.add(oldE);
+*/
 
     print('replaced: $replacedElements');
 
-    List<Element> eList =
-        walkSequences(ds, kStudyInstanceUID, (Element e) => e.update([study]));
+    var eList = walkSequences(ds, kStudyInstanceUID, (e) => e.update(<Uid>[study]));
     replacedElements.addAll(eList);
-    eList = walkSequences(ds, kSeriesInstanceUID, (e) => e.update([series]));
+    eList = walkSequences(ds, kSeriesInstanceUID, (e) => e.update(<Uid>[series]));
     replacedElements.addAll(eList);
-    eList = walkSequences(ds, kSOPInstanceUID, (e) => e.update([instance]));
+    eList = walkSequences(ds, kSOPInstanceUID, (e) => e.update(<Uid>[instance]));
     replacedElements.addAll(eList);
 
     return map;
   }
 
-  List<Element> walkSequences(Dataset ds, int code, ElementConverter f,
+  List<Element> walkSequences(Dataset ds, int code, Updater f,
       {bool recursive = true, bool required = false}) {
-    List<Element> results = [];
-    for (Element e in ds.elements) {
-      if (e.isSequence) {
-        results.addAll(walkSequence(ds, e as SequenceMixin, code, f));
+    final results = <Element>[];
+    for (var e in ds.elements) {
+      if (e is SQ) {
+        results.addAll(walkSequence(ds, e, code, f));
       }
     }
     return results;
   }
 
-  List<Element> walkSequence(
-      Dataset ds, SequenceMixin sq, int code, ElementConverter f,
+  List<Element> walkSequence(Dataset ds, SQ sq, int code, ElementConverter f,
       {bool recursive = true, bool required = false}) {
-    List<Element> results = [];
+    final results = <Element>[];
     for (Dataset item in sq.items) {
-      for (Element e in item.elements) {
-        if (e.isSequence) {
-          results.addAll(walkSequence(ds, e as SequenceMixin, code, f));
+      for (var e in item.elements) {
+        if (e is SQ) {
+          results.addAll(walkSequence(ds, e, code, f));
         } else if (e.code == code) {
           item[code] = f(e);
           results.add(e);
@@ -149,7 +149,7 @@ class ProfileBase<K> {
   void replaceUid(int code, Uid uid) {}
 
   String getUid(Dataset ds, int code) {
-    var e = ds.lookup(code);
+    final e = ds.lookup(code);
     if (e == null) return elementNotPresentError(code);
     return e.value;
   }
@@ -162,25 +162,22 @@ class ProfileBase<K> {
             ' the keepTags list.');
   }
 
-  bool isInRetainedGroup(int code) =>
-      groupsToRetain.contains(Group.fromTag(code));
+  bool isInRetainedGroup(int code) => groupsToRetain.contains(Group.fromTag(code));
 
   bool isInRetainedElements(int code) => keyToRetain.contains(code);
 
-  bool isRetained(int code) =>
-      isInRetainedGroup(code) || isInRetainedElements(code);
+  bool isRetained(int code) => isInRetainedGroup(code) || isInRetainedElements(code);
 
-  List<Element> removeGroups(Dataset ds,
-      {bool recursive = true, bool required = false}) {
+  List<Element> removeGroups(Dataset ds, {bool recursive = true, bool required = false}) {
     List<Element> eList;
-    for (int group in groupsToRemove) {
+    for (var group in groupsToRemove) {
       if (groupsToRetain.contains(group)) {
         log.error('Tried to remove retainedGroup(${hex16(group)})');
         continue;
       }
-      for (Element e in ds.elements) {
+      for (var e in ds.elements) {
         if (Group.fromTag(e.code) == group) {
-          eList = ds.remove(e.code, recursive: recursive, required: required);
+          eList = ds.deleteAll(e.code, recursive: recursive);
         }
       }
     }
@@ -192,16 +189,14 @@ class ProfileBase<K> {
   List<Element> remove(Dataset ds, int code,
       {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
-    List<Element> eList =
-        ds.remove(code, recursive: recursive, required: required);
+    final eList = ds.deleteAll(code, recursive: recursive);
     removedElements.addAll(eList);
     return eList;
   }
 
-  List<Element> removeAll(Dataset ds,
-      {bool recursive = true, bool required = false}) {
+  List<Element> removeAll(Dataset ds, {bool recursive = true, bool required = false}) {
     List<Element> eList;
-    for (int code in keysToRemove)
+    for (var code in keysToRemove)
       eList = remove(ds, code, recursive: recursive, required: required);
     removedElements.addAll(eList);
     return eList;
@@ -210,16 +205,14 @@ class ProfileBase<K> {
   List<Element> noValue(Dataset ds, int code,
       {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
-    List<Element> eList =
-        ds.noValues(code, recursive: recursive, required: required);
+    final eList = ds.noValuesAll(code, recursive: recursive);
     removedElements.addAll(eList);
     return eList;
   }
 
-  List<Element> noValuesAll(Dataset ds,
-      {bool recursive = true, bool required = false}) {
+  List<Element> noValuesAll(Dataset ds, {bool recursive = true, bool required = false}) {
     List<Element> eList;
-    for (int code in keysToNoValues)
+    for (var code in keysToNoValues)
       eList = noValue(ds, code, recursive: recursive, required: required);
     removedElements.addAll(eList);
     return eList;
@@ -229,13 +222,13 @@ class ProfileBase<K> {
 
 /*
     Map<String, dynamic> get map => {
-        "name": name,
-        "path": url,
-        "parameters": parameters,
-        //  "global": globalMap,
- //       "rules": rules,
-        "comments": comments,
-        "errors": errors
+        'name': name,
+        'path': url,
+        'parameters': parameters,
+        //  'global': globalMap,
+ //       'rules': rules,
+        'comments': comments,
+        'errors': errors
     };
 */
 
@@ -249,7 +242,7 @@ class ProfileBase<K> {
 
   String lookup(String key) => parameters[key];
 
-  bool isVariable(String v) => v[0] == "@";
+  bool isVariable(String v) => v[0] == '@';
 
   bool isNotVariable(String v) => !isVariable(v);
 
@@ -261,12 +254,12 @@ class ProfileBase<K> {
   }
 
   bool comment(int lineNo, String line) {
-    comments["$lineNo"] = "$line";
+    comments['$lineNo'] = '$line';
     return true;
   }
 
   bool error(int lineNo, String msg) {
-    errors["$lineNo"] = "$msg";
+    errors['$lineNo'] = '$msg';
     return false;
   }
 
@@ -279,13 +272,13 @@ class ProfileBase<K> {
 */
 
   String get json => '''{
-    "@type": "Clinical Study Profile",
-    "name": "$name",
-    "path": "$url",
-    "parameters": ${JSON.encode(parameters)},
-    "rules": \$rulesToJson,
-    "comments": ${JSON.encode(comments)},
-    "errors": ${JSON.encode(errors)}
+    '@type': 'Clinical Study Profile',
+    'name': '$name',
+    'path': '$url',
+    'parameters': ${JSON.encode(parameters)},
+    'rules': \$rulesToJson,
+    'comments': ${JSON.encode(comments)},
+    'errors': ${JSON.encode(errors)}
 }''';
 
   String format([ProfileFormat format]) {
@@ -294,9 +287,9 @@ class ProfileBase<K> {
         return json;
       case ProfileFormat.text:
         //TODO:
-        return "Text is not yet supported.";
+        return 'Text is not yet supported.';
       case ProfileFormat.xml:
-        return "XML is not yet supported.";
+        return 'XML is not yet supported.';
       default:
         return json;
     }
@@ -313,19 +306,19 @@ class ProfileBase<K> {
   static ProfileBase parse(String s) {
     Map map = JSON.decode(s);
     return new Profile._(
-        map["name"],
-        map["url"],
-        map["trial"],
-//            map["globals"],
-//            map["trialMap"],
-        map["parameters"],
-        map["retainGroups"],
-        map["removeGroups"],
-        map["retainTags"],
-        map["removeTags"],
-        map["updateMap"],
-        map["comments"],
-//            map["rules"],
-        map["errors"]);
+        map['name'],
+        map['url'],
+        map['trial'],
+//            map['globals'],
+//            map['trialMap'],
+        map['parameters'],
+        map['retainGroups'],
+        map['removeGroups'],
+        map['retainTags'],
+        map['removeTags'],
+        map['updateMap'],
+        map['comments'],
+//            map['rules'],
+        map['errors']);
   }*/
 }

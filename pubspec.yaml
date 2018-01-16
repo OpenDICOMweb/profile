@@ -1,6 +1,6 @@
 name: profile
 description: A package for profiliong DICOM studies.
-version: 0.6.0
+version: 0.7.0
 homepage: https://github.com/OpenDICOMweb/profile.git
 author: Jim Philbin <jfphilbin@gmail.com>
 
@@ -9,17 +9,11 @@ environment:
 
 dependencies:
   core:
-    path: C:/odw/sdk/core
-    version: ^0.6.1
-  dcm_convert:
-    path: C:/odw/sdk/convert
-    version: ^0.6.0
-  deid:
-    path: C:/odw/sdk/deid
-    version: ^0.6.0
-  system:
-    path: C:/odw/sdk/system
-    version: ^0.6.1
+    path: C:/acr/odw/sdk/core
+    version: ^0.7.0
+  convert:
+    path: C:/acr/odw/sdk/convert
+    version: ^0.7.0
 
 dev_dependencies:
   benchmark_harness: ^1.0.4

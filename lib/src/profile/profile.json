@@ -1,0 +1,41 @@
+{
+  "Name": "Protocol Name",
+  "Version": "1.2.0",
+  "ValidationDateTime": "yyy-mm-ddThh:MM:ss.ffffff-hhmm",
+  "Path": "file URL",
+  "Quarantine": "quarantine directory URL",
+  "SourceLines": [],
+  "DeIdOptions": [],
+  "GlobalRules": [
+    "keepGroup18",
+    "keepGroup20",
+    "keepGroup28",
+    "keepGroup50",
+    "keepCurves",
+    "keepGroup60",
+    "keepOverlays",
+    "removeGroup18",
+    "removeGroup20",
+    "removeGroup28",
+    "removeGroup50",
+    "removeCurves",
+    "removeGroup60",
+    "removeOverlays"
+  ],
+  "Parameters": {
+    "<name>": "value"
+  },
+  "Rules": {
+    "targetElement": {
+      "function": "<name>",
+      "args": ["arg1", "arg2", "etc"],
+      "scripts": ["<script1>", "etc"]
+    }
+  },
+  "Comments": {
+    "lineNo": "Comment line"
+  },
+  "Errors": {
+    "lineNo": "Error message"
+  }
+}

@@ -6,47 +6,45 @@
 
 import 'dart:io';
 
-import 'package:dcm_convert/data/test_files.dart';
-import 'package:dcm_convert/dcm.dart';
-
+import 'package:convert/data/test_files.dart';
+import 'package:convert/dicom.dart';
+import 'package:core/server.dart';
 import 'package:profile/profile.dart';
 import 'package:deid/dictionary.dart';
-import 'package:system/system.dart';
+
 
 /// A Program that reads a [File], decodes it into a [RootByteDataset],
-/// and then converts that into a [RootTagDataset].
+/// and then converts that into a [RootDataset].
 void main() {
-  log.level = Level.debug3;
-  System.log.level = Level.debug0;
-
+  Server.initialize(name: 'profile/remove_test', level: Level.debug);
   // Edit this line
-  var path = path0;
+  final path = path0;
 
   File f = toFile(path, mustExist: true);
   log.debug2('Reading: $f');
-  RootByteDataset bRoot = ByteReader.readFile(f, fast: true);
+  final bRoot = BDReader.readFile(f, reUseBD: true);
   log.debug('bRoot.isRoot: ${bRoot.isRoot}');
 
   print('basicProfileRemoveCodes.length: ${basicProfileRemoveCodes.length}');
   print('basicProfile.removeCodes.length: ${BasicProfile.removeCodes.length}');
   print('basicProfile.removeCodes.length: ${BasicProfile.codes.length}');
-  List<ByteElement> removeTargets = <ByteElement>[];
-  List<ByteElement> removeResults = <ByteElement>[];
+  final removeTargets = <BDElement>[];
+  final removeResults = <BDElement>[];
 
   print(bRoot.summary);
-  for (int code in basicProfileRemoveCodes) {
-    List<ByteElement> results = bRoot.lookupRecursive(code);
-    if (results != null && results.length != 0) removeTargets.addAll(results);
+  for (var code in basicProfileRemoveCodes) {
+    final results = bRoot.lookupAll(code);
+    if (results != null && results.isNotEmpty) removeTargets.addAll(results);
   }
   print('removeTargets: [${removeTargets.length}]$removeTargets');
 
-  for (int code in basicProfileRemoveCodes) {
-    List<ByteElement> results = bRoot.remove(code);
+  for (var code in basicProfileRemoveCodes) {
+    final results = bRoot.remove(code);
     if (results != null && results.length != 0) removeResults.addAll(results);
   }
 
-  for (int code in basicProfileRemoveCodes) {
-    var e = bRoot.lookup(code);
+  for (var code in basicProfileRemoveCodes) {
+    final e = bRoot.lookup(code);
     if (e != null) throw 'Element still present';
   }
 
@@ -68,7 +66,7 @@ void main() {
 
 /*
   log.info('patientID: "${bRoot.patientId}"');
-  ByteElement e = bRoot.remove(kPatientID);
+  BDElement e = bRoot.remove(kPatientID);
   log.info('removed: ${e.info}');
   if (bRoot[kPatientID] != null)
     log.error('kPatientID not removed: $e');
@@ -80,7 +78,7 @@ void main() {
   if (bRoot == null) return null;
 
   bRoot.remove(kPatientID);
-  RootTagDataset tRoot = convertByteDSToTagDS(bRoot);
+  RootDataset tRoot = convertByteDSToTagDS(bRoot);
   log.info('tRoot: $tRoot');*/
 
 }
