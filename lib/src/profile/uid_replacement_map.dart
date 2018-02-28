@@ -11,14 +11,14 @@ import 'package:core/core.dart';
 /// A [Map<Uid, Uid>] from original [Uid] to replacement [Uid].
 /// Once in the table an entry can not be updated.
 class UidReplacementMap extends MapBase<Uid, Uid> {
-  final Map<Uid, Uid> map;
+  final Map<Uid, Uid> replacements;
 
-  UidReplacementMap() : map = <Uid, Uid>{};
+  UidReplacementMap() : replacements = <Uid, Uid>{};
 
   @override
   Uid operator [](Object original) =>
       (original is Uid)
-      ? map[original]
+      ? replacements[original]
       : invalidUid(original);
 
   @override
@@ -26,44 +26,44 @@ class UidReplacementMap extends MapBase<Uid, Uid> {
     if (original is! Uid) return invalidUid(original);
     if (replacement is! Uid) return invalidUid(replacement);
     if (original is Uid && replacement is Uid) {
-      final old = map.putIfAbsent(original, () => replacement);
+      final old = replacements.putIfAbsent(original, () => replacement);
       if (old != null) return invalidDuplicateUid(original);
     }
   }
 
   @override
-  List<Uid> get keys => map.keys;
+  List<Uid> get keys => replacements.keys;
 
   @override
-  void clear() => map.clear();
+  void clear() => replacements.clear();
 
   @override
   Uid remove(Object original) =>
-      (original is Uid) ? map.remove(original) : invalidUid(original);
+      (original is Uid) ? replacements.remove(original) : invalidUid(original);
 
   void initialize(Dataset ds) {
     final UI study = ds.lookup(kStudyInstanceUID);
-    map[study.uid] = new Uid();
+    replacements[study.uid] = new Uid();
     final UI series = ds.lookup(kSeriesInstanceUID);
-    map[series.uid] = new Uid();
+    replacements[series.uid] = new Uid();
     final UI instance = ds.lookup(kSOPInstanceUID);
-    map[instance.uid] = new Uid();
+    replacements[instance.uid] = new Uid();
   }
 
-  Dataset update(Dataset original, [Dataset updated]) {
+  Dataset convert(Dataset original, [Dataset updated]) {
     updated ??= original;
     for(var e0 in original.elements) {
       if (e0 is UI) {
         final uids = e0.uids;
         if (uids.isEmpty) continue;
 
-        List<String> newUids;
+        final newUids = <String>[];
         var same = true;
-        for(var i = 0; i < uids.length; i++) {
-          final replacement = map[e0.uid];
-           if (replacement == null) continue;
-           newUids ??= _copyUids(uids, i);
-           newUids[i] = replacement.asString;
+        for(var uid in uids) {
+          final newUid = replacements[uid];
+           if (newUid == null) continue;
+//           newUids ??= _copyUids(uids, i);
+           newUids.add(newUid.asString);
            same = false;
         }
 
@@ -77,7 +77,8 @@ class UidReplacementMap extends MapBase<Uid, Uid> {
     return updated;
   }
 
-  List<String> _copyUids(List<Uid> vList, int index) {
+  // TODO: convert the list here
+  List<String> _createReplacementList(List<Uid> vList, int index) {
     final nList = new List<String>(vList.length);
     for(var i = 0; i < index ; i++)
       nList[i] = vList[i].asString;

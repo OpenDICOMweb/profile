@@ -1,0 +1,24 @@
+
+Questions for ACR on Anonymization
+
+General
+
+1.  What hash function should be used (MD5?)
+
+Specific
+
+1.  What should the default value of n in blank(n) be?
+
+*   Process???
+
+2.  Hash and HashName
+    a. Does the algorithm in #24 have to be followed exactly? It currently is not the same.
+    b. Is the MaxWordsInput argument in #25 needed?
+    c. Should the ideographic and phonetic components of the PN be hashed?
+    d. What is the default length of hash strings if no MaxCharsOutput is specified
+    e. Should HashName be called HashValue
+    f. Should HashPid just be called Hash
+
+*  Does #26 work for any tag?
+
+- Handle require() at the dataset level

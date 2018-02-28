@@ -6,45 +6,45 @@
 
 import 'dart:io';
 
-import 'package:convert/data/test_files.dart';
-import 'package:convert/dicom.dart';
+import 'package:convert/convert.dart';
 import 'package:core/server.dart';
 import 'package:profile/profile.dart';
-import 'package:deid/dictionary.dart';
 
+import 'package:convert/data/test_files.dart';
 
-/// A Program that reads a [File], decodes it into a [RootByteDataset],
+// ignore_for_file: only_throw_errors
+
+/// A Program that reads a [File], decodes it into a [RootDataset],
 /// and then converts that into a [RootDataset].
 void main() {
   Server.initialize(name: 'profile/remove_test', level: Level.debug);
   // Edit this line
   final path = path0;
 
-  File f = toFile(path, mustExist: true);
-  log.debug2('Reading: $f');
-  final bRoot = BDReader.readFile(f, reUseBD: true);
-  log.debug('bRoot.isRoot: ${bRoot.isRoot}');
+  log.debug2('Reading: $path');
+  final bdRds = BDReader.readPath(path, reUseBD: true);
+  log.debug('bRoot.isRoot: ${bdRds.isRoot}');
 
   print('basicProfileRemoveCodes.length: ${basicProfileRemoveCodes.length}');
   print('basicProfile.removeCodes.length: ${BasicProfile.removeCodes.length}');
   print('basicProfile.removeCodes.length: ${BasicProfile.codes.length}');
-  final removeTargets = <BDElement>[];
-  final removeResults = <BDElement>[];
+  final removeTargets = <Element>[];
+  final removeResults = <Element>[];
 
-  print(bRoot.summary);
+  print(bdRds.summary);
   for (var code in basicProfileRemoveCodes) {
-    final results = bRoot.lookupAll(code);
+    final results = bdRds.lookupAll(code);
     if (results != null && results.isNotEmpty) removeTargets.addAll(results);
   }
   print('removeTargets: [${removeTargets.length}]$removeTargets');
 
   for (var code in basicProfileRemoveCodes) {
-    final results = bRoot.remove(code);
-    if (results != null && results.length != 0) removeResults.addAll(results);
+    final results = bdRds.delete(code);
+    if (results != null && results.isNotEmpty) removeResults.add(results);
   }
 
   for (var code in basicProfileRemoveCodes) {
-    final e = bRoot.lookup(code);
+    final e = bdRds.lookup(code);
     if (e != null) throw 'Element still present';
   }
 
@@ -58,10 +58,10 @@ void main() {
   }
 */
 
-  print(bRoot.summary);
+  print(bdRds.summary);
 
   print('Removed ${removeResults.length} elements removed:');
-  for (Element e in removeResults)
+  for (var e in removeResults)
     print('  ${e.info}');
 
 /*

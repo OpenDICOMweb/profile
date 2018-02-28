@@ -72,14 +72,14 @@ class Rule {
   int get argLength => args.length;
 
   Tag get sourceTag {
-    int val = int.parse(args[0], onError: (s) => null);
+    final val = int.parse(args[0], onError: (s) => null);
     return (val != null) ? PTag.lookupByCode(val) : null;
   }
 
 
   bool get isValidArgs {
-    String condition = args[1];
-    int nArgsRequired = conditionMap[condition];
+    final condition = args[1];
+    final nArgsRequired = conditionMap[condition];
     if ((nArgsRequired == null) || (nArgsRequired != argLength))
       return false;
     return true;

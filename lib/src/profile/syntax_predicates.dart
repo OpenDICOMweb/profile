@@ -12,18 +12,18 @@ const String pFunction = r'(@\w+\(\))';
 const String pValue = '($pFunction|$atId|$id|$integer|$pOther)';
 
 // Parameter expressions
-final parameterKeyRE = new RegExp(id);
-final parameterValueRE = new RegExp(pValue);
+final RegExp parameterKeyRE = new RegExp(id);
+final RegExp parameterValueRE = new RegExp(pValue);
 
 bool isValidParameterKey(String key) {
-  Match m = parameterKeyRE.firstMatch(key);
+  final m = parameterKeyRE.firstMatch(key);
   return ((m == null) || (m.end != key.length)) ? false : true;
 }
 
 bool isNotValidParameterKey(String key) => ! isValidParameterKey(key);
 
 bool isValidParameterValue(String value) {
-  Match m = parameterValueRE.firstMatch(value);
+  final m = parameterValueRE.firstMatch(value);
   return ((m == null) || (m.end != value.length)) ? false : true;
 }
 
@@ -32,14 +32,14 @@ bool isNotValidParameterValue(String key) => ! isValidParameterValue(key);
 
 void main() {
 
-  Match m = parameterKeyRE.firstMatch("@FOO");
-  if ((m == null) || (m.end != "@FOO".length)) {
+  var m = parameterKeyRE.firstMatch('@FOO');
+  if ((m == null) || (m.end != '@FOO'.length)) {
     print('Fail');
   } else {
     printMatch(m);
   }
 
-  m = parameterValueRE.firstMatch("FOO");
+  m = parameterValueRE.firstMatch('FOO');
   if (m == null) {
     print('Fail');
   } else {
@@ -48,8 +48,8 @@ void main() {
 }
 
 void printMatch(Match m) {
-  int count = m.groupCount;
+  final count = m.groupCount;
   print('count=$count');
-  for(int i=0; i < count; i++)
+  for(var i=0; i < count; i++)
       print('  m[$i] = "${m[i]}"');
 }

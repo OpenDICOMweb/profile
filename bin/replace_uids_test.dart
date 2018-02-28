@@ -19,22 +19,22 @@ void main() {
   // Edit this line
   final path = path0;
 
-  final f = toFile(path, mustExist: true);
-  log.debug2('Reading: $f');
-  final rbds = BDReader.readFile(f, reUseBD: true);
-  log..debug('rbds.isRoot: ${rbds.isRoot}')
-  ..info0(rbds.summary);
 
-  var rtds = new TagRootDataset();
-  rtds = convertDataset(rbds, rtds);
+  log.debug2('Reading: $path');
+  final bdRds = BDReader.readPath(path, reUseBD: true);
+  log..debug('rbds.isRoot: ${bdRds.isRoot}')
+  ..info0(bdRds.summary);
+
+  var tagRds = new TagRootDataset.empty();
+  tagRds = convertBDDSToTagDS(bdRds);
 
   final profile = new ProfileBase('foo', 'http:', null);
-  final map = profile.replaceUids(rtds);
+  final map = profile.replaceUids(tagRds);
   log
     ..debug('Map: $map')
     ..debug('replaced: ${profile.replacedElements}')
-    ..debug('study: ${rtds.lookup(kStudyInstanceUID).info}')
-    ..debug('series: ${rtds.lookup(kSeriesInstanceUID).info}')
-    ..debug('instance: ${rtds.lookup(kSOPInstanceUID).info}')
-    ..info0(rbds.summary);
+    ..debug('study: ${tagRds.lookup(kStudyInstanceUID).info}')
+    ..debug('series: ${tagRds.lookup(kSeriesInstanceUID).info}')
+    ..debug('instance: ${tagRds.lookup(kSOPInstanceUID).info}')
+    ..info0(bdRds.summary);
 }

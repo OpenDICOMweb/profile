@@ -1,0 +1,23 @@
+{
+  "Patient Name": "ABC^123^AB123^^",
+  "Patient ID": "ABC",
+  "Accession Number": "0",
+  "Study Date": "20160218",
+  "parameters": [
+    {
+      "Case Number": "55",   ; This will be the subject ID for anonymization
+      "Enrollment Date": "20140111",  This is the date that would be equal to 19600101 for calculations of this subjects visits
+      "Trial Number": "6688",
+      "Trial Name": "PHASE II STUDY OF 3-DEOXY-3-18F FLUOROTHYMIDINE (FLT) IN INVASIVE BREAST CNCR",
+      "Site Number": "4444",
+      "Site Name": "Basic Cancer Institute",
+      "Timepoint ID": ""
+      "Timepoint Description": "",
+      "Submission Type": "Clinical Trial",
+      "Additional Trial Input": "",
+      "Anonymization Profile": "Safe Harbor/Retain Patient Characteristics/Retain Safe Private",
+      "Validation Profile": "",
+      "User": "brian"
+    }
+  ]
+},

@@ -1,0 +1,1334 @@
+<head>
+  <title>profile_language.md</title>
+  <style>
+    /*
+    Copyright (c) Vladimir Schneider <vladimir.schneider@gmail.com>
+    adapted and tweaked from https://github.com/sindresorhus/github-markdown-css
+
+    Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+    The MIT License (MIT)
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+    */
+
+    /*
+     * Layout only CSS to ease maintenance of multiple color schemes
+     */
+
+    @font-face {
+      font-family: 'task-items';
+      src: url('file:/C:/Users/admin/AppData/Local/Temp/multimarkdown_taskitems.ttf');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    .container {
+      width: 980px;
+      margin: 0 auto;
+      padding-left: 10px;
+      float: left !important;
+    }
+
+    .wiki-container {
+      width: 830px;
+      margin: 0 auto;
+      padding-left: 20px;
+      float: left !important;
+    }
+
+    .wiki-body {
+      width: 700px;
+      margin-left: -20px;
+      padding-left: 20px;
+    }
+
+    .markdown-body,
+    .wiki-body {
+      overflow: hidden;
+      word-wrap: break-word;
+    }
+
+    #readme .markdown-body {
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      padding: 45px 38px 45px 38px;
+      word-wrap: break-word;
+    }
+
+    .boxed-group > h3, .boxed-group .heading {
+      border-bottom: 0;
+      border-radius: 3px 3px 0 0;
+      display: block;
+      font-size: 14px;
+      line-height: 17px;
+      margin: 0;
+      padding: 6px 10px 6px;
+    }
+
+    .boxed-group {
+      border-radius: 3px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .hljs {
+      display: block;
+      overflow-x: auto;
+      padding: 0.5em;
+      text-indent: 0;
+      -webkit-text-size-adjust: none;
+    }
+
+    a {
+      background-color: transparent;
+    }
+
+    a:active,
+    a:hover {
+      outline: 0;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+
+    del {
+      text-decoration: line-through;
+    }
+
+    img {
+      border: 0;
+    }
+
+    hr {
+      border: 0 none;
+      box-sizing: content-box;
+      height: 2px;
+      margin: 16px 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    hr:before {
+      content: "";
+      display: table;
+    }
+
+    hr:after {
+      clear: both;
+      content: "";
+      display: table;
+    }
+
+    pre {
+      overflow: auto;
+    }
+
+    var,
+    code,
+    kbd {
+      font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 12px;
+    }
+
+    pre {
+      margin-top: 0;
+      margin-bottom: 0;
+      font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+
+    code {
+      border-radius: 2px;
+      font-size: 85%;
+      margin: 0;
+      padding: 0.2em 0 0.2em 0;
+    }
+
+    var {
+      font-style: italic;
+    }
+
+    code:before,
+    code:after {
+      content: "\00a0";
+      letter-spacing: -0.2em;
+    }
+
+    pre > code {
+      background: transparent;
+      border: 0;
+      font-size: 100%;
+      margin: 0;
+      padding: 0;
+      white-space: pre;
+      word-break: normal;
+    }
+
+    .highlight {
+      margin-bottom: 16px;
+    }
+
+    .highlight pre,
+    pre {
+      border-radius: 3px;
+      font-size: 85%;
+      line-height: 1.45;
+      overflow: auto;
+      padding: 2px;
+    }
+
+    .highlight pre {
+      margin-bottom: 0;
+      word-break: normal;
+    }
+
+    pre {
+      word-wrap: normal;
+    }
+
+    pre code {
+      background-color: transparent;
+      border: 0;
+      display: inline;
+      line-height: inherit;
+      margin: 2px 12px 2px 12px;
+      max-width: initial;
+      overflow: initial;
+      padding: 0;
+      word-wrap: normal;
+    }
+
+    pre code:before,
+    pre code:after {
+      content: normal;
+    }
+
+    kbd {
+      border-radius: 3px;
+      display: inline-block;
+      font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-weight: 500;
+      line-height: 10px;
+      padding: 5px 5px 3px 5px;
+      vertical-align: middle;
+    }
+
+    input {
+      color: inherit;
+      font: inherit;
+      margin: 0;
+    }
+
+    html input[disabled] {
+      cursor: default;
+    }
+
+    input {
+      line-height: normal;
+    }
+
+    input[type="checkbox"] {
+      box-sizing: border-box;
+      padding: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    input {
+      font-family: Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+      font-size: 11px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:active {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-family: Helvetica, "Helvetica Neue", Arial, freesans, sans-serif;
+      line-height: 1.1;
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
+    }
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: Helvetica, "Helvetica Neue", Arial, freesans, sans-serif;
+      line-height: 1.1;
+      margin-bottom: 5px;
+      margin-top: 10px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+
+    h3 {
+      font-size: 14px;
+    }
+
+    h4 {
+      font-size: 12px;
+    }
+
+    h5 {
+      font-size: 11px;
+    }
+
+    h6 {
+      font-size: 10px;
+    }
+
+
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: bold;
+      line-height: 1.4;
+      margin-bottom: 16px;
+      margin-top: 1em;
+      position: relative;
+    }
+
+    h1 .octicon-link,
+    h2 .octicon-link,
+    h3 .octicon-link,
+    h4 .octicon-link,
+    h5 .octicon-link,
+    h6 .octicon-link {
+      display: none;
+      font-weight: normal;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    h1:hover .anchor,
+    h2:hover .anchor,
+    h3:hover .anchor,
+    h4:hover .anchor,
+    h5:hover .anchor,
+    h6:hover .anchor {
+      margin-left: -30px;
+      padding-left: 0;
+      text-decoration: none;
+    }
+
+    h1:hover .anchor .octicon-link,
+    h2:hover .anchor .octicon-link,
+    h3:hover .anchor .octicon-link,
+    h4:hover .anchor .octicon-link,
+    h5:hover .anchor .octicon-link,
+    h6:hover .anchor .octicon-link {
+      display: inline-block;
+    }
+
+    h1 {
+      font-size: 2.25em;
+      line-height: 1;
+      padding-bottom: 0.3em;
+    }
+
+    .wiki-container > h1 {
+      font-size: 30px;
+      line-height: 1.1;
+      font-weight: normal;
+    }
+
+    h1 .anchor {
+      line-height: 1;
+    }
+
+    h2 {
+      font-size: 1.75em;
+      line-height: 1.225;
+      padding-bottom: 0.3em;
+    }
+
+    h2 .anchor {
+      line-height: 1;
+    }
+
+    h3 {
+      font-size: 1.5em;
+      line-height: 1.43;
+    }
+
+    h3 .anchor {
+      line-height: 1.2;
+    }
+
+    h4 {
+      font-size: 1.25em;
+    }
+
+    h4 .anchor {
+      line-height: 1.2;
+    }
+
+    h5 {
+      font-size: 1em;
+    }
+
+    h5 .anchor {
+      line-height: 1.1;
+    }
+
+    h6 {
+      font-size: 1em;
+    }
+
+    h6 .anchor {
+      line-height: 1.1;
+    }
+
+    blockquote {
+      margin: 0;
+    }
+
+    dd {
+      margin-left: 0;
+    }
+
+    .octicon {
+      display: inline-block;
+      font: normal normal normal 28px/1 task-items;
+      text-decoration: none;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .taskitem {
+      display: inline-block;
+      font: normal normal normal 18px/1 task-items;
+      text-decoration: none;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .bookicon {
+      display: inline-block;
+      font: normal normal normal 20px/1 task-items;
+      text-decoration: none;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .octicon-link:before {
+      content: 'C';
+    }
+
+    .octicon-book:before {
+      content: 'B';
+    }
+
+    .markdown-body > *:first-child {
+      margin-top: 0 !important;
+    }
+
+    .markdown-body > *:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    a:not([href]) {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .anchor {
+      display: block;
+      left: 0;
+      margin-left: -30px;
+      padding-left: 30px;
+      padding-right: 6px;
+      position: absolute;
+      top: 0;
+    }
+
+    .anchor:focus {
+      outline: none;
+    }
+
+    blockquote,
+    ul,
+    ol,
+    dl,
+    table,
+    pre {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    /* loosely spaced list items that reflect the markdown source */
+    p {
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+
+    /* loosely spaced list items that duplicate quirky GFM implementation */
+    p {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+
+    ul,
+    ol {
+      padding: 0;
+    }
+
+    ol ol,
+    ul ol {
+      list-style-type: lower-roman;
+      text-indent: 0;
+    }
+
+    ul ul ol,
+    ul ol ol,
+    ol ul ol,
+    ol ol ol {
+      list-style-type: lower-alpha;
+      text-indent: 0;
+    }
+
+    li.task-list-item {
+      list-style-type: none;
+      text-indent: -0.78em;
+    }
+
+    li.task-list-item > p:first-child {
+      margin-left: 0;
+    }
+
+    li.task-list-item > p {
+      margin-left: 0.85em;
+    }
+
+    span.taskitem {
+      padding-right: 0.4em;
+    }
+
+    ul,
+    ol {
+      padding-left: 2em;
+      margin-top: 16px;
+    }
+
+    ul ul,
+    ul ol,
+    ol ol,
+    ol ul {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .task-list-item {
+      list-style-type: none;
+    }
+
+    .task-list-item + .task-list-item-checkbox {
+      margin-top: 3px;
+    }
+
+    .task-list-item input {
+      margin: 0 0.35em 0.25em -0.6em;
+      vertical-align: middle;
+    }
+
+    dl {
+      padding: 0;
+    }
+
+    dl dt {
+      font-size: 1em;
+      font-style: italic;
+      font-weight: bold;
+      margin-top: 16px;
+      padding: 0;
+    }
+
+    dl dd {
+      margin-top: 16px;
+      padding: 0 16px;
+    }
+
+    blockquote {
+      padding: 0 15px;
+    }
+
+    blockquote > :first-child {
+      margin-top: 0;
+    }
+
+    blockquote > :last-child {
+      margin-bottom: 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 10px;
+      display: block;
+      line-height: inherit !important;
+      overflow: auto;
+      word-break: normal;
+    }
+
+    table th {
+      font-weight: bold;
+    }
+
+    th,
+    td {
+      padding: 6px 10px 2px 10px !important;
+    }
+
+    img {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+  </style>
+  <style>
+    .container {
+      width: 50em;
+    }
+
+    .wiki-container {
+      width: 100%;
+    }
+
+    .wiki-body {
+      width: 100%;
+    }
+  </style>
+  <style>
+    /*
+    Copyright (c) Vladimir Schneider <vladimir.schneider@gmail.com>
+    adapted and tweaked from https://github.com/sindresorhus/github-markdown-css
+
+    Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+    The MIT License (MIT)
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+    */
+
+    /*
+     * default color scheme - light
+     * Colors and rendering only CSS to ease maintenance of multiple color schemes
+     */
+
+    .markdown-body,
+    .wiki-body {
+      /*font-family: Helvetica, Arial, freesans, sans-serif;*/
+      /*font-family: Arial, Helvetica, "Helvetica Neue", "Segoe UI", freesans, sans-serif;*/
+      font-family: Helvetica, Arial, "Helvetica Neue", "Segoe UI", freesans, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #333;
+    }
+
+    .boxed-group > h3, .boxed-group .heading {
+      background-color: #f5f5f5;
+      border: 1px solid #d8d8d8;
+    }
+
+    #readme .markdown-body {
+      background-color: transparent;
+      border: 1px solid #ddd;
+    }
+
+    #readme .wiki-body {
+      background-color: transparent;
+      border: none;
+    }
+
+    .focus-highlight {
+      border: solid rgba(255, 0, 255, 0.50) 1px !important;
+      background-color: rgba(255, 0, 255, 0.07) !important;
+      /*
+      padding: 4px;
+      margin: -5px;
+      */
+    }
+
+    thead tr.focus-highlight, thead tr.focus-highlight th {
+      border: solid rgba(160, 0, 160, 0.5) 2px !important;
+      background-color: rgba(160, 0, 160, 0.1) !important;
+      /*
+      padding: 4px;
+      margin: -5px;
+      */
+    }
+
+    tbody tr.focus-highlight {
+      border: solid rgba(255, 0, 255, 0.5) 2px !important;
+      background-color: rgba(255, 0, 255, 0.07) !important;
+      /*
+      padding: 4px;
+      margin: -5px;
+      */
+    }
+
+    img.local-only {
+      border: 2px solid #b0a803;
+    }
+
+    img.absent {
+      border: 2px solid #B00020;
+      color: #B00020;
+      /*font-weight: bold;*/
+    }
+
+    a {
+      color: #4078c0;
+    }
+
+    a.mail-link {
+      color: #aa33bb;
+    }
+
+    a.absent {
+      color: #B00020;
+    }
+
+    a.local-only {
+      color: #be8000;
+    }
+
+    a.page-anchor {
+      color: #000;
+    }
+
+    a.page-anchor:hover {
+      color: #4078c0;
+    }
+
+    abbr {
+      text-decoration: none;
+      border-bottom: 1px dashed #4078c0;
+    }
+
+    hr {
+      background-color: #e7e7e7;
+    }
+
+    h1 .octicon-link,
+    h2 .octicon-link,
+    h3 .octicon-link,
+    h4 .octicon-link,
+    h5 .octicon-link,
+    h6 .octicon-link {
+      color: #000;
+    }
+
+    h1,
+    h2 {
+      border-bottom: 1px solid #eee;
+    }
+
+    h6 {
+      color: #777;
+    }
+
+    blockquote {
+      border-left: 4px solid #ddd;
+      color: #777;
+    }
+
+    blockquote h1,
+    blockquote h2,
+    blockquote h3,
+    blockquote h4,
+    blockquote h5,
+    blockquote h6 {
+      color: #777;
+    }
+
+    th,
+    td {
+      border: 1px solid #dddddd;
+    }
+
+    table thead tr {
+      background-color: #f0f0f0;
+    }
+
+    table tbody tr {
+      background-color: #ffffff;
+    }
+
+    table tbody tr:nth-child(2n) {
+      background-color: #fafafa;
+    }
+
+    var,
+    code {
+      background-color: rgba(0, 0, 0, 0.06);
+      /*color: #B00020;*/
+    }
+
+    .highlight pre,
+    pre {
+      background-color: #f7f7f7;
+      border: 1px solid #f8f8f8;
+    }
+
+    pre code {
+      color: #000;
+    }
+
+    kbd {
+      background-color: #fcfcfc;
+      border: solid 1px #ccc;
+      box-shadow: inset 0 -1px 0 #bbb;
+      color: #555;
+    }
+
+    del {
+      /*text-decoration-color: #B00020;*/
+    }
+  </style>
+  <style>
+    /*
+
+    github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+    modified for idea default (c) Vladimir Schneider <vladimir.schneider@gmail.com>
+
+    */
+
+    .hljs {
+      color: #333;
+      /*background: #f8f8f8;*/
+      background: transparent;
+    }
+
+    .hljs-comment,
+    .diff .hljs-header {
+      color: #998;
+      font-style: italic;
+    }
+
+    .hljs-keyword,
+    .css .rule .hljs-keyword,
+    .hljs-winutils,
+    .nginx .hljs-title,
+    .hljs-subst,
+    .hljs-request,
+    .hljs-status {
+      color: #a71d5d;
+      /*font-weight: bold;*/
+    }
+
+    .hljs-number,
+    .hljs-hexcolor,
+    .ruby .hljs-constant {
+      color: #008080;
+    }
+
+    .hljs-string,
+    .hljs-tag .hljs-value,
+    .hljs-doctag,
+    .tex .hljs-formula {
+      color: #008000;
+    }
+
+    .hljs-title,
+    .hljs-id,
+    .scss .hljs-preprocessor {
+      color: #795da3;
+      /*font-weight: bold;*/
+    }
+
+    .hljs-list .hljs-keyword,
+    .hljs-subst {
+      font-weight: normal;
+    }
+
+    .hljs-class .hljs-title,
+    .hljs-type,
+    .vhdl .hljs-literal,
+    .tex .hljs-command {
+      color: #795da3;
+      font-weight: bold;
+    }
+
+    .hljs-tag,
+    .hljs-tag .hljs-title,
+    .hljs-rule .hljs-property,
+    .django .hljs-tag .hljs-keyword {
+      color: #000080;
+      font-weight: normal;
+    }
+
+    .hljs-attribute,
+    .hljs-variable,
+    .lisp .hljs-body,
+    .hljs-name {
+      color: #008080;
+    }
+
+    .hljs-regexp {
+      color: #009926;
+    }
+
+    .hljs-symbol,
+    .ruby .hljs-symbol .hljs-string,
+    .lisp .hljs-keyword,
+    .clojure .hljs-keyword,
+    .scheme .hljs-keyword,
+    .tex .hljs-special,
+    .hljs-prompt {
+      color: #795da3;
+    }
+
+    .hljs-built_in {
+      color: #0086b3;
+    }
+
+    .hljs-preprocessor,
+    .hljs-pragma,
+    .hljs-pi,
+    .hljs-doctype,
+    .hljs-shebang,
+    .hljs-cdata {
+      color: #999;
+      font-weight: bold;
+    }
+
+    .hljs-deletion {
+      background: #fdd;
+    }
+
+    .hljs-addition {
+      background: #dfd;
+    }
+
+    .diff .hljs-change {
+      background: #0086b3;
+    }
+
+    .hljs-chunk {
+      color: #aaa;
+    }
+  </style>
+  <script src="file:/C:/Users/admin/AppData/Local/Temp/multimarkdown_highlight.pack.js"></script>
+</head>
+<body>
+<div class="container">
+  <div id="readme" class="boxed-group">
+    <article class="markdown-body">
+      <strong>Open DICOM<em>web</em> Project</strong>
+      <h1 id="the-profile-language">
+        <a href="#the-profile-language" class="anchor">
+          <span class="octicon octicon-link"></span></a>Profile Definition
+      </h1>
+      <p>Profiles are defined by a JSON Object. The JSON Object is composed of
+        identifier/expression pairs, where the identifier is delimited by double
+        quotes.</p>
+      <h2><a href="#grammar" id="grammar" name="grammar" class="anchor"><span
+          class="octicon octicon-link"></span></a>Syntax</h2>
+      <p>The Profile language is defined by a grammar, which is written in using
+        ABNF, which is defined in <a href="https://tools.ietf.org/html/rfc5234">RFC5234</a>. This
+        grammar uses many of the core
+        syntax rules defined in <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">Appendix
+          B1</a>, which are reproduced for the
+        readers convenience in Appendix A of this document.</p>
+      <p>In addition, the following basic syntax rules are used throughout this
+        grammar. Similar to <a href="https://tools.ietf.org/html/rfc5234">RFC5234</a> basic rules
+        are in uppercase. These
+        typically resolve to terminal values in one evaluation step.</p>
+      <pre><code>BACKSPACE = %x08           ; backspace
+VTAB      = %x0B           ; vertical tab
+FORMFEED  = %x0C           ; form feed
+NEWLINE   = LF / CR LF     ; depends on the operating system
+OWS       = *WSP           ; optional whitespace
+DQ        = DQUOTE         ; short form of double quote
+GROUP     = &quot;0x&quot; 4HEXDIG   ; a DICOM group
+TAG       = &quot;0x&quot; 8HEXDIG   ; a DICOM Data Element Tag
+{         = &quot;{&quot;            ; syntactic sugar
+}         = &quot;}&quot;            ; ...
+</code></pre>
+      <h3 id="abnf-list-extension--rule"><a href="#abnf-list-extension--rule"
+                                            id="abnf-list-extension--rule"
+                                            name="abnf-list-extension--rule" class="anchor"><span
+          class="octicon octicon-link"></span></a>ABNF List Extension: #Rule</h3>
+      <p>A # syntax rule is an extension to the ABNF rules of <a
+          href="https://tools.ietf.org/html/rfc5234">RFC5234</a>. It is
+        used to improve readability. The &quot;#&quot; rule is similar to &quot;*&quot; and is used
+        to define comma-delimited lists of syntatic expressions or <code>sexp</code>.</p>
+      <p>The full form is:</p>
+      <pre><code>&lt;a&gt;*&lt;b&gt;sexp</code></pre>
+      <p>where &lt;a&gt; and &lt;b&gt; are optional decimal values, indicating at least
+        &lt;a&gt; and at most &lt;b&gt; occurrences of the sexp. Each sexp, except
+        the last, is separated from the next sexp with a comma (','). If zero
+        or one sexp are present then no commas are generated.</p>
+      <p>Default values are <code>a = 0</code> and <code>b = infinity</code> so that
+        <code>#&lt;sexp&gt;</code> allows any number, including zero; <code>1*&lt;sexp&gt;</code>
+        requires at least one; <code>3*3&lt;sexp&gt;</code> allows exactly 3; and
+        <code>1*2&lt;sexp&gt;</code> allows one or two.</p>
+      <blockquote>
+        <p>Note: this is different from the list extension rule defined in
+          <a href="https://tools.ietf.org/html/rfc7030">RFC7030</a>, which requires at least one
+          sexp.</p>
+      </blockquote>
+      <h2 id="expressions"><a href="#expressions" id="expressions" name="expressions"
+                              class="anchor"><span class="octicon octicon-link"></span></a>Expressions
+      </h2>
+      <p>There are two types of expressions: simple and general.</p>
+      <p>Simple expressions have the following syntax:</p>
+      <pre><code>sexp =  number/ identifier / string / array
+</code></pre>
+      <p>General expressions also includes environments and Profile Rules
+        (<code>prules</code>). They have the following syntax:</p>
+      <pre><code>exp =  sexp / environment / private-group / prules
+</code></pre>
+      <p>When evaluated, an expression computes a literal value, typically a
+        string.</p>
+      <h2 id="numbers"><a href="#numbers" id="numbers" name="numbers" class="anchor"><span
+          class="octicon octicon-link"></span></a>Numbers</h2>
+      <p>While JSON only allows a single type of number, the Profiler provides
+        additional number types that correspond to different DICOM Value
+        Representations (VR).</p>
+      <h3 id="integers"><a href="#integers" id="integers" name="integers" class="anchor"><span
+          class="octicon octicon-link"></span></a>Integers</h3>
+      <p>The general type of integers is <code>integer</code>. Integers are sub-devided
+        into signed and unsigned integers.</p>
+      <p>Unsigned integers are always non-negative and have no sign.
+        Unsigned integers have the prefix <code>uint</code> and trailing digits that
+        denote the maximum number of bits in a value of that type. There are 3
+        specific types of <code>uint</code>:</p>
+      <pre><code>uint8, uint16, uint32
+</code></pre>
+      <p>Signed integers have an optional sign. They have the prefix <code>int</code>
+        and trailing digits that denote the maximum number of bits in a value of
+        that type. There are 2 specific types of <code>int</code>:</p>
+      <pre><code>int16, int32
+</code></pre>
+      <h3 id="decimal-numbers"><a href="#decimal-numbers" id="decimal-numbers"
+                                  name="decimal-numbers" class="anchor"><span
+          class="octicon octicon-link"></span></a>Decimal Numbers</h3>
+      <p>The general type of decimal numbers is <code>decimal</code>. There are two
+        specific subtypes of decimal numbers:</p>
+      <pre><code>float32, float64
+</code></pre>
+      <h3 id="number-syntax"><a href="#number-syntax" id="number-syntax" name="number-syntax"
+                                class="anchor"><span class="octicon octicon-link"></span></a>Number
+        Syntax</h3>
+      <p><em>Numbers</em> have the following syntax:</p>
+      <pre><code>uint     =  1*DIGIT
+uint8    =  uint                    ; 8 bit unsigned integer
+uint16   =  uint                    ; 16 bit unsigned integer
+uint32   =  uint                    ; 32 bit unsigned integer
+
+SIGN     = &quot;-&quot; / &quot;+&quot;
+integer  =  [SIGN] uint
+int16    =  integer                 ; 16 bit signed integer
+int32    =  integer                 ; 32 bit signed integer
+
+EXPMARK  = &quot;E&quot; / &quot;e&quot;
+exponent =  EXPMARK [SIGN] uint  ;
+decimal  =  [SIGN] uint [&quot;.&quot;]
+decimal  =/ [SIGN] *DIGIT &quot;.&quot; uint [exponent]
+decimal  =/ [SIGN] uint [&quot;.&quot; *DIGIT] exponent
+
+float32  =  decimal                 ; 32 bit floating point number
+float64  =  decimal                 ; 32 bit floating point number
+</code></pre>
+      <p>The types with trailing digits specify the maximum number of bits in
+        their representation. If there are no trailing digits the type is general.</p>
+      <p>Before storing decimal values the Profiler will convert VRs of DS
+        into the following canonical string format:</p>
+      <pre><code>sign uint &quot;.&quot; uint &quot;E&quot; sign uint
+</code></pre>
+      <p>The <code>SIGN</code>, &quot;.&quot;, &quot;E&quot; (canonical exponent marker) and <code>uint</code>
+        shall be
+        present. <code>uint</code>s must have at least one digit, which may be
+        zero.</p>
+      <h2 id="identifier"><a href="#identifier" id="identifier" name="identifier"
+                             class="anchor"><span class="octicon octicon-link"></span></a>Identifier
+      </h2>
+      <p>An <em>Identifier</em> is a string that has at least one (initial) character.
+        The initial character may be an alphabetic or '_' character. Subsequent
+        characters may be alphabetic, numeric or '_'.</p>
+      <p>Identifiers are case insensitive. So, &quot;abc&quot;, &quot;aBc&quot;, and &quot;ABC&quot;
+        represent
+        the same identifier.</p>
+      <p>Identifiers have the following syntax:</p>
+      <pre><code>initial = ALPHA / &quot;_&quot;
+subsequent = initial / DIGIT
+identifier = initial *subsequent
+</code></pre>
+      <h3 id="string"><a href="#string" id="string" name="string" class="anchor"><span
+          class="octicon octicon-link"></span></a>String</h3>
+      <p>In general, the Profiler supports UTF-8 strings. However, all DICOM VRs
+        do not support UTF-8 strings, so the Profiler will ensure that only
+        valid strings are stored in elements.</p>
+      <p>The Profiler supports embedding expressions in strings, aka
+        <em>Interpolated Strings</em>. When the string is evaluated each embedded
+        expression is evaluated and the resulting values are converted (coerced)
+        into strings and replace the embedded expression the enclosing string.</p>
+      <p>An unescaped $ character in a string signifies the beginning of an
+        interpolated expression. The $ sign may be followed by either:</p>
+      <ul>
+        <li>a single identifier: <code>$id</code></li>
+        <li>a simple expression delimited by curly braces: <code>${ sexp }</code></li>
+      </ul>
+      <p>The form <code>$id</code> is equivalent to <code>${id}</code>. An interpolated string
+        <code>&quot;s1${e}s2&quot;</code> is equivalent to the concatenation of the strings
+        <code>&quot;s1&quot;</code>, <code>e.toString()</code> and <code>&quot;s2&quot;</code>.
+        Where <code>e.toString()</code>
+        is the result of evaluating <code>e</code> and converting it into a string.</p>
+      <p>A string is said to be raw or fully evaluated when it no longer contains
+        any escape sequences or interpolation expressions.</p>
+      <blockquote>
+        <p><em>Note</em>: The expression inside the interpolation could itself include
+          strings, which could again be interpolated recursively; however, the
+          Profiler does not support recursive interpolation.</p>
+      </blockquote>
+      <p>Strings can be composed of any UTF-8 visible code point except <code>&quot;</code>,
+        <code>$</code>, and <code>\</code>, or <code>NEWLINE</code>. These characters must be
+        escaped
+        using the <code>\</code> character. There are also character escapes
+        defined for certain control characters.</p>
+      <p>The following character escape sequences are defined:</p>
+      <pre><code>\&quot; = DQ
+\$ = &quot;$&quot;
+\\ = &quot;\&quot;
+\b = BACKSPACE
+\f = FORMFEED
+\n = NEWLINE
+\r = CR
+\t = TAB
+\v = VTAB
+</code></pre>
+      <p>There are also code point escapes, which allow code point values to be
+        embedded in strings. These are expressed using the following escape
+        sequences.</p>
+      <pre><code>\x 2HEXDIG
+\u ( 4HEXDIG / { 1*6HEXDIG } )
+</code></pre>
+      <p>The syntax for Strings is:</p>
+      <pre><code>; UTF-8 except &quot;, $, \ and control characters
+utf8 = %x32-33 / %x35 / %x37-91 / %x93-7E / %x0100-FFFF
+
+; Character and code point escape sequences
+esc-char = &quot;\&quot; (DQ / &quot;\&quot; / &quot;/&quot; / &quot;b&quot; / &quot;f&quot; / &quot;n&quot; / &quot;r&quot; / &quot;t&quot; / &quot;$&quot;)
+esc-cp   = &quot;\&quot; ( (&quot;x&quot; 2HEXDIG) / (&quot;u&quot; 4HEXDIG) / (&quot;u&quot; { 1*6HEXDIG } ) )
+escape   = &quot;\&quot; (esc-char / esc-cp)
+
+; UTF-8 code points
+codepoint = UTF8 / escape
+
+; String interpolation expressions
+iexp = &quot;$&quot; ( identifier / { exp } )
+
+; String (interpolated)
+string = DQ (*codepoint / iexp) DQ
+</code></pre>
+      <h3 id="arrays"><a href="#arrays" id="arrays" name="arrays" class="anchor"><span
+          class="octicon octicon-link"></span></a>Arrays</h3>
+      <p>Arrays have the following syntax:</p>
+      <pre><code>array = &quot;[&quot; #exp &quot;]&quot;
+</code></pre>
+      <p>where #exp denotes a comma separated list of zero or more expressions.</p>
+      <h3 id="private-groups"><a href="#private-groups" id="private-groups" name="private-groups"
+                                 class="anchor"><span class="octicon octicon-link"></span></a>Private
+        Groups</h3>
+      <p>Private Groups have the following syntax:</p>
+      <pre><code>private = { #group-def }
+group-def = creator &quot;:&quot; { #element }
+creator = DQ identifier DQ
+element = ptag &quot;:&quot; &quot;[&quot; vr, values &quot;]&quot;
+ptag = &quot;0x&quot; 4HEX
+vr = 2[A-Z]                ; where vr corresponds to a DICOM vr
+values = &quot;[&quot; #value &quot;]&quot;    ; an Array of one or more vales
+value = string / number
+</code></pre>
+      <h3 id="environment"><a href="#environment" id="environment" name="environment"
+                              class="anchor"><span class="octicon octicon-link"></span></a>Environment
+      </h3>
+      <p>An environment is similar to a JSON object that contains a set of
+        variable definitions, which are also known as identifier/string pairs.
+        The variable name is an <code>identifier</code>, and in JSON it must be
+        delimited by double quotes. A quote delimited identifier is called
+        called a <code>qidentifier</code>.</p>
+      <p>Each variable identifier in an environment must be unique. The variables
+        defined in an environment are used in evaluating Profile Rules.</p>
+      <p>Environments have the following syntax:</p>
+      <pre><code>env = { #var-def}
+var-def= OWS qidentifier OWS &quot;:&quot; OWS string OWS
+qidentifier = DQ identifier DQ
+</code></pre>
+      <blockquote>
+        <p>Note: DQ denotes a literal double quote character <code>&quot;</code>, and
+          <code>OWS</code> is optional whitespace.</p>
+      </blockquote>
+      <h3 id="rules"><a href="#rules" id="rules" name="rules" class="anchor"><span
+          class="octicon octicon-link"></span></a>Rules</h3>
+      <p>Each Profile defines a set of Rules using a syntax that is similar to a
+        JSON object. Each Rule has 1) a <em>target</em> Data Element, which is denoted
+        by its DICOM keyword, and 2) a value expression that generates a value
+        for the target element. The target and value expression are often
+        referred to as a target/value pair. Each target in a Profile must be
+        unique and must refer to a DICOM Data Element keywords defined in PS3.6,
+        Table 1-1.</p>
+      <blockquote>
+        <p>TODO: Should we allow tags as well as keywords to be the target?</p>
+      </blockquote>
+      <p>The set of Rules for a Profile are defined using the following syntax:</p>
+      <pre><code>rules = { #rule-pair }
+rule-pair = OWS target OWS &quot;:&quot; 1*(OWS rule)
+target = DQ keyword DQ       ; DICOM Data Element keyword
+rule = identifier / string / function / string-list / number-list
+function = identifier &quot;(&quot; #arg &quot;)&quot;
+arg = sexp
+string-list = &quot;[&quot; #string &quot;]&quot;
+number-list = &quot;[&quot; #number &quot;]&quot;
+</code></pre>
+      <p>The rules in a Profile are evaluated in the tag order of the
+        <code>target</code> elements. Each rule is fully evaluated before the of
+        following rule is evaluated.</p>
+      <p>Each Rule is evaluated in left to rigt order as follows:</p>
+      <ol>
+        <li>
+          <p>Variables are resolved against the current environment and are
+            replaced by their values. If the value of a variable is a non-raw
+            string, then the string is evaluated against the environment until
+            it is fully resolved and the value is the fully resolved string. If
+            the string cannot be fully resolved the Profiler will throw an
+            error.</p>
+        </li>
+        <li>
+          <p>Non-raw strings are evaluated against the current environment until
+            they they are fully resolved.</p>
+        </li>
+        <li>
+          <p>Expressions in Lists are evaluated in left to right order until they
+            are fully resolved.</p>
+        </li>
+        <li>
+          <p>Function arguments are evaluated in left to right order until they
+            are resolved. The evaluation order for optional arguments is the
+            order in which they are defined by their function.</p>
+        </li>
+        <li>
+          <p>If the function defines an argument that is a <code>source</code> element,
+            and it is not present, then the value of the <code>target</code> element,
+            if any, is used as the value of the <em>source</em>. If the <code>target</code>
+            element does not exist or has no value. Its value is the <code>&quot;&quot;</code>for
+            string VRs, and <code>null</code> for all other VRs.</p>
+        </li>
+        <li>
+          <p>Functions are evaluated once their arguments are all evaluated.</p>
+        </li>
+        <li>
+          <p>If the resulting value is a sequence of strings possibly separated
+            by optional whitespace (OWS). The strings are concatenated together
+            and the resulting string becomes the value of the rule.</p>
+        </li>
+        <li>
+          <p>If the resulting values are separated by commas, the value of the
+            rule is the list of values.</p>
+        </li>
+        <li>
+          <p>Finally, the resulting value is stored in the <code>target</code> element
+            if it exists. If it does not exist the <code>target</code> may be created
+            if the first function specifies that non-present elements shall be
+            created.</p>
+        </li>
+      </ol>
+      <p>Once all the rules have been evaluated and applied to their
+        <code>target</code>s, The application of the Profile is complete.</p>
+      <h2 id="appendica-a"><a href="#appendica-a" id="appendica-a" name="appendica-a"
+                              class="anchor"><span class="octicon octicon-link"></span></a>Appendica
+        A</h2>
+      <p>The grammar defined in this document uses the following core rules from
+        <a href="https://tools.ietf.org/html/rfc5234">RFC5234</a>.</p>
+      <pre><code>ALPHA  = %x41-5A / %x61-7A
+BIT    = &quot;0&quot; / &quot;1&quot;
+CHAR   = %x01-7F
+CR     = %x0D            ; carriage return
+CRLF   = CR LF           ; Internet standard newline
+CTL    = %x00-1F / %x7F  ; control characters
+DIGIT  = %x30-39
+DQUOTE = %x22            ; The double quote character
+HTAB   = %x09            ; horizontal tab
+LF     = %x0A            ; linefeed
+LWSP   = *(WSP / CRLF WSP)
+OCTET  = %x00-FF         ; 8 bits of data
+SP     = %x20
+VCHAR  = %x21-7E         ; visible (printing) characters
+WSP    = SP / HTAB       ; white space
+</code></pre>
+
+    </article>
+  </div>
+</div>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>

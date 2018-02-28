@@ -5,8 +5,7 @@
 // See the AUTHORS file for other contributors.
 
 export 'package:profile/src/compare.dart';
-export 'package:profile/src/action.dart';
-export 'package:profile/src/dictionary/basic_profile.dart';
+export 'package:profile/src/dictionary/action.dart';
 export 'package:profile/src/dictionary/basic_profile_options.dart';
 export 'package:profile/src/dictionary/clean_descriptors.dart';
 export 'package:profile/src/dictionary/clean_graphics.dart';

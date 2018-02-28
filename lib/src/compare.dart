@@ -6,6 +6,8 @@
 
 import 'package:core/core.dart';
 
+// ignore_for_file: only_throw_errors
+
 class Entry {
   int order;
   Element a;
@@ -107,9 +109,9 @@ class DSComparison {
         print('zero length items: $item0, $item1');
       }
       for (var i = 0; i < list0.length; i++) {
-        print('\tlist0[$i]: ${list0[i]}');
-        print('\tlist1[$i]: ${list1[i]}');
-        compareElements(list0[i], list1[i]);
+        print('\tlist0[$i]: ${list0.elementAt(i)}');
+        print('\tlist1[$i]: ${list1.elementAt(i)}');
+        compareElements(list0.elementAt(i), list1.elementAt(i));
       }
     } else {
       print('Item: unequal lengths:\n\t$item0\n\t$item1');

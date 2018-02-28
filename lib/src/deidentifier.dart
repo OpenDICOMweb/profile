@@ -11,9 +11,9 @@
 // See the AUTHORS file for other contributors.
 
 import 'package:core/core.dart';
+
 import 'package:profile/src/trial.dart';
 import 'package:profile/src/dictionary/action.dart';
-import 'package:profile/src/dictionary/basic_profile.dart';
 
 // In static frequency order
 /*
@@ -49,9 +49,11 @@ List<DeIdentifer> get actionsList => [
   addIfMissing
 ];
 */
-final List<String> defaultStringValue = ['Open DICOMweb DeIdentifier: Dummy Value'];
+final List<String> defaultStringValue = [
+  'Open DICOMweb DeIdentifier: Dummy Value'
+];
 
-const List<int> basicProfileRemoveCodes = const [
+const List<int> basicProfileRemoveCodes = const <int>[
   0x00001000, 0x00080024, 0x00080025, 0x00080034, 0x00080035, 0x00080081,
   0x00080092, 0x00080094, 0x00080096, 0x00080201, 0x00081030, 0x0008103e,
   0x00081040, 0x00081048, 0x00081049, 0x00081050, 0x00081052, 0x00081060,
@@ -120,7 +122,7 @@ class DeIdentifier<V> {
     });
     */
     //replaceUids(ds);
-    ds.removePrivate();
+    ds.deleteAllPrivate();
 
     final bpList = BasicProfile.map.values.toList(growable: false);
 
@@ -190,42 +192,44 @@ class DeIdentifier<V> {
     return true;
   }
 
-  Element replaceUid(Dataset ds, int code, Trial trial, Uid newUid) {
-    print('DS: $ds, tag: ${Tag.toDcm(code)}, values=$newUid');
+  List<Uid> replaceUid(Dataset ds, int code, Trial trial, Uid newUid) {
+    print('DS: $ds, tag: ${dcm(code)}, values=$newUid');
     final tag = PTag.lookupByCode(code);
     if (tag.vr != VR.kUI) return null;
     switch (code) {
       case kStudyInstanceUID:
         log.debug('seriesUid: $deIdStudyUid');
-        return ds.replaceUid(code, [deIdStudyUid]);
+        return ds.replaceUids(code, [deIdStudyUid]);
       case kSeriesInstanceUID:
         print('seriesUid: $deIdSeriesUid');
-        return ds.replaceUid(code, [deIdSeriesUid]);
+        return ds.replaceUids(code, [deIdSeriesUid]);
       case kSOPInstanceUID:
         print('instanceUid: $deIdInstanceUid');
-        return ds.replaceUid(code, [deIdInstanceUid]);
+        return ds.replaceUids(code, [deIdInstanceUid]);
       case kMediaStorageSOPInstanceUID:
         print('MediaStorageUid: $deIdInstanceUid');
-        return ds.replaceUid(code, [deIdInstanceUid]);
+        return ds.replaceUids(code, [deIdInstanceUid]);
       default:
         //TODO: what other Uids have to be replace
-        ds.replaceUid(code, [newUid]);
+        ds.replaceUids(code, [newUid]);
     }
-    print(' replaceUidsByCode: tag${Tag.toDcm(code)} values=$newUid');
-    return ds.replaceUid(code, [newUid]);
+    print(' replaceUidssByCode: tag${dcm(code)} values=$newUid');
+    return ds.replaceUids(code, [newUid]);
   }
 
-  void retain(Dataset ds, Tag tag, Trial trial, [List<V> values]) => ds.retain(tag.code);
+  void retain(Dataset ds, Tag tag, Trial trial, [List<V> values]) =>
+     // ds.retain(tag.code);
+      1 + 3;
 
   Element dummy(Dataset ds, int code, Trial trial, [List<V> values]) =>
       ds.update(code, values);
 
   Element zeroOrDummy(Dataset ds, int code, Trial trial, [List<V> values]) =>
       //TODO: fix when we know ATypes
-      ds.update<V>(code, values);
+      ds.update(code, values);
 
   Element clean(Dataset ds, int tag, Trial trial, [List<V> values]) =>
-      ds.update<V>(tag, values);
+      ds.update(tag, values);
 
   Element kZorD(Dataset ds, int tag, Trial trial, [List values]) =>
       //TODO: fix when we know ATypes
@@ -246,7 +250,7 @@ class DeIdentifier<V> {
   Element kXorZorU(Dataset ds, int code, Trial trial, [List<Uid> values]) =>
       //TODO: fix when we know ATypes
       // return  ds.replaceUidsByCode(code, values, trial);
-      ds.replaceUid(code, values);
+      ds.updateUid(code, values);
 
   bool addIfMissing(Dataset ds, List<String> values) =>
       //TODO: finish

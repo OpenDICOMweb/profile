@@ -9,32 +9,24 @@
 
 import 'package:core/core.dart';
 
-import 'package:profile/src/dictionary/basic_profile.dart';
+import 'package:profile/src/dictionary/action.dart';
 
 /// Clean Structured Content Option to the Basic De-Identification Profile.
-class CleanStructuredContentOption extends BasicProfile {
-  final String keyword;
-//  final int tag;
-  final VR vr;
-//  final String action;
+class CleanStructuredContentOption {
+  final Tag tag;
+  final String name;
+  final Function action;
 
-  const CleanStructuredContentOption(
-      this.keyword, Tag tag, this.vr, String name,
-      [Function action])
-      : super(tag, name, action);
+  const CleanStructuredContentOption(this.tag, this.name,
+      [this.action = Action.clean]);
 
   static CleanStructuredContentOption lookup(int tag) => map[tag];
 
-  static const CleanStructuredContentOption kAcquisitionContextSequence = const
-  CleanStructuredContentOption(
-      'AcquisitionContextSequence',
-      PTag.kAcquisitionContextSequence,
-      VR.kSQ,
-      'C');
+  static const CleanStructuredContentOption kAcquisitionContextSequence =
+      const CleanStructuredContentOption(PTag.kAcquisitionContextSequence, 'C');
 
-  static const CleanStructuredContentOption kContentSequence = const
-  CleanStructuredContentOption(
-      'ContentSequence', PTag.kContentSequence, VR.kSQ, 'C');
+  static const CleanStructuredContentOption kContentSequence =
+      const CleanStructuredContentOption(PTag.kContentSequence, 'C');
 
   static const List<int> retain = const [];
 

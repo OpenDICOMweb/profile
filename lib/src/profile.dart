@@ -14,8 +14,7 @@ typedef Element Updater(Element element);
 
 enum ProfileFormat { text, json, xml }
 
-/// [K] is the type of key.
-class ProfileBase<K> {
+class ProfileBase {
   /// The name of this profile.
   final String name;
 
@@ -77,13 +76,13 @@ class ProfileBase<K> {
       this.errors);
 
   Map<String, String> replaceUids(Dataset ds, [Map<Uid, Uid> uidMap]) {
-    final idedStudy = ds.lookup(kStudyInstanceUID);
+//    final idedStudy = ds.lookup(kStudyInstanceUID);
     final study = new Uid();
     final series = new Uid();
     final instance = new Uid();
     final map = (uidMap == null) ? <String, String>{} : uidMap;
 
-    final uids = <Uid>[study, series, instance];
+//    final uids = <Uid>[study, series, instance];
 
     // Create Map of old: new
     var old = getUid(ds, kStudyInstanceUID);
@@ -109,11 +108,14 @@ class ProfileBase<K> {
 
     print('replaced: $replacedElements');
 
-    var eList = walkSequences(ds, kStudyInstanceUID, (e) => e.update(<Uid>[study]));
+    var eList =
+        walkSequences(ds, kStudyInstanceUID, (e) => e.update(<Uid>[study]));
     replacedElements.addAll(eList);
-    eList = walkSequences(ds, kSeriesInstanceUID, (e) => e.update(<Uid>[series]));
+    eList =
+        walkSequences(ds, kSeriesInstanceUID, (e) => e.update(<Uid>[series]));
     replacedElements.addAll(eList);
-    eList = walkSequences(ds, kSOPInstanceUID, (e) => e.update(<Uid>[instance]));
+    eList =
+        walkSequences(ds, kSOPInstanceUID, (e) => e.update(<Uid>[instance]));
     replacedElements.addAll(eList);
 
     return map;
@@ -130,7 +132,7 @@ class ProfileBase<K> {
     return results;
   }
 
-  List<Element> walkSequence(Dataset ds, SQ sq, int code, ElementConverter f,
+  List<Element> walkSequence(Dataset ds, SQ sq, int code, Updater f,
       {bool recursive = true, bool required = false}) {
     final results = <Element>[];
     for (Dataset item in sq.items) {
@@ -162,13 +164,16 @@ class ProfileBase<K> {
             ' the keepTags list.');
   }
 
-  bool isInRetainedGroup(int code) => groupsToRetain.contains(Group.fromTag(code));
+  bool isInRetainedGroup(int code) =>
+      groupsToRetain.contains(Tag.toGroup(code));
 
   bool isInRetainedElements(int code) => keyToRetain.contains(code);
 
-  bool isRetained(int code) => isInRetainedGroup(code) || isInRetainedElements(code);
+  bool isRetained(int code) =>
+      isInRetainedGroup(code) || isInRetainedElements(code);
 
-  List<Element> removeGroups(Dataset ds, {bool recursive = true, bool required = false}) {
+  List<Element> removeGroups(Dataset ds,
+      {bool recursive = true, bool required = false}) {
     List<Element> eList;
     for (var group in groupsToRemove) {
       if (groupsToRetain.contains(group)) {
@@ -176,7 +181,7 @@ class ProfileBase<K> {
         continue;
       }
       for (var e in ds.elements) {
-        if (Group.fromTag(e.code) == group) {
+        if (Tag.toGroup(e.code) == group) {
           eList = ds.deleteAll(e.code, recursive: recursive);
         }
       }
@@ -194,7 +199,8 @@ class ProfileBase<K> {
     return eList;
   }
 
-  List<Element> removeAll(Dataset ds, {bool recursive = true, bool required = false}) {
+  List<Element> removeAll(Dataset ds,
+      {bool recursive = true, bool required = false}) {
     List<Element> eList;
     for (var code in keysToRemove)
       eList = remove(ds, code, recursive: recursive, required: required);
@@ -205,12 +211,13 @@ class ProfileBase<K> {
   List<Element> noValue(Dataset ds, int code,
       {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
-    final eList = ds.noValuesAll(code, recursive: recursive);
+    final eList = ds.noValuesAll(code);
     removedElements.addAll(eList);
     return eList;
   }
 
-  List<Element> noValuesAll(Dataset ds, {bool recursive = true, bool required = false}) {
+  List<Element> noValuesAll(Dataset ds,
+      {bool recursive = true, bool required = false}) {
     List<Element> eList;
     for (var code in keysToNoValues)
       eList = noValue(ds, code, recursive: recursive, required: required);
