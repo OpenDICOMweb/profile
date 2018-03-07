@@ -142,7 +142,7 @@ class Action {
   /// Replace with a non-zero length UID that is internally consistent
   /// within a set of Instances';
   static List<Uid> replaceUids(Dataset ds, Tag tag, [Iterable<Uid> values]) =>
-      ds.replaceUids(tag.code, values);
+      ds.replaceUid(tag.code, values);
 
   /// Z unless D is required to maintain
   /// IOD conformance (Type 2 versus Type 1)';

@@ -87,35 +87,35 @@
       "value": "@hashname(SpacingBetweenSlices,5)"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "@hash(TableHeight,2)"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "@hashptid(3,ConvolutionKernel)"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "@initials(NameOfPhysiciansReadingStudy)"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "@always()@date()"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "@require()"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "@value(ImagedNucleus)"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "@append()AA"
     },
 	{
-      "tag": 0x12345678,
+      "tag": "12345678",
       "value": "RESET/22222/11111"
     }	
   ]

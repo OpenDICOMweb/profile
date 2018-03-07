@@ -199,22 +199,22 @@ class DeIdentifier<V> {
     switch (code) {
       case kStudyInstanceUID:
         log.debug('seriesUid: $deIdStudyUid');
-        return ds.replaceUids(code, [deIdStudyUid]);
+        return ds.replaceUid(code, [deIdStudyUid]);
       case kSeriesInstanceUID:
         print('seriesUid: $deIdSeriesUid');
-        return ds.replaceUids(code, [deIdSeriesUid]);
+        return ds.replaceUid(code, [deIdSeriesUid]);
       case kSOPInstanceUID:
         print('instanceUid: $deIdInstanceUid');
-        return ds.replaceUids(code, [deIdInstanceUid]);
+        return ds.replaceUid(code, [deIdInstanceUid]);
       case kMediaStorageSOPInstanceUID:
         print('MediaStorageUid: $deIdInstanceUid');
-        return ds.replaceUids(code, [deIdInstanceUid]);
+        return ds.replaceUid(code, [deIdInstanceUid]);
       default:
         //TODO: what other Uids have to be replace
-        ds.replaceUids(code, [newUid]);
+        ds.replaceUid(code, [newUid]);
     }
-    print(' replaceUidssByCode: tag${dcm(code)} values=$newUid');
-    return ds.replaceUids(code, [newUid]);
+    print(' replaceUidsByCode: tag${dcm(code)} values=$newUid');
+    return ds.replaceUid(code, [newUid]);
   }
 
   void retain(Dataset ds, Tag tag, Trial trial, [List<V> values]) =>
