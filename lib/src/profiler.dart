@@ -3,17 +3,11 @@
 // that can be found in the LICENSE file.
 // Original author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
+//
+import 'dart:convert' as cvt;
 
-import 'dart:convert';
+import 'package:core/core.dart';
 
-import 'package:dcm_convert/byte_convert.dart';
-import 'package:system/system.dart';
-import 'package:uid/uid.dart';
-import 'package:tag/tag.dart';
-import 'package:element/tag_element.dart';
-import 'package:dataset/tag_dataset.dart';
-
-import 'profiles/basic.dart';
 import 'profile_report.dart';
 import 'subject.dart';
 
@@ -21,8 +15,8 @@ typedef Element Updater(Element element);
 
 enum ProfileFormat { text, json, xml }
 
-/// [K] is the type of key.
-class Profiler<K> {
+
+class Profiler {
   /// The name of this profile.
   final String name;
 
@@ -38,7 +32,7 @@ class Profiler<K> {
   final Map<String, RegExp> parameters;
 
   //make this profile
-  final BasicProfile profile;
+  final Profile profile;
 
   final ProfileReport report;
 
@@ -49,9 +43,9 @@ class Profiler<K> {
   ///Fix: make this constant
   Profiler(this.name, String url, this.profile, this.subject, this.parameters)
       : url = Uri.parse(url),
-        // globals = new GlobalRule(),
+        // globals =  GlobalRule(),
         // this.profile
-        report = new ProfileReport(name, url, subject),
+        report =  ProfileReport(name, url, subject),
         comments = {},
         //   rules = [],
         errors = {};
@@ -75,7 +69,9 @@ class Profiler<K> {
     checkRequiredElements(rds);
     processGroupsToDelete(rds);
     processKeysToDelete(rds);
-    replaceUids(rds, );
+    replaceUids(
+      rds,
+    );
     replaceDates(rds);
     processPatient(rds);
     processKeysToBlank(rds);
@@ -92,9 +88,9 @@ class Profiler<K> {
   /// Ensures that no groups are on both the [profile].groupsToRetain and
   /// [profile]groupsToRemove.[List]s.
   bool checkRetainRemoveGroupsConflict() {
-    var conflicts =
-        _checkForListConflicts(profile.groupsToRetain, profile.groupsToDelete);
-    if (conflicts != null && conflicts.length != 0) {
+    final conflicts =
+        _checkForListConflicts(profile.groupsToRetain, profile.groupsToRemove);
+    if (conflicts != null && conflicts.isNotEmpty) {
       log.error('The following groups have conflicts in the '
           'retain and remove Lists: $conflicts');
       report.groupRetainDeleteConflicts.addAll(conflicts);
@@ -106,7 +102,8 @@ class Profiler<K> {
   /// Ensures that no groups are on both the [profile].keysToRetain and
   /// [profile].keysToRemove [List]s.
   bool checkRetainRemoveKeysConflict() {
-    final conflicts = _checkForListConflicts(profile.keysToRetain, profile.keysToDelete);
+    final conflicts =
+        _checkForListConflicts(profile.keysToRetain, profile.keysToRemove);
     if (conflicts != null && conflicts.isNotEmpty) {
       log.error('The following _keys_ have conflicts in the '
           'retain and remove Lists: $conflicts');
@@ -118,7 +115,7 @@ class Profiler<K> {
 
   // Returns a [List<int>] of conflicting values.
   List<int> _checkForListConflicts(List<int> retain, List<int> remove) {
-    List<int> conflicts = <int>[];
+    final conflicts = <int>[];
     for (var key in retain) if (remove.contains(key)) conflicts.add(key);
     return conflicts;
   }
@@ -127,13 +124,13 @@ class Profiler<K> {
   List<Element> processGroupsToDelete(Dataset ds,
       {bool recursive = true, bool required = false}) {
     List<Element> eList;
-    for (var group in profile.groupsToDelete) {
+    for (var group in profile.groupsToRemove) {
       if (profile.groupsToRetain.contains(group)) {
         log.error('Tried to remove retainedGroup(${hex16(group)})');
         continue;
       }
       for (var e in ds.elements) {
-        if (Group.fromTag(e.code) == group) {
+        if (Tag.toGroup(e.code) == group) {
           ds.remove(e.code);
           report.deleted.add(e);
         }
@@ -145,16 +142,18 @@ class Profiler<K> {
   }
 
   int count = 0;
+
   /// Delete all Elements in the [keysToDelete] [List].
   List<Element> processKeysToDelete(Dataset ds,
       {bool recursive = true, bool required = false, int depth = 0}) {
-    for (var code in profile.keysToDelete)
+    for (var code in profile.keysToRemove)
       _delete(ds, code, recursive: recursive, required: required);
 
     for (var e in ds.elements.toList()) {
       if (e is SQ) {
         print('$depth sq: $e');
         for (Dataset item in e.values) {
+
           processKeysToDelete(item, depth: depth++);
         }
       }
@@ -165,9 +164,10 @@ class Profiler<K> {
 
   //Enhancement: code should become key
   /// delete the Element corresponding to [code].
-  Element _delete(Dataset ds, int code, {bool recursive = true, bool required = false}) {
+  Element _delete(Dataset ds, int code,
+      {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
-    Element e = ds.delete(code);
+    final e = ds.delete(code);
     if (e != null) {
       report.deletedElements.add(e);
       count++;
@@ -176,10 +176,10 @@ class Profiler<K> {
     return e;
   }
 
-  List<Element> processdeleteAllPrivate(Dataset ds,
-                                    {bool recursive = true, bool required = false, int depth = 0}) {
-    int i = 0;
-    for (Element e in ds.elements.toList()) {
+  List<Element> processDeleteAllPrivate(Dataset ds,
+      {bool recursive = true, bool required = false, int depth = 0}) {
+    var i = 0;
+    for (var e in ds.elements.toList()) {
       if (e.isPrivate) {
         _delete(ds, e.code);
         print('$i private: $e');
@@ -190,11 +190,10 @@ class Profiler<K> {
     return report.deletedElements;
   }
 
-  void normalizeDate(Element be, String enrollment, Dataset tagDS) {
-    if (be.vrCode == VR.kDA.code) {
-      //    print('\nByteE: ${e.info}');
-      report.replacedElements.add(be);
-      DA te = ByteReader.makeTagElement(be);
+  void normalizeDate(Element e, Date enrollment, Dataset tagDS) {
+    if (e.vrCode == VR.kDA.code) {
+      report.replacedElements.add(e);
+      DA te = TagElement.fromBytes(e.bytes, tagDS);
       te = te.normalize(enrollment);
       print('Normal: ${te.date}');
       print('Normal DA: $te');
@@ -202,16 +201,16 @@ class Profiler<K> {
     }
   }
 
-  Map<String, String> replaceUids(Dataset oldDS, [Dataset tagDS, Map<Uid, Uid>
-  uidMap]) {
-    Uid study = new Uid();
-    Uid series = new Uid();
-    Uid instance = new Uid();
-    tagDS = (tagDS == null) ? new RootDatasetTag() : tagDS;
-    Map<String, String> map = (uidMap == null) ? <String, String>{} : uidMap;
+  Map<String, String> replaceUids(Dataset oldDS,
+      [Dataset tagDS, Map<Uid, Uid> uidMap]) {
+    final study =  Uid();
+    final series =  Uid();
+    final instance =  Uid();
+    final ds = (tagDS == null) ?  TagRootDataset.empty() : tagDS;
+    final map = (uidMap == null) ? <String, String>{} : uidMap;
 
-    // Create Map of old: new
-    String old = getUid(oldDS, kStudyInstanceUID);
+    // Create Map of old:
+    var old = getUid(oldDS, kStudyInstanceUID);
     map[old] = study.asString;
     old = getUid(oldDS, kSeriesInstanceUID);
     map[old] = series.asString;
@@ -219,51 +218,46 @@ class Profiler<K> {
     map[old] = instance.asString;
 
     // Replace Study UID
-    var oldE =
-        oldDS.replaceUid(kStudyInstanceUID, study, required: true);
+    var oldE = oldDS.updateUid(kStudyInstanceUID, [study], required: true);
     report.replacedElements.add(oldE);
     // Replace Series UID
-    oldE = oldDS.replaceUid(kSeriesInstanceUID, [series],
-        required: true);
+    oldE = oldDS.updateUid(kSeriesInstanceUID, [series], required: true);
     report.replacedElements.add(oldE);
     // Replace Instance UID
-    oldE = oldDS.replaceUid(kSOPInstanceUID, [instance],
-        required: true);
+    oldE = oldDS.updateUid(kSOPInstanceUID, [instance], required: true);
     report.replacedElements.add(oldE);
 
     print('replaced: $oldE');
 
-    List<Element> eList =
-        walkSequences(oldDS, kStudyInstanceUID, (Element e) => e.update([study]));
+    var eList = walkSequences(oldDS, kStudyInstanceUID, study);
     report.replacedElements.addAll(eList);
-    eList = walkSequences(oldDS, kSeriesInstanceUID, (e) => e.update([series]));
+    eList = walkSequences(oldDS, kSeriesInstanceUID, series);
     report.replacedElements.addAll(eList);
-    eList = walkSequences(oldDS, kSOPInstanceUID, (e) => e.update([instance]));
+    eList = walkSequences(oldDS, kSOPInstanceUID, instance);
     report.replacedElements.addAll(eList);
-
     return map;
   }
 
-  List<Element> walkSequences(Dataset ds, int code, ElementConverter f,
+  List<Element> walkSequences(Dataset ds, int code, Uid uid,
       {bool recursive = true, bool required = false}) {
-    List<Element> results = [];
-    for (Element e in ds.elements) {
-      if (e.isSequence) {
-        results.addAll(walkSequence(ds, e as SequenceMixin, code, f));
+    final results = <Element>[];
+    for (var e in ds.elements) {
+      if (e is SQ) {
+        results.addAll(walkSequence(ds, e, code, uid));
       }
     }
     return results;
   }
 
-  List<Element> walkSequence(Dataset ds, SequenceMixin sq, int code, ElementConverter f,
+  List<Element> walkSequence(Dataset ds, SQ sq, int code, Uid uid,
       {bool recursive = true, bool required = false}) {
-    List<Element> results = [];
+    final results = <Element>[];
     for (Dataset item in sq.items) {
-      for (Element e in item.elements) {
-        if (e.isSequence) {
-          results.addAll(walkSequence(ds, e as SequenceMixin, code, f));
+      for (var e in item.elements) {
+        if (e is SQ) {
+          results.addAll(walkSequence(ds, e, code, uid));
         } else if (e.code == code) {
-          item[code] = f(e);
+          item[code] = e.update(e);
           results.add(e);
         }
       }
@@ -278,7 +272,7 @@ class Profiler<K> {
   void replaceUid(int code, Uid uid) {}
 
   String getUid(Dataset ds, int code) {
-    var e = ds.lookup(code);
+    final e = ds.lookup(code);
     if (e == null) return elementNotPresentError(code);
     return e.value;
   }
@@ -290,17 +284,18 @@ class Profiler<K> {
   bool processKeysToBlank(Dataset rds) {}
 
   bool isInRetainedGroup(int code) =>
-      profile.groupsToRetain.contains(Group.fromTag(code));
+      profile.groupsToRetain.contains(group(code));
 
   bool isInRetainedElements(int code) => profile.keysToRetain.contains(code);
 
-  bool isRetained(int code) => isInRetainedGroup(code) || isInRetainedElements(code);
+  bool isRetained(int code) =>
+      isInRetainedGroup(code) || isInRetainedElements(code);
 
   List<Element> processNoValue(Dataset ds, int code,
       {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
 
-    for (var code in profile.keysToZero) {
+    for (var code in BasicProfile.keysToZero) {
       final e = ds.noValues(code);
       if (e != null) report.deletedElements.add(e);
     }
@@ -321,13 +316,13 @@ class Profiler<K> {
 
 /*
     Map<String, dynamic> get map => {
-        "name": name,
-        "path": url,
-        "parameters": parameters,
-        //  "global": globalMap,
- //       "rules": rules,
-        "comments": comments,
-        "errors": errors
+        'name': name,
+        'path': url,
+        'parameters': parameters,
+        //  'global': globalMap,
+ //       'rules': rules,
+        'comments': comments,
+        'errors': errors
     };
 */
 
@@ -341,7 +336,7 @@ class Profiler<K> {
 
   RegExp lookup(String key) => parameters[key];
 
-  bool isVariable(String v) => v[0] == "@";
+  bool isVariable(String v) => v[0] == '@';
 
   bool isNotVariable(String v) => !isVariable(v);
 
@@ -353,12 +348,12 @@ class Profiler<K> {
   }
 
   bool comment(int lineNo, String line) {
-    comments["$lineNo"] = "$line";
+    comments['$lineNo'] = '$line';
     return true;
   }
 
   bool error(int lineNo, String msg) {
-    errors["$lineNo"] = "$msg";
+    errors['$lineNo'] = '$msg';
     return false;
   }
 
@@ -371,13 +366,13 @@ class Profiler<K> {
 */
 
   String get json => '''{
-    "@type": "Clinical Study Profile",
-    "name": "$name",
-    "path": "$url",
-    "parameters": ${JSON.encode(parameters)},
-    "rules": \$rulesToJson,
-    "comments": ${JSON.encode(comments)},
-    "errors": ${JSON.encode(errors)}
+    '@type': 'Clinical Study Profile',
+    'name': '$name',
+    'path': '$url',
+    'parameters': ${cvt.json.encode(parameters)},
+    'rules': \$rulesToJson,
+    'comments': ${cvt.json.encode(comments)},
+    'errors': ${cvt.json.encode(errors)}
 }''';
 
   String format([ProfileFormat format]) {
@@ -386,9 +381,9 @@ class Profiler<K> {
         return json;
       case ProfileFormat.text:
         //TODO:
-        return "Text is not yet supported.";
+        return 'Text is not yet supported.';
       case ProfileFormat.xml:
-        return "XML is not yet supported.";
+        return 'XML is not yet supported.';
       default:
         return json;
     }
@@ -404,20 +399,20 @@ class Profiler<K> {
 /* TODO: finish
   static ProfileBase parse(String s) {
     Map map = JSON.decode(s);
-    return new Profile._(
-        map["name"],
-        map["url"],
-        map["trial"],
-//            map["globals"],
-//            map["trialMap"],
-        map["parameters"],
-        map["retainGroups"],
-        map["deleteGroups"],
-        map["retainTags"],
-        map["deleteTags"],
-        map["updateMap"],
-        map["comments"],
-//            map["rules"],
-        map["errors"]);
+    return  Profile._(
+        map['name'],
+        map['url'],
+        map['trial'],
+//            map['globals'],
+//            map['trialMap'],
+        map['parameters'],
+        map['retainGroups'],
+        map['deleteGroups'],
+        map['retainTags'],
+        map['deleteTags'],
+        map['updateMap'],
+        map['comments'],
+//            map['rules'],
+        map['errors']);
   }*/
 }

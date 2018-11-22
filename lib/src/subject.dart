@@ -4,12 +4,12 @@
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
-import 'package:date_time/date_time.dart';
+import 'package:core/core.dart';
 
 class SubjectDB {
   final List<TrialSubject> db;
 
-  SubjectDB(List<TrialSubject> subjects) : db = new List.from(subjects, growable: false);
+  SubjectDB(List<TrialSubject> subjects) : db =  List.from(subjects, growable: false);
 
   TrialSubject operator [](int i) => db[i];
 
@@ -17,8 +17,8 @@ class SubjectDB {
 
   String get json {
     var out = '[\n';
-    List<String> sList = <String>[];
-    for (int i = 0; i < length; i++) sList.add(db[i].json);
+    final sList = <String>[];
+    for (var i = 0; i < length; i++) sList.add(db[i].json);
     out += sList.join(',\n');
     return out += '\n]\n';
   }

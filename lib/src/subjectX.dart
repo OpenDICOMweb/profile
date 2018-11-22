@@ -3,17 +3,15 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
+//
+import 'dart:convert' as cvt;
 
-import 'dart:convert';
-
-import 'package:dataset/dataset.dart';
-import 'package:date_time/date_time.dart';
-import 'package:system/system.dart';
+import 'package:core/core.dart';
 
 class SubjectDB {
   final List<Subject> db;
 
-  SubjectDB(List<Subject> subjects) : db = new List.from(subjects, growable: false);
+  SubjectDB(List<Subject> subjects) : db =  List.from(subjects, growable: false);
 
   Subject operator [](int i) => db[i];
 
@@ -21,8 +19,8 @@ class SubjectDB {
 
   String get json {
     var out = '[\n';
-    List<String> sList = <String>[];
-    for (int i = 0; i < length; i++) sList.add(db[i].json);
+    final sList = <String>[];
+    for (var i = 0; i < length; i++) sList.add(db[i].json);
     out += sList.join(',\n');
     return out += '\n]\n';
   }
@@ -203,25 +201,25 @@ Additional Trial Input: "$additionalTrialInput",
   "Anonymization Profile": "$anonymizationProfile",
   "Validation Profile": "$validationProfile",
   "User": "$user"
-  "Parameters": ${JSON.encode(parameters)}
+  "Parameters": ${cvt.json.encode(parameters)}
   }''';
 
   bool standardModifications(Dataset rds) {
     /// Required Modifications
-    rds.replace(kInstanceCoercionDateTime, [DcmDateTime.now.dcm]);
-    rds.update(kPatientName, [name]);
-    rds.update(kPatientID, [id]);
+    rds..replace(kInstanceCoercionDateTime, [DcmDateTime.now.dcm])
+    ..update(kPatientName, <String>[name])
+    ..update(kPatientID, <String>[id]);
     normalize(rds, kPatientBirthDate);
-    rds.update(kClinicalTrialSubjectID, [id]);
-    rds.update(kAccessionNumber, [accession]);
-    rds.update(kStudyDate, [studyDate]);
-    rds.update(kClinicalTrialProtocolID, [trialNumber]);
-    rds.update(kClinicalTrialProtocolName, [id]);
-    rds.update(kClinicalTrialSiteID, [siteNumber]);
-    rds.update(kClinicalTrialSiteName, [siteNumber]);
-    rds.update(kClinicalTrialTimePointID, [timepointID]);
-    rds.update(kClinicalTrialTimePointID, [timepointID]);
-    rds.update(kClinicalTrialTimePointDescription, [timepointDescription]);
+    rds..update(kClinicalTrialSubjectID, <String>[id])
+    ..update(kAccessionNumber, <String>[accession])
+    ..update(kStudyDate, <Date>[studyDate])
+    ..update(kClinicalTrialProtocolID, <String>[trialNumber])
+    ..update(kClinicalTrialProtocolName, <String>[id])
+    ..update(kClinicalTrialSiteID, <String>[siteNumber])
+    ..update(kClinicalTrialSiteName, <String>[siteNumber])
+    ..update(kClinicalTrialTimePointID, <String>[timepointID])
+    ..update(kClinicalTrialTimePointID, <String>[timepointID])
+    ..update(kClinicalTrialTimePointDescription, <String>[timepointDescription]);
 
     return true;
   }
@@ -229,11 +227,11 @@ Additional Trial Input: "$additionalTrialInput",
   // - add definitions to constants
 
   //TODO: explain normalization int ReadMe.
-  /// Returns [true] if the Element corresponding to code was _normalized_.
+  /// Returns _true_ if the Element corresponding to code was _normalized_.
   bool normalize(Dataset rds, int code) {
-    String oDate = rds.getString(code);
+    final oDate = rds.getString(code);
     if (oDate == null) return false;
-    String nDate = Date.normalizeString(oDate, enrollmentDate);
+    final nDate = Date.normalizeString(oDate, enrollmentDate);
     /// TODO: add replaceByCode to Dataset
     rds.replace(code, [nDate]);
     return true;

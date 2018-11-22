@@ -3,74 +3,76 @@
 // that can be found in the LICENSE file.
 // Original author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
-import 'dart:convert';
+//
+import 'dart:convert' as cvt;
 import 'dart:io';
 
-import 'package:date_time/date_time.dart';
-import 'package:profile/profile.dart';
+import 'package:core/server.dart';
+import 'package:profile/profiler.dart';
 
 void main() {
   const path = 'C:/odw/sdk/profile/submission_set.json';
 
-  File file = new File(path);
-  var source = file.readAsStringSync();
-  Map<String, List<Map<String, String>>> submissionSet = JSON.decode(source);
+  final file =  File(path);
+  final source = file.readAsStringSync();
+  final Map<String, List<Map<String, String>>> submissionSet =
+      cvt.json.decode(source);
 
-  List<Map<String, String>> sets = submissionSet["submissionSets"];
+  final sets = submissionSet['submissionSets'];
   print('${sets.runtimeType} length: ${sets.length}');
 
 //  countSubmissionSet(sets);
-  SubjectDB subjects = parseSubmissionSet(sets);
+  final subjects = parseSubmissionSet(sets);
 //  for (int i = 0; i < subjects.length; i++) print('[$i]: ${subjects[i].json}');
   print('${subjects.json}');
 
-  File outFile = new File('C:/odw/sdk/profile/lib/data/submission_set.json');
-  outFile.writeAsStringSync(subjects.json);
+   File('C:/odw/sdk/profile/lib/data/submission_set.json')
+    ..writeAsStringSync(subjects.json);
 }
 
 SubjectDB parseSubmissionSet(List<Map<String, String>> sets) {
-  List<TrialSubject> subjects = <TrialSubject>[];
-  int i = 0;
+  final subjects = <TrialSubject>[];
+  var i = 0;
   for (Map set in sets) {
     i++;
 //     print('$i set: $set');
-    TrialSubject subject = makeSubject(i, set);
+    final subject = makeSubject(i, set);
 //    print('Subject: $subject');
     subjects.add(subject);
   }
 //  print('Subject Count: ${subjects.length}');
-  return new SubjectDB(subjects);
+  return  SubjectDB(subjects);
 }
 
-TrialSubject makeSubject(int index, Map data) {
-  var name = data["Patient Name"];
-  var id = data["Patient ID"];
-  var enrollmentDate = Date.parse("Enrollment Date");
-  var accession = data["Accession Number"];
-  var studyDate = data["Study Date"];
-  List pList = data["parameters"];
-  Map subjectMap = pList[0];
-  var parameters = makeParameters(index, subjectMap);
-  return new TrialSubject(name, id, enrollmentDate, accession, studyDate, parameters);
+TrialSubject makeSubject(int index, Map<String, Object> data) {
+  final name = data['Patient Name'];
+  final id = data['Patient ID'];
+  final enrollmentDate = Date.parse('Enrollment Date');
+  final accession = data['Accession Number'];
+  final studyDate = data['Study Date'];
+  final Map<String, Object> pList = data['parameters'];
+  final subjectMap = pList[0];
+  final parameters = makeParameters(index, subjectMap);
+  return  TrialSubject(
+      name, id, '$enrollmentDate', accession, studyDate, parameters);
 }
 
-Parameters makeParameters(int index, Map map) {
-  int caseNumber = index;
-  String enrollmentDate = map["Enrollment Date"];
-  String trialNumber = map["Trial Number"];
-  String trialName = map["Trial Name"];
-  String siteNumber = map["Site Number"];
-  String siteName = map["Site Name"];
-  String timepointID = map["Timepoint ID"];
-  String timepointDescription = map["Timepoint Description"];
-  String submissionType = map["Submission Type"];
-  String additionalTrialInput = map["Additional Trial Input"];
-  String anonymizationProfile = map["Anonymization Profile"];
-  String validationProfile = map["Validation Profile"];
-  String user = map["User"];
+Parameters makeParameters(int index, Map<String, String> map) {
+  final caseNumber = index;
+  final enrollmentDate = map['Enrollment Date'];
+  final trialNumber = map['Trial Number'];
+  final trialName = map['Trial Name'];
+  final siteNumber = map['Site Number'];
+  final siteName = map['Site Name'];
+  final timepointID = map['Timepoint ID'];
+  final timepointDescription = map['Timepoint Description'];
+  final submissionType = map['Submission Type'];
+  final additionalTrialInput = map['Additional Trial Input'];
+  final anonymizationProfile = map['Anonymization Profile'];
+  final validationProfile = map['Validation Profile'];
+  final user = map['User'];
 
-  return new Parameters(
+  return  Parameters(
       caseNumber,
       enrollmentDate,
       trialNumber,
@@ -86,18 +88,18 @@ Parameters makeParameters(int index, Map map) {
       user);
 }
 
-void countSubmissionSet(List<Map<String, String>> sets) {
-  Map<String, int> toplevel = <String, int>{};
-  Map<String, int> parameters = <String, int>{};
+void countSubmissionSet(List<Map<String, List>> sets) {
+  final toplevel = <String, int>{};
+  final parameters = <String, int>{};
 
-  for (Map set in sets) {
+  for (var set in sets) {
     set.forEach((key, value) {
-      if (key == "parameters") {
+      if (key == 'parameters') {
         for (String s in value[0].keys) {
           if (parameters[s] == null) {
             parameters[s] = 1;
           } else {
-            int count = parameters[s];
+            var count = parameters[s];
             count++;
             parameters[s] = count;
           }
@@ -106,7 +108,7 @@ void countSubmissionSet(List<Map<String, String>> sets) {
         if (toplevel[key] == null) {
           toplevel[key] = 1;
         } else {
-          int count = toplevel[key];
+          var count = toplevel[key];
           count++;
           toplevel[key] = count;
         }

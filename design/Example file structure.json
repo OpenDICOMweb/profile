@@ -1,0 +1,122 @@
+{
+  "parameters": {
+    "DATEINC": 0,
+    "KEY": 0,
+    "PREFIX": "Basic",
+    "SPONSOR": 0,
+    "SUFFIX": "Basic",
+    "TRIAL": "BasicTrial",
+    "UIDROOT": "2.16.840.1.114274.1818",
+	"TRIAD": 3
+  },
+  "rules": [
+    {
+      "tag": "12345678",
+      "value": "value"
+    },
+	{
+      "tag": "12345678",
+      "value": "@param(@TRIAD)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@add('ACR')"
+    },
+	{
+      "tag": "12345678",
+      "value": "@contents(EchoTime)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@contents(AccessionNumber,[0-5])"
+    },
+	{
+      "tag": "12345678",
+      "value": "@contents(Manufacturer,[A-F],ACVB)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@empty()"
+    },
+	{
+      "tag": "12345678",
+      "value": "@modifydate(this,1,1,1)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@modifydate(this,5,9,22,20151)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@hash(ImageType)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@hashuid(1.2,ReferringPhysiciansName)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@remove()"
+    },
+	{
+      "tag": "12345678",
+      "value": "@keep()"
+    },
+	{
+      "tag": "12345678",
+      "value": "@truncate(ElementName,2)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@truncate(ElementName,2)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@param(@CaseNo)^@param(@SiteNo)^@param(@TrialNo)"
+    },
+    {
+      "tag": "12345678",
+      "value": "@param(@CaseNo)"
+    },
+	{
+      "tag": "12345678",
+      "value": "@process()"
+    },
+	{
+      "tag": "12345678",
+      "value": "@hashname(SpacingBetweenSlices,5)"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "@hash(TableHeight,2)"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "@hashptid(3,ConvolutionKernel)"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "@initials(NameOfPhysiciansReadingStudy)"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "@always()@date()"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "@require()"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "@value(ImagedNucleus)"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "@append()AA"
+    },
+	{
+      "tag": 0x12345678,
+      "value": "RESET/22222/11111"
+    }	
+  ]
+}

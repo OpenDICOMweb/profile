@@ -3,8 +3,8 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu> - 
 // See the AUTHORS file for other contributors.
-
-import 'package:element/element.dart';
+//
+import 'package:core/core.dart';
 
 import 'subject.dart';
 
@@ -36,6 +36,6 @@ class ProfileReport {
   bool deletedAllPrivateElements = false;
   bool deletedSafePrivateElements = false;
 
-  ProfileReport(this.name, String url, this.subject) : url = new Uri.file(url);
+  ProfileReport(this.name, String url, this.subject) : url =  Uri.file(url);
 
 }

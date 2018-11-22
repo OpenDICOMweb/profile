@@ -10,33 +10,27 @@
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
-
 //import 'package:deid/profile.dart';
 //import 'package:deid/dictionary.dart';
-import 'package:dataset/tag_dataset.dart';
-import 'package:element/element.dart';
-import 'package:system/system.dart';
-import 'package:tag/tag.dart';
-import 'package:uid/uid.dart';
 
-import 'package:profile/src/trial.dart';
-import 'package:profile/src/profiles/basic.dart';
+import 'package:core/core.dart';
+import 'package:profile/src/dictionary/action.dart';
 
 // In static frequency order
 /*
-Map<String, DeIdentifer> actions = {
-  "X": remove,
-  "U": replaceUid,
-  "Z": zeroOrDummy,
-  "XorD": XorD,
-  "XorZ": XorZ,
-  "XorZorD": XorZorD,
-  "D": dummy,
-  "ZorD": ZorD,
-  "XorZorU": XorZorU,
-  "K": retain,
-  "C": clean,
-  "A": addIfMissing
+Map<String, DeIdentifier> actions = {
+  'X': remove,
+  'U': replaceUid,
+  'Z': zeroOrDummy,
+  'XorD': XorD,
+  'XorZ': XorZ,
+  'XorZorD': XorZorD,
+  'D': dummy,
+  'ZorD': ZorD,
+  'XorZorU': XorZorU,
+  'K': retain,
+  'C': clean,
+  'A': addIfMissing
 };
 */
 // In static frequency order
@@ -57,7 +51,7 @@ List<DeIdentifer> get actionsList => [
 ];
 */
 final List<String> defaultStringValue = [
-  "Open DICOMweb DeIdentifier: Dummy Value"
+  'Open DICOMweb DeIdentifier: Dummy Value'
 ];
 
 const List<int> basicProfileRemoveCodes = const [
@@ -100,9 +94,9 @@ class DeIdentifier {
   Trial trial;
 
   //TODO: make this work on Study
-  String deIdStudyUid = Uid.randomString();
-  String deIdSeriesUid = Uid.randomString();
-  String deIdInstanceUid = Uid.randomString();
+  Uid deIdStudyUid =  Uid();
+  Uid deIdSeriesUid =  Uid();
+  Uid deIdInstanceUid =  Uid();
   Map<int, List> valueMap;
   Map<String, Function> globalActions;
   Map<String, Function> elementActions;
@@ -116,7 +110,8 @@ class DeIdentifier {
 
   Dataset fmi(Dataset fmi) {
     print('FMI: $fmi');
-    replaceUid(fmi, kMediaStorageSOPInstanceUID, trial, deIdInstanceUid);
+    replaceUid(
+        fmi, kMediaStorageSOPInstanceUID, trial, deIdInstanceUid);
     return fmi;
   }
 
@@ -129,57 +124,57 @@ class DeIdentifier {
     });
     */
     //replaceUids(ds);
-    ds.deletePrivate();
+    ds.deleteAllPrivate();
 
-    List<BasicProfile> bpList = BasicProfile.map.values.toList(growable: false);
+    final bpList = BasicProfile.map.values.toList(growable: false);
 
-    for (BasicProfile bp in bpList) {
-      Tag tag = bp.tag;
+    for (var bp in bpList) {
+      final tag = bp.tag;
 
       if (tag == null) continue;
-      int code = tag.code;
+      final code = tag.code;
       //  print('begin: $a');
       //DeIdentifier f = actions[bp.action];
       switch (bp.name) {
-        case "X":
+        case 'X':
           remove(ds, code, trial);
           break;
-        case "U":
+        case 'U':
           print('U: tag=${tag.dcm}');
-          replaceUid(ds, code, trial, Uid.randomString());
+          replaceUid(ds, code, trial,  Uid());
           break;
-        case "Z":
-          zeroOrDummy(ds, code, trial);
+        case 'Z':
+          zeroOrDummy<String>(ds, code, trial);
           break;
-        case "XD":
-          kXorD(ds, code, trial);
+        case 'XD':
+          kXorD<String>(ds, code, trial);
           break;
-        case "XZ":
-          kXorZ(ds, code, trial);
+        case 'XZ':
+          kXorZ<String>(ds, code, trial);
           break;
-        case "XZD":
-          kXorZorD(ds, code, trial);
+        case 'XZD':
+          kXorZorD<String>(ds, code, trial);
           break;
-        case "D":
-          dummy(ds, code, trial);
+        case 'D':
+          dummy<String>(ds, code, trial);
           break;
-        case "ZD":
-          kZorD(ds, code, trial);
+        case 'ZD':
+          kZorD<String>(ds, code, trial);
           break;
-        case "XZU":
+        case 'XZU':
           kXorZorU(ds, code, trial);
           break;
-        case "K":
-          retain(ds, tag, trial);
+        case 'K':
+   //       retain(ds, tag, trial);
           break;
-        case "C":
-          clean(ds, code, trial);
+        case 'C':
+          clean<String>(ds, code, trial);
           break;
-        // case "A":
+        // case 'A':
         //   addIfMissing(ds, code, trial);
         //   break;
         default:
-          throw new InvalidActionError(bp.action);
+          throw  InvalidActionError(bp);
       }
       //  print('end $a');
     }
@@ -187,7 +182,7 @@ class DeIdentifier {
   }
 
   bool remove(Dataset ds, int tag, Trial trial, [List values]) {
-    Element a = ds[tag];
+    final a = ds[tag];
     if (a == null) return false;
     if (a is SQ) return removeSequence(a, tag, trial);
     ds.remove(tag);
@@ -195,90 +190,93 @@ class DeIdentifier {
   }
 
   bool removeSequence(SQ sq, int tag, Trial trial) {
-    if ((sq.items != null) || (sq.items.length != 0)) {
-      for (TagItem item in sq.items) {
+    if ((sq.items != null) || (sq.items.isNotEmpty)) {
+
+/*      for (var item in sq.items) {
         call(item);
       }
+     */
     }
     return true;
   }
 
-  Element replaceUid(Dataset ds, int code, Trial trial, String newUid) {
-    print('DS: $ds, tag: ${Tag.toDcm(code)}, values=$newUid');
-    Tag tag = PTag.lookupByCode(code);
+  Iterable<Uid> replaceUid(Dataset ds, int code, Trial trial, Uid uid) {
+    print('DS: $ds, tag: ${dcm(code)}, values=$uid');
+    final tag = PTag.lookupByCode(code);
     if (tag.vr != VR.kUI) return null;
     switch (code) {
       case kStudyInstanceUID:
         log.debug('seriesUid: $deIdStudyUid');
-        return ds.replaceUidsByCode(code, [deIdStudyUid]);
+        return ds.replaceUids(code, <Uid>[deIdStudyUid]);
       case kSeriesInstanceUID:
         print('seriesUid: $deIdSeriesUid');
-        return ds.replaceUidsByCode(code, [deIdSeriesUid]);
+        return ds.replaceUids(code, [deIdSeriesUid]);
       case kSOPInstanceUID:
         print('instanceUid: $deIdInstanceUid');
-        return ds.replaceUidsByCode(code, [deIdInstanceUid]);
+        return ds.replaceUids(code, [deIdInstanceUid]);
       case kMediaStorageSOPInstanceUID:
         print('MediaStorageUid: $deIdInstanceUid');
-        return ds.replaceUidsByCode(code, [deIdInstanceUid]);
+        return ds.replaceUids(code, [deIdInstanceUid]);
       default:
         //TODO: what other Uids have to be replace
-        ds.replaceUidsByCode(code, [newUid]);
+        ds.replaceUids(code, <Uid>[uid]);
     }
-    print(' replaceUidsByCode: tag${Tag.toDcm(code)} values=$newUid');
-    return ds.replaceUidsByCode(code, [newUid]);
+    print(' replaceUidsByCode: tag${dcm(code)} values=$uid');
+    return ds.replaceUids(code, [uid]);
   }
 
-  void retain(Dataset ds, Tag tag, Trial trial, [List values]) =>
+/*
+  void retain(Dataset ds, Tag tag, Trial trial, [Iterable values]) =>
       ds.retain(tag);
+*/
 
-  Element dummy(Dataset ds, int code, Trial trial, [List values]) =>
-      ds.replaceCode(code, values);
+  Iterable<V> dummy<V>(Dataset ds, int code, Trial trial,
+          [Iterable<V> values]) =>
+      ds.replace(code, values);
 
-  Element zeroOrDummy(Dataset ds, int code, Trial trial, [List values]) {
-    //TODO: fix when we know ATypes
-    return ds.replaceCode(code, values);
-  }
+  Iterable<V> zeroOrDummy<V>(Dataset ds, int code, Trial trial,
+          [Iterable<V> values]) =>
+      //TODO: fix when we know ATypes
+      ds.replace(code, values);
 
-  Element clean(Dataset ds, int tag, Trial trial, [List values]) {
-    return ds.replaceCode(tag, values);
-  }
+  Iterable<V> clean<V>(Dataset ds, int tag, Trial trial,
+          [Iterable<V> values]) =>
+      ds.replace<V>(tag, values);
 
-  Element kZorD(Dataset ds, int tag, Trial trial, [List values]) {
-    //TODO: fix when we know ATypes
-    return dummy(ds, tag, trial, values);
-  }
+  Iterable<V> kZorD<V>(Dataset ds, int tag, Trial trial,
+          [Iterable<V> values]) =>
+      //TODO: fix when we know ATypes
+      dummy(ds, tag, trial, values);
 
-  Element kXorZ(Dataset ds, int tag, Trial trial, [List values]) {
-    //TODO: fix when we know ATypes
-    return zeroOrDummy(ds, tag, trial, values);
-  }
+  Iterable<V> kXorZ<V>(Dataset ds, int tag, Trial trial,
+          [Iterable<V> values]) =>
+      //TODO: fix when we know ATypes
+      zeroOrDummy(ds, tag, trial, values);
 
-  Element kXorD(Dataset ds, int tag, Trial trial, [List values]) {
-    //TODO: fix when we know ATypes
-    return dummy(ds, tag, trial, values);
-  }
+  Iterable<V> kXorD<V>(Dataset ds, int tag, Trial trial,
+          [Iterable<V> values]) =>
+      //TODO: fix when we know ATypes
+      dummy(ds, tag, trial, values);
 
-  Element kXorZorD(Dataset ds, int tag, Trial trial, [List values]) {
-    //TODO: fix when we know ATypes
-    return dummy(ds, tag, trial, values);
-  }
+  Iterable<V> kXorZorD<V>(Dataset ds, int tag, Trial trial,
+          [Iterable<V> values]) =>
+      //TODO: fix when we know ATypes
+      dummy(ds, tag, trial, values);
 
-  Element kXorZorU(Dataset ds, int code, Trial trial, [List values]) {
-    //TODO: fix when we know ATypes
-    // return  ds.replaceUidsByCode(code, values, trial);
-    return ds.replaceUidsByCode(code, values);
-  }
+  List<Uid> kXorZorU(Dataset ds, int code, Trial trial, [List<Uid> values]) =>
+      //TODO: fix when we know ATypes
+      // return  ds.replaceUidsByCode(code, values, trial);
+      ds.replaceUids(code, values);
 
-  bool addIfMissing(Dataset ds, List<String> values) {
-    //TODO: finish
-    return false;
-  }
+  bool addIfMissing(Dataset ds, List<String> values) =>
+      //TODO: finish
+      false;
 }
 
-const Map map = const {
-  "BasicProfile": const {
-    "retain": const [],
-    "remove": const [
+const Map map = const <String, Map>{
+  'BasicProfile': const <String, List<int>>{
+    'retain': const <int>[],
+    'remove': const <int>[
       0x00001000, 0x00080024, 0x00080025, 0x00080034, 0x00080035,
       0x00080081, 0x00080092, 0x00080094, 0x00080096, 0x00080201,
       0x00081030, 0x0008103e, 0x00081040, 0x00081048, 0x00081049,
@@ -316,9 +314,12 @@ const Map map = const {
       0x40080300, 0x40084000, 0xfffafffa, 0xfffcfffc // No reformat
     ]
   },
-  "RetainSafePrivate": const {"retain": const [], "remove": const []},
-  "RetainUids": const {
-    "retain": const [
+  'RetainSafePrivate': const <String, List<int>>{
+    'retain': const [],
+    'remove': const []
+  },
+  'RetainUids': const <String, List<int>>{
+    'retain': const [
       0x00001000, 0x00001001, 0x00020003, 0x00041511, 0x00080014,
       0x00080018, 0x00080058, 0x0008010d, 0x00081110, 0x00081111,
       0x00081140, 0x00081155, 0x00081195, 0x00082112, 0x00083010,
@@ -327,26 +328,26 @@ const Map map = const {
       0x00404023, 0x0040db0c, 0x0040db0d, 0x0070031a, 0x00880140,
       0x30060024, 0x300600c2, 0x300a0013 // No reformat
     ],
-    "remove": const [0x00081120]
+    'remove': const [0x00081120]
   },
-  "RetainDeviceIdentity": const {
-    "retain": const [
+  'RetainDeviceIdentity': const <String, List<int>>{
+    'retain': const [
       0x00081010, 0x00181000, 0x00181002, 0x00181004, 0x00181005,
       0x00181007, 0x00181008, 0x0018700a, 0x00321020, 0x00321021,
       0x00400001, 0x00400010, 0x00400011, 0x00400241, 0x00400242,
       0x00404025, 0x00404027, 0x00404028, 0x00404030 // No reformat
     ],
-    "remove": const []
+    'remove': const []
   },
-  "RetainPatientCharacteristics": const {
-    "retain": const [
+  'RetainPatientCharacteristics': const <String, List<int>>{
+    'retain': const [
       0x00100040, 0x00101010, 0x00101020, 0x00101030, 0x00102160,
       0x001021a0, 0x001021c0, 0x00102203 // No reformat
     ],
-    "remove": const [0x00102110, 0x00380050, 0x00380500, 0x00400012]
+    'remove': const [0x00102110, 0x00380050, 0x00380500, 0x00400012]
   },
-  "RetainLongFullDates": const {
-    "retain": const [
+  'RetainLongFullDates': const <String, List<int>>{
+    'retain': const [
       0x00080020, 0x00080021, 0x00080022, 0x00080023, 0x00080024,
       0x00080025, 0x0008002a, 0x00080030, 0x00080031, 0x00080032,
       0x00080033, 0x00080034, 0x00080035, 0x00080201, 0x001021d0,
@@ -354,11 +355,11 @@ const Map map = const {
       0x00400005, 0x00400244, 0x00400245, 0x00400250,
       0x00400251 // No Reformat
     ],
-    "remove": const []
+    'remove': const []
   },
-  "RetainLongModifiedDates": const {
-    "retain": const [],
-    "remove": const [
+  'RetainLongModifiedDates': const <String, List<int>>{
+    'retain': const [],
+    'remove': const [
       0x00080020, 0x00080021, 0x00080022, 0x00080023, 0x00080024,
       0x00080025, 0x0008002a, 0x00080030, 0x00080031, 0x00080032,
       0x00080033, 0x00080034, 0x00080035, 0x00080201, 0x001021d0,
@@ -367,9 +368,9 @@ const Map map = const {
       0x00400251 // No reformat
     ]
   },
-  "CleanDescriptors": const {
-    "retain": const [],
-    "remove": const [
+  'CleanDescriptors': const <String, List<int>>{
+    'retain': const [],
+    'remove': const [
       0x00081030, 0x0008103e, 0x00081080, 0x00081084, 0x00082111,
       0x00084000, 0x00102000, 0x00102110, 0x00102180, 0x001021b0,
       0x00104000, 0x00180010, 0x00181030, 0x00181400, 0x00184000,
@@ -380,13 +381,13 @@ const Map map = const {
       0x40080115, 0x40080300, 0x40084000 // No reformat
     ]
   },
-  "CleanStructucturedContent": const {
-    "retain": const [],
-    "remove": const [0x00400555, 0x0040a730]
+  'CleanStructucturedContent': const <String, List<int>>{
+    'retain': const [],
+    'remove': const [0x00400555, 0x0040a730]
   },
-  "CleanGraphics": const {
-    "retain": const [],
-    "remove": const [0x00700001]
+  'CleanGraphics': const <String, List<int>>{
+    'retain': const [],
+    'remove': const [0x00700001]
   }
 };
 
@@ -394,7 +395,7 @@ class InvalidActionError extends Error {
   Action action;
   String msg;
 
-  InvalidActionError(this.action, [this.msg = "Invalid Action Error"]);
+  InvalidActionError(this.action, [this.msg = 'Invalid Action Error']);
 
   @override
   String toString() => '$msg: $action';

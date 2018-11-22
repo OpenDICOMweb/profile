@@ -28,7 +28,7 @@ linter:
     - valid_regexps
 # Style rules
     - always_declare_return_types
-#    - always_put_control_body_on_new_line
+#    - always_put_control_body_on__line
     - always_put_required_named_parameters_first
     - always_require_non_null_named_parameters
 #    - always_specify_types
@@ -87,7 +87,7 @@ linter:
 #    - public_member_api_docs
     - recursive_getters
     - slash_for_doc_comments
-    - sort_constructors_first
+#    - sort_constructors_first
     - sort_unnamed_constructors_first
     - super_goes_last
     - type_annotate_public_apis

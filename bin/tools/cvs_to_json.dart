@@ -9,24 +9,24 @@ import 'dart:io';
 String data = 'C:/odw/sdk/profile/lib/data/6688 Table for Jim.csv';
 
 void main() {
-  File file = new File(data);
+  final file =  File(data);
 
-  List<String> lines = file.readAsLinesSync();
+  final lines = file.readAsLinesSync();
 
-  String out = "";
-  for(String line in lines) {
-    out += lineToString(line);
+  final sb = StringBuffer();
+  for(var line in lines) {
+    sb.writeln(lineToString(line));
   }
-  print(out);
+  print('$sb');
 }
 
 String lineToString(String line) {
-  List<String> sList = line.split('|');
-  var caseNo = sList[0];
-  var images = sList[1];
-  var enrollment = sList[2];
-  var study = sList[3];
-  var normal = sList[4];
+  final sList = line.split('|');
+  final caseNo = sList[0];
+  final images = sList[1];
+  final enrollment = sList[2];
+  final study = sList[3];
+  final normal = sList[4];
 
   return '["$caseNo", $images, "$enrollment", "$study", "$normal"],\n';
 

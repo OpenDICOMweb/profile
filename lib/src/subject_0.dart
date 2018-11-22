@@ -6,20 +6,20 @@
 
 import 'subject.dart';
 
-final Parameters _parameters = new Parameters(
+final Parameters _parameters =  Parameters(
     1,
-    "20091110",
-    "6688",
-    "PHASE II STUDY OF 3-DEOXY-3-18F FLUOROTHYMIDINE (FLT) IN INVASIVE BREAST CNCR",
-    "4277",
-    "Virginia Commonwealth University/Massey Cancer Center",
-    "",
-    "",
-    "Clinical Trial",
-    "",
-    "Safe Harbor/Retain Patient Characteristics/Retain Safe Private",
-    "",
-    "bbialecki");
+    '20091110',
+    '6688',
+    'PHASE II STUDY OF 3-DEOXY-3-18F FLUOROTHYMIDINE (FLT) IN INVASIVE BREAST CNCR',
+    '4277',
+    'Virginia Commonwealth University/Massey Cancer Center',
+    '',
+    '',
+    'Clinical Trial',
+    '',
+    'Safe Harbor/Retain Patient Characteristics/Retain Safe Private',
+    '',
+    'bbialecki');
 
-final TrialSubject subject0 = new TrialSubject("001-001 FDG 1 Regional^4277^6688^^",
-    "001-001 FDG 1 Regional", "0", "19900301",  "20091110", _parameters);
+final TrialSubject subject0 =  TrialSubject('001-001 FDG 1 Regional^4277^6688^^',
+    '001-001 FDG 1 Regional', '0', '19900301',  '20091110', _parameters);

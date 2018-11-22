@@ -9,7 +9,7 @@ A simple usage example:
     import 'package:untitled/untitled.dart';
 
     main() {
-      var awesome = new Awesome();
+      var awesome =  Awesome();
     }
 
 

@@ -3,118 +3,67 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
+//
 import 'dart:io';
 
-import 'package:dcm_convert/data/test_files.dart';
-import 'package:dcm_convert/dcm.dart';
-import 'package:profile/profile.dart';
-import 'package:deid/dictionary.dart';
-import 'package:system/server.dart';
+import 'package:converter/converter.dart';
+import 'package:core/server.dart';
+import 'package:test_tools/tools.dart';
 
-/// A Program that reads a [File], decodes it into a [RootByteDataset],
-/// and then converts that into a [RootTagDataset].
+
+/// A Program that reads a [File], decodes it into a [ByteRootDataset],
+/// and then converts that into a [TagRootDataset].
 void main() {
   Server.initialize(level: Level.debug2, throwOnError: true);
 
 
-  // Edit this line
-  var path = path0;
+  final path = path2;
+  final groups = <int>[0x0010, 0x0020];
 
-  File f = new File(path);
-  log.debug2('Reading: $f');
-  RootByteDataset rds = ByteReader.readFile(f, fast: true);
-  log.debug('rds.isRoot: ${rds.isRoot}');
-  Formatter z = new Formatter(maxDepth: -1);
-  rds.format(z);
+  final rds = ByteReader.readPath(path);
+  print('remove group: $group');
+  final startTotal = rds.total;
+  final startTopLevel = rds.elements.length;
+  print('$startTotal total elements in Dataset');
+  print('$startTopLevel top level elements in Dataset');
 
-  print('basicProfileRemoveCodes.length: ${basicProfileRemoveCodes.length}');
-  print('basicProfile.removeCodes.length: ${BasicProfile.removeCodes.length}');
-  print('basicProfile.removeCodes.length: ${BasicProfile.codes.length}');
-  List<ByteElement> removeTargets = <ByteElement>[];
-  List<ByteElement> removeResults = <ByteElement>[];
-
-  print(rds.summary);
-
-
-  for (int code in basicProfileRemoveCodes) {
-    List<ByteElement> results = rds.lookupRecursive(code);
-    if (results != null && results.length != 0) removeTargets.addAll(results);
+  var count = 0;
+  for (var e in rds.elements) {
+    if (groups.contains(e.group)) count++;
   }
+  print('$count top level group elements found');
 
-  print('removeTargets: length(${removeTargets.length})');
-  int i = 0;
-  for(Element e in removeTargets) {
-    print('  $i: $e');
-    i++;
-  }
-
-  i = 0;
-  for (Element e in removeTargets) {
-    if (e.isSequence) {
-      var sq = e as SequenceMixin;
-      print('  $i: Sequence: total(${sq.total})');
-    } else {
-      print('  $i: Element: $e');}
-    ByteElement results = rds.remove(e.code);
-    if (results != null && results.length != 0) removeResults.add(results);
-    i++;
-  }
-
-  print('results: length(${removeTargets.length})');
-  for(Element e in removeTargets) {
-    print('  $e');
-  }
-
-  for (int code in basicProfileRemoveCodes) {
-    var e = rds.lookup(code);
-    if (e != null) throw 'Element still present';
-  }
-
-/* Urgent: figure out how to determine correctness
-  if (removeTargets.length == removeResults.length) {
-    for (int i = 0; i < removeTargets.length; i++)
-      if (removeTargets[i] != removeResults[i])
-        throw 'Unequal results';
-  } else {
-    throw 'Different Lengths: \n  $removeTargets \n  $removeResults';
-  }
-*/
-
-  print(rds.summary);
-
-  i = 0;
-  for (Element e in removeResults) {
-    if (e.isSequence) {
-      var sq = e as SequenceMixin;
-      i += sq.total;
-      print('  $i ${e.info}');
-      print('  Total: ${sq.total}');
-    } else {
-      print('  $i ${e.info}');
-      i++;
+  final removed = <Element>[];
+  for (var e in rds.elements) {
+    if (groups.contains(e.group)) {
+      final ok = rds.delete(e.code);
+      if (ok == null) print('** $e not removed');
+      removed.add(e);
+      if (rds.lookup(e.code) != null) print('$e not removed');
+    } else if (e is SQ) {
+      // Urgent: this should be recursive it isn't
+      for (Dataset item in e.items) {
+        for (var e in item.elements) {
+          if (groups.contains(e.group)) {
+            final deleted = rds.deleteAll(e.code);
+            removed.addAll(deleted);
+            if (rds.lookupAll(e.code) != null)
+              print('$e not removed');
+          }
+        }
+      }
     }
-
   }
-  print('Removed $i elements removed:');
+  final endTotal = rds.total;
+  final endTopLevel = rds.elements.length;
+  print('$endTotal total elements in Dataset');
+  print('$endTopLevel top level elements in Dataset');
+  print('Removed ${removed.length} elements:');
+  for (var e in removed) print('  $e');
 
+  for (var e in rds.elements) {
+    if (groups.contains(e.group)) print('*** group element not removed: $e');
+  }
 
-
-/*
-  log.info('patientID: "${bRoot.patientId}"');
-  ByteElement e = bRoot.remove(kPatientID);
-  log.info('removed: ${e.info}');
-  if (bRoot[kPatientID] != null)
-    log.error('kPatientID not removed: $e');
-  log.info('patientID: "${bRoot[kPatientID]}"');
-  log.info('patientID: "${bRoot.patientId}"');
-*/
-
-/*  log.debug1(bRoot.parseInfo.info);
-  if (bRoot == null) return null;
-
-  bRoot.remove(kPatientID);
-  RootTagDataset tRoot = convertByteDSToTagDS(bRoot);
-  log.info('tRoot: $tRoot');*/
 
 }

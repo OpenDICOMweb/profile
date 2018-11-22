@@ -6,103 +6,102 @@
 
 import 'dart:io';
 
-import 'package:dataset/dataset.dart';
-import 'package:dcm_convert/data/test_files.dart';
-import 'package:dcm_convert/byte_convert.dart';
+import 'package:converter/converter.dart';
+import 'package:core/server.dart';
+import 'package:test_tools/tools.dart';
 
-import 'package:profile/src/profiler.dart';
-import 'package:profile/src/profiles/basic.dart';
-//import 'package:deid/dictionary.dart';
-import 'package:system/server.dart';
-
-
-/// A Program that reads a [File], decodes it into a [RootByteDataset],
-/// and then converts that into a [RootTagDataset].
+/// A Program that reads a [File], decodes it into a [ByteRootDataset],
+/// and then converts that into a [TagRootDataset].
 void main() {
-  Server.initialize(level: Level.debug2, throwOnError: true);
-
+  Server.initialize(level: Level.info, throwOnError: true);
 
   // Edit this line
-  var path = path0;
+  final path = path0;
 
-  File f = toFile(path, mustExist: true);
-  log.debug2('Reading: $f');
-  RootDatasetByte rds = ByteReader.readFile(f, fast: true);
-  log.debug('bRoot.isRoot: ${rds.isRoot}');
-  Formatter z = new Formatter(maxDepth: -1);
-  rds.format(z);
+  final byteRds = ByteReader.readPath(path);
+  log
+    ..debug('bRoot.isRoot: ${byteRds.isRoot}')
+    ..debug(byteRds.summary)
+    ..debug(
+        'basicProfile.removeCodes.length: ${BasicProfile.removeCodes.length}')
+    ..debug('basicProfile.Codes.length: ${BasicProfile.codes.length}');
+  final removeTargets = <Element>[];
+  final removeResults = <Element>[];
 
-  print('basicProfileRemoveCodes.length: ${basicProfileRemoveCodes.length}');
-  print('basicProfile.removeCodes.length: ${BasicProfile.removeCodes.length}');
-  print('basicProfile.removeCodes.length: ${BasicProfile.codes.length}');
-  List<Element> removeTargets = <Element>[];
-  List<Element> removeResults = <Element>[];
-
-  print(rds.summary);
-
-
-  for (int code in basicProfileRemoveCodes) {
-    List<Element> results = rds.lookupRecursive(code);
-    if (results != null && results.length != 0) removeTargets.addAll(results);
+  // Delete Elements that should be removed
+  for (var code in BasicProfile.removeCodes) {
+    final results = byteRds.lookupAll(code);
+    if (results != null && results.isNotEmpty) removeTargets.addAll(results);
   }
+  // Check that all appropriate Elements are removed.
+  for (var code in BasicProfile.removeCodes) {
+    final results = byteRds.deleteAll(code);
+    if (results != null && results.isNotEmpty) {
+      log.debug('Error results: $results');
+      removeResults.addAll(results);
+    }
+  }
+  assert(removeTargets.length == removeResults.length);
+  log
+    ..info(byteRds.summary)
+    ..info('removed(${removeResults.length}')
+    ..info('removeTargets: length(${removeTargets.length})');
+  var i = 0;
 
-  print('removeTargets: length(${removeTargets.length})');
-  int i = 0;
-  for(Element e in removeTargets) {
-    print('  $i: $e');
+  for (var e in removeTargets) {
+    log.debug('  $i: $e');
     i++;
   }
 
   i = 0;
-  for (Element e in removeTargets) {
-    if (e.isSequence) {
-      var sq = e as SequenceMixin;
-      print('  $i: Sequence: total(${sq.total})');
+  for (var e in removeTargets) {
+    if (e is SQ) {
+      log.debug('  $i: Sequence: total(${e.total})');
     } else {
-      print('  $i: Element: $e');}
-    Element result = rds.remove(e.code);
-    if (result != null && result.length != 0) removeResults.add(result);
+      log.debug('  $i: Element: $e');
+    }
+    final result = byteRds.delete(e.code);
+    if (result != null && result.isNotEmpty) removeResults.add(result);
     i++;
   }
 
-  print('results: length(${removeTargets.length})');
-  for(Element e in removeTargets) {
-    print('  $e');
-  }
+  log.debug('results: length(${removeTargets.length})');
+  for (var e in removeTargets) log.debug('  $e');
 
-  for (int code in basicProfileRemoveCodes) {
-    var e = rds.lookup(code);
+  for (var code in BasicProfile.removeCodes) {
+    final e = byteRds.lookup(code);
     if (e != null) throw 'Element still present';
   }
 
-/* Urgent: figure out how to determine correctness
+// Urgent: figure out how to determine correctness
   if (removeTargets.length == removeResults.length) {
-    for (int i = 0; i < removeTargets.length; i++)
-      if (removeTargets[i] != removeResults[i])
-        throw 'Unequal results';
+    for (var i = 0; i < removeTargets.length; i++)
+      if (removeTargets[i] != removeResults[i]) throw 'Unequal results';
   } else {
     throw 'Different Lengths: \n  $removeTargets \n  $removeResults';
   }
-*/
 
-  print(rds.summary);
+  log.debug(byteRds.summary);
 
   i = 0;
-  for (Element e in removeResults) {
-    if (e.isSequence) {
-      var sq = e as SequenceMixin;
-      i += sq.total;
-      print('  $i ${e.info}');
-      print('  Total: ${sq.total}');
+  for (var e in removeResults) {
+    if (e is SQ) {
+      i += e.total;
+      log.debug('  $i ${e.info}\n  Total: ${e.total}');
     } else {
-      print('  $i ${e.info}');
+      log.debug('  $i ${e.info}');
       i++;
     }
-
   }
-  print('Removed $i elements removed:');
+  log.debug('Removed $i elements removed:');
 
-
+  final issues = Issues();
+  final tagRds = TagRootDataset.convert(byteRds, issues);
+  log.info(tagRds.summary);
+  if (issues.isNotEmpty) log.error('Issues: $issues');
+  if (byteRds.total != tagRds.total)
+    log.error('Byte length(${byteRds.total} != Tag length(${tagRds.total}');
+  if (byteRds != tagRds) log.error('$tagRds != $byteRds');
 
 /*
   log.info('patientID: "${bRoot.patientId}"');
@@ -118,7 +117,6 @@ void main() {
   if (bRoot == null) return null;
 
   bRoot.remove(kPatientID);
-  RootTagDataset tRoot = convertByteDSToTagDS(bRoot);
+  TagRootDataset tRoot = TagDataset.convert(bRoot);
   log.info('tRoot: $tRoot');*/
-
 }

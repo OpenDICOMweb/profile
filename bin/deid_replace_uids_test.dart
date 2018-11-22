@@ -6,44 +6,40 @@
 
 import 'dart:io';
 
-import 'package:dcm_convert/data/test_files.dart';
-import 'package:dcm_convert/dcm.dart';
-import 'package:profile/profiler.dart';
-import 'package:system/server.dart';
-import 'package:uid/uid.dart';
+import 'package:converter/converter.dart';
+import 'package:core/server.dart';
+import 'package:test_tools/tools.dart';
 
-import 'package:profile/src/profiles/basic.dart';
+import 'package:profile/profiler.dart';
 import 'package:profile/src/subject_0.dart';
 
-/// A Program that reads a [File], decodes it into a [RootByteDataset],
-/// and then converts that into a [RootTagDataset].
+/// A Program that reads a [File], decodes it into a [ByteRootDataset],
+/// and then converts that into a [TagRootDataset].
 void main() {
  Server.initialize(name: 'deid_replace_uids', level: Level.debug);
    /// A [Map] from current to replacement [Uid]s.
-   Map<Uid, Uid> uidCache = <Uid, Uid>{};
+ //  final uidCache = <Uid, Uid>{};
   // Edit this line
-  var path = path0;
+  final path = path0;
 
-  File f = toFile(path, mustExist: true);
-  log.debug2('Reading: $f');
-  RootByteDataset rbds = ByteReader.readFile(f, fast: true);
-  log.debug('rbds.isRoot: ${rbds.isRoot}');
-  log.info0(rbds.summary);
+  log.debug2('Reading: $path');
+  final rbds = ByteReader.readPath(path);
+  log..debug('rbds.isRoot: ${rbds.isRoot}')
+  ..info0(rbds.summary);
 
-  RootTagDataset rtds = new RootTagDataset();
-   rtds = convertDataset(rbds, rtds);
+  final rtds = TagRootDataset.empty();
+  TagDataset.convert(rbds, rtds);
 
- Profile basic = new Basic();
- Profiler profiler = new Profiler("basic", "", basic, subject0, {});
+ //Profile basic =  BasicProfile();
+ final profiler =  Profiler('basic', '', basic, subject0, {});
 
-  var map = profiler.replaceUids(rtds);
-  log.debug('Map: $map');
-  log.debug('replaced: ${profiler.report.replacedElements}');
-  log.debug('study: ${rtds.lookup(kStudyInstanceUID).info}');
-  log.debug('series: ${rtds.lookup(kSeriesInstanceUID).info}');
-  log.debug('instance: ${rtds.lookup(kSOPInstanceUID).info}');
-
-  log.info0(rbds.summary);
+  final map = profiler.replaceUids(rtds);
+  log..debug('Map: $map')
+  ..debug('replaced: ${profiler.report.replacedElements}')
+  ..debug('study: ${rtds.lookup(kStudyInstanceUID).info}')
+  ..debug('series: ${rtds.lookup(kSeriesInstanceUID).info}')
+  ..debug('instance: ${rtds.lookup(kSOPInstanceUID).info}')
+  ..info0(rbds.summary);
 
 
 

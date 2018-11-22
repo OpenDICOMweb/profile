@@ -5,26 +5,26 @@ homepage: https://github.com/OpenDICOMweb/profile.git
 author: Jim Philbin <jfphilbin@gmail.com>
 
 environment:
-  sdk: '>=1.24.2 <2.1.0'
+  sdk: '>=2.0.0 <2.2.0'
 
 dependencies:
-  dataset:
-    path: C:/odw/sdk/dataset
-    version: ^0.6.5
-  element:
-    path: C:/odw/sdk/element
-    version: ^0.6.5
-  dcm_convert:
-    path: C:/odw/sdk/convert
-    version: ^0.6.5
-  system:
-    path: C:/odw/sdk/system
-    version: ^0.6.5
+  core:
+    path: C:/odw/sdk/core
+    version: ^0.7.6
+  converter:
+    path: C:/odw/sdk/converter
+    version: ^0.7.5
+  io_extended:
+      path: C:/odw/sdk/io_extended
+      version: ^0.7.5
 
 dev_dependencies:
-  benchmark_harness: ^1.0.4
+  benchmark_harness: any
   grinder: ^0.8.0
-  test:  ^0.12.0
+  test: any
+  test_tools:
+    path: C:/odw/test_tools
+    version: any
 
 
 
