@@ -174,7 +174,7 @@ class DeIdentifier {
         //   addIfMissing(ds, code, trial);
         //   break;
         default:
-          throw  InvalidActionError(bp);
+          throw  InvalidActionError(bp.action);
       }
       //  print('end $a');
     }
