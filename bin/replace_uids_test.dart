@@ -27,11 +27,10 @@ void main() {
   var tagRds =  TagRootDataset.empty();
   tagRds = TagRootDataset.convert(bdRds);
 
-  final profile = Profile('foo', null, null, null, null);
-  final map = tagRds.replaceUids(tagRds);
+  final map = replaceUids(tagRds);
   log
     ..debug('Map: $map')
-    ..debug('replaced: ${profile.replacedElements}')
+    ..debug('replaced: ${tagRds.removed}')
     ..debug('study: ${tagRds.lookup(kStudyInstanceUID).info}')
     ..debug('series: ${tagRds.lookup(kSeriesInstanceUID).info}')
     ..debug('instance: ${tagRds.lookup(kSOPInstanceUID).info}')

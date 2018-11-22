@@ -26,8 +26,7 @@ void main() {
   final removed = bds.deleteAllPrivate(recursive: true);
   final after = bds.findAllPrivateCodes(recursive: true);
 
-  log.debug('before: ${before.length}');
-  log.debug('after: ${after.length}');
+  log..debug('before: ${before.length}')..debug('after: ${after.length}');
 
   assert(after.isEmpty);
   log..info('${removed.length} elements removed')..info(bds.summary);

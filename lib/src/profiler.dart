@@ -153,7 +153,7 @@ class Profiler {
       if (e is SQ) {
         print('$depth sq: $e');
         for (Dataset item in e.values) {
-
+          // ignore: parameter_assignments
           processKeysToDelete(item, depth: depth++);
         }
       }
@@ -206,7 +206,7 @@ class Profiler {
     final study =  Uid();
     final series =  Uid();
     final instance =  Uid();
-    final ds = (tagDS == null) ?  TagRootDataset.empty() : tagDS;
+//    final ds = (tagDS == null) ?  TagRootDataset.empty() : tagDS;
     final map = (uidMap == null) ? <String, String>{} : uidMap;
 
     // Create Map of old:
