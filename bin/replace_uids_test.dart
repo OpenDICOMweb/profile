@@ -22,7 +22,11 @@ void main() {
   final bdRds = ByteReader.readPath(path);
   log
     ..debug('rbds.isRoot: ${bdRds.isRoot}')
-    ..info0(bdRds.summary);
+    ..info0(bdRds.summary)
+    ..debug('replaced: ${bdRds.removed}')
+    ..debug('study: ${bdRds.lookup(kStudyInstanceUID).info}')
+    ..debug('series: ${bdRds.lookup(kSeriesInstanceUID).info}')
+    ..debug('instance: ${bdRds.lookup(kSOPInstanceUID).info}');
 
   var tagRds =  TagRootDataset.empty();
   tagRds = TagRootDataset.convert(bdRds);
