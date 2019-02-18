@@ -17,8 +17,8 @@ void main() {
   Server.initialize(level: Level.debug2, throwOnError: true);
 
 
-  final path = path2;
-  final groups = <int>[0x0010, 0x0020];
+  const path = path2;
+  const groups = <int>[0x0010, 0x0020];
 
   final rds = ByteReader.readPath(path);
   print('remove group: $group');

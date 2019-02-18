@@ -1,19 +1,17 @@
 // Copyright (c) 2016, Open DICOMweb Project. All rights reserved.
 // Use of this source code is governed by the open source license
 // that can be found in the LICENSE file.
-// Author: Jim Philbin <jfphilbin@gmail.edu> - 
+// Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
 import 'package:core/core.dart';
 
+// ignore_for_file: public_member_api_docs
 
-//static const EnumeratedValue typeOfPatientID = const ['TEXT', 'RFID', 'BARCODE'];
 class PatientIdentificationModule {
-
   PatientIdentificationModule();
 
-  static const Map<int, EType> deList = const {
-
+  static const Map<int, EType> deList = {
     kPatientName: EType.k2,
 
     kPatientID: EType.k2,
@@ -45,23 +43,21 @@ class PatientIdentificationModule {
     kDeidentificationMethod: EType.k1c,
     kDeidentificationMethodCodeSequence: EType.k1c
   };
-
 }
 
 class PatientRelationShips {
+  PatientRelationShips();
 
-    PatientRelationShips();
-
-    // RefererncedStudySequence - table 10-11 SOP Instance Reference Macro Attributes
-    // ReferencedVisitSequence - table 10-11
-    // ReferencedPatientAliasSequence - table 10-11
+  // RefererncedStudySequence - table 10-11
+  //         SOP Instance Reference Macro Attributes
+  // ReferencedVisitSequence - table 10-11
+  // ReferencedPatientAliasSequence - table 10-11
 }
 
 class ClinicalTrialSubjectModule {
-
   ClinicalTrialSubjectModule();
 
-  static const Map<int, EType> map = const {
+  static const Map<int, EType> map = {
     kClinicalTrialSponsorName: EType.k1,
     kClinicalTrialProtocolID: EType.k1,
     kClinicalTrialProtocolName: EType.k2,
@@ -71,43 +67,37 @@ class ClinicalTrialSubjectModule {
     kClinicalTrialSubjectReadingID: EType.k1c,
     kClinicalTrialProtocolEthicsCommitteeName: EType.k1c,
     kClinicalTrialProtocolEthicsCommitteeApprovalNumber: EType.k1c
-
   };
 }
 
 class ClinicalTrialStudyModule {
-
   ClinicalTrialStudyModule();
 
-  static const Map<int, EType> map = const {
+  static const Map<int, EType> map = {
     kClinicalTrialTimePointID: EType.k2,
     kClinicalTrialTimePointDescription: EType.k3,
     kConsentForClinicalTrialUseSequence: EType.k3,
   };
 
-  static const Map<int, EType> clinicalTrialUseSequence = const {
+  static const Map<int, EType> clinicalTrialUseSequence = {
     kDistributionType: EType.k1c,
     kClinicalTrialProtocolID: EType.k1c,
     kConsentForDistributionFlag: EType.k1
   };
-
 }
 
 class ClinicalTrialSeriesModule {
-
   ClinicalTrialSeriesModule();
 
-  static const Map<int, EType> map = const {
+  static const Map<int, EType> map = {
     kClinicalTrialCoordinatingCenterName: EType.k2,
     kClinicalTrialSeriesID: EType.k3,
     kClinicalTrialSeriesDescription: EType.k3,
   };
 
-  static const Map<int, EType> clinicalTrialUseSequence = const {
+  static const Map<int, EType> clinicalTrialUseSequence = {
     kDistributionType: EType.k1c,
     kClinicalTrialProtocolID: EType.k1c,
     kConsentForDistributionFlag: EType.k1
   };
-
 }
-

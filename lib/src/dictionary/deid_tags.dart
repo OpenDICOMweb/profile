@@ -1,11 +1,14 @@
 // Copyright (c) 2016, Open DICOMweb Project. All rights reserved.
 // Use of this source code is governed by the open source license
 // that can be found in the LICENSE file.
-// Author: Jim Philbin <jfphilbin@gmail.edu> - 
+// Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
-/// Data Element Tags from PS3.15 Annex E Table 1-1 in order of increasing value.
-const List<int> deIdTags = const [
+// ignore_for_file: public_member_api_docs
+
+/// Data Element Tags from PS3.15 Annex E Table 1-1 in order
+/// of increasing value.
+const List<int> deIdTags = [
   0x00001000,
   0x00001001,
   0x00020003,

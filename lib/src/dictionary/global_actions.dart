@@ -6,10 +6,12 @@
 //
 import 'package:core/core.dart';
 
+// ignore_for_file: public_member_api_docs
+
 //TODO: document the priorities
 /// This [class] manages the retaining and removing of Global and private tags.
 class GlobalActions {
-  static const List<int> defaultKeepGroups = const <int>[];
+  static const List<int> defaultKeepGroups = <int>[];
 
   /// A list of Tags that should be kept (i.e. not removed) in the [Dataset].
   /// If a tag is in this list it will not be modified or removed, even if
@@ -52,11 +54,11 @@ class GlobalActions {
 
   /// Creates a set of [GlobalActions] for de-identification.
   GlobalActions(
-      {this.retain: BasicProfile.retainList,
-      this.remove: BasicProfile.removeCodes,
-      this.retainGroups: TagGroup.defaultKeepGroups,
-      this.removeGroups: TagGroup.defaultRemoveGroups,
-      this.retainSafePrivate: false,
+      {this.retain = BasicProfile.retainList,
+      this.remove = BasicProfile.removeCodes,
+      this.retainGroups = TagGroup.defaultKeepGroups,
+      this.removeGroups = TagGroup.defaultRemoveGroups,
+      this.retainSafePrivate = false,
       this.retainPrivateCreators}) {
     if (areRetainedGroupsInconsistent || areRemoveTagsInconsistent) {
       final groups =  List<TagGroup>.from(retainGroups)
@@ -68,11 +70,11 @@ class GlobalActions {
   /// If _true_ the Element with this Tag Code should be retained.
   bool isKeeper(int tagCode) {
     if (retain.contains(tagCode)) return true;
-    return (retainGroups.contains(tagCode)) ? true : false;
+    return retainGroups.contains(tagCode);
   }
 
   /// _true_ if this tag is in one of the [removeGroups].
-  bool inRemoveGroup(int tag) => (removeGroups.contains(tag)) ? true : false;
+  bool inRemoveGroup(int tag) => removeGroups.contains(tag);
 
   /// Process the Global Rules for de-identifying the [Dataset].
   void process(Dataset ds) {

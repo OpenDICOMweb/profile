@@ -9,7 +9,9 @@ import 'dart:convert' as cvt;
 import 'package:core/core.dart';
 import 'package:profile/src/profile/test_data.dart';
 
-typedef Element Updater(Element element);
+// ignore_for_file: public_member_api_docs
+
+typedef Updater = Element Function(Element element);
 
 enum ProfileFormat { text, json, xml }
 

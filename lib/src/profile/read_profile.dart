@@ -10,10 +10,12 @@ import 'package:path/path.dart' as path;
 
 import 'package:profile/src/profile/profile.dart';
 
+// ignore_for_file: public_member_api_docs
+
 Profile readProfileFile(String inPath) {
   final ext = path.extension(inPath);
   if (ext == '.json') {
-    final inFile =  File(inPath);
+    final inFile = File(inPath);
     final s = inFile.readAsStringSync();
     return Profile.parse(s);
   }
@@ -23,7 +25,7 @@ Profile readProfileFile(String inPath) {
 void writeProfileFile(String outPath, Profile profile) {
   final ext = path.extension(outPath);
   if (ext == '.json') {
-     File(outPath)..writeAsStringSync(profile.json);
+    File(outPath).writeAsStringSync(profile.json);
   }
 }
 

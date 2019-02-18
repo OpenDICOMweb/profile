@@ -7,11 +7,10 @@
 import 'package:core/core.dart';
 
 // ignore_for_file: type_annotate_public_apis
+// ignore_for_file: public_member_api_docs
 
 // *** This is a generated class ***
 // ----------------------------------------------------------
-
-
 
 // TODO: finish.
 // Retain Safe Private Option (a DICOM de-identification aption).
@@ -25,21 +24,11 @@ class RetainSafePrivateOption {
 
   static RetainSafePrivateOption lookup(int tag) => map[tag];
 
+  static const List<int> retain = [];
 
+  static const List<int> remove = [];
 
-static const List<int> retain = const [
+  static const Map<int, RetainSafePrivateOption> map = {};
 
-  ];
-
-static const List<int> remove = const [
-
-  ];
-
-static const Map<int, RetainSafePrivateOption> map = const {
-
-  };
-
-static const List<int> tags = const [
-
-  ];
+  static const List<int> tags = [];
 }

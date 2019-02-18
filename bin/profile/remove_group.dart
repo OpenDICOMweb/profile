@@ -11,8 +11,8 @@ import 'package:test_tools/tools.dart';
 void main() {
   Server.initialize(level: Level.info, throwOnError: true);
 
-  final path = path0;
-  final group = 10;
+  const path = path0;
+  const group = 10;
 
   final rds = ByteReader.readPath(path);
   print('remove group: $group');
@@ -29,23 +29,22 @@ void main() {
 
   final removed = <Element>[];
   for (var e in rds.elements) {
-    if (group == e.group) {
-      final ok = rds.delete(e.code);
-      if (ok == null) print('** $e not removed');
-      removed.add(e);
-      if (rds.lookup(e.code) != null) print('$e not removed');
-    } else if (e is SQ) {
+    if (e is SQ) {
       // Urgent: this should be recursive it isn't
       for (Dataset item in e.items) {
         for (var e in item.elements) {
           if (group == e.group) {
             final deleted = item.deleteAll(e.code);
             removed.addAll(deleted);
-            if (rds.lookupAll(e.code) != null)
-              print('$e not removed');
+            if (rds.lookupAll(e.code) != null) print('$e not removed');
           }
         }
       }
+    } else if (group == e.group) {
+      final ok = rds.delete(e.code);
+      if (ok == null) print('** $e not removed');
+      removed.add(e);
+      if (rds.lookup(e.code) != null) print('$e not removed');
     }
   }
   final endTotal = rds.total;

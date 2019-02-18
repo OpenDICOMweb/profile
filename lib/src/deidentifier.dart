@@ -3,18 +3,10 @@
 // that can be found in the LICENSE file.
 // Original author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
-// Copyright (c) 2016, Open DICOMweb Project. All rights reserved.
-// Use of this source code is governed by the open source license
-// that can be found in the LICENSE file.
-// Author: Jim Philbin <jfphilbin@gmail.edu> -
-// See the AUTHORS file for other contributors.
-
-//import 'package:deid/profile.dart';
-//import 'package:deid/dictionary.dart';
-
+//
 import 'package:core/core.dart';
-import 'package:profile/src/dictionary/action.dart';
+
+// ignore_for_file: public_member_api_docs
 
 // In static frequency order
 /*
@@ -54,7 +46,7 @@ final List<String> defaultStringValue = [
   'Open DICOMweb DeIdentifier: Dummy Value'
 ];
 
-const List<int> basicProfileRemoveCodes = const [
+const List<int> basicProfileRemoveCodes = [
   0x00001000, 0x00080024, 0x00080025, 0x00080034, 0x00080035, 0x00080081,
   0x00080092, 0x00080094, 0x00080096, 0x00080201, 0x00081030, 0x0008103e,
   0x00081040, 0x00081048, 0x00081049, 0x00081050, 0x00081052, 0x00081060,
@@ -87,16 +79,17 @@ const List<int> basicProfileRemoveCodes = const [
   0xfffafffa, 0xfffcfffc // don't reformat
 ];
 
-typedef bool DeIdentifer(Dataset ds, int tag, Trial trial, List<String> values);
+typedef DeIdentifer = bool Function(
+    Dataset ds, int tag, Trial trial, List<String> values);
 
 //TODO: add global rules
 class DeIdentifier {
   Trial trial;
 
   //TODO: make this work on Study
-  Uid deIdStudyUid =  Uid();
-  Uid deIdSeriesUid =  Uid();
-  Uid deIdInstanceUid =  Uid();
+  Uid deIdStudyUid = Uid();
+  Uid deIdSeriesUid = Uid();
+  Uid deIdInstanceUid = Uid();
   Map<int, List> valueMap;
   Map<String, Function> globalActions;
   Map<String, Function> elementActions;
@@ -110,8 +103,7 @@ class DeIdentifier {
 
   Dataset fmi(Dataset fmi) {
     print('FMI: $fmi');
-    replaceUid(
-        fmi, kMediaStorageSOPInstanceUID, trial, deIdInstanceUid);
+    replaceUid(fmi, kMediaStorageSOPInstanceUID, trial, deIdInstanceUid);
     return fmi;
   }
 
@@ -141,7 +133,7 @@ class DeIdentifier {
           break;
         case 'U':
           print('U: tag=${tag.dcm}');
-          replaceUid(ds, code, trial,  Uid());
+          replaceUid(ds, code, trial, Uid());
           break;
         case 'Z':
           zeroOrDummy<String>(ds, code, trial);
@@ -165,7 +157,7 @@ class DeIdentifier {
           kXorZorU(ds, code, trial);
           break;
         case 'K':
-   //       retain(ds, tag, trial);
+          //       retain(ds, tag, trial);
           break;
         case 'C':
           clean<String>(ds, code, trial);
@@ -174,7 +166,7 @@ class DeIdentifier {
         //   addIfMissing(ds, code, trial);
         //   break;
         default:
-          throw  InvalidActionError(bp.action);
+          throw InvalidActionError(bp.action);
       }
       //  print('end $a');
     }
@@ -191,7 +183,6 @@ class DeIdentifier {
 
   bool removeSequence(SQ sq, int tag, Trial trial) {
     if ((sq.items != null) || (sq.items.isNotEmpty)) {
-
 /*      for (var item in sq.items) {
         call(item);
       }
@@ -273,10 +264,10 @@ class DeIdentifier {
       false;
 }
 
-const Map map = const <String, Map>{
-  'BasicProfile': const <String, List<int>>{
-    'retain': const <int>[],
-    'remove': const <int>[
+const Map map = <String, Map>{
+  'BasicProfile': <String, List<int>>{
+    'retain': <int>[],
+    'remove': <int>[
       0x00001000, 0x00080024, 0x00080025, 0x00080034, 0x00080035,
       0x00080081, 0x00080092, 0x00080094, 0x00080096, 0x00080201,
       0x00081030, 0x0008103e, 0x00081040, 0x00081048, 0x00081049,
@@ -314,12 +305,9 @@ const Map map = const <String, Map>{
       0x40080300, 0x40084000, 0xfffafffa, 0xfffcfffc // No reformat
     ]
   },
-  'RetainSafePrivate': const <String, List<int>>{
-    'retain': const [],
-    'remove': const []
-  },
-  'RetainUids': const <String, List<int>>{
-    'retain': const [
+  'RetainSafePrivate': <String, List<int>>{'retain': [], 'remove': []},
+  'RetainUids': <String, List<int>>{
+    'retain': [
       0x00001000, 0x00001001, 0x00020003, 0x00041511, 0x00080014,
       0x00080018, 0x00080058, 0x0008010d, 0x00081110, 0x00081111,
       0x00081140, 0x00081155, 0x00081195, 0x00082112, 0x00083010,
@@ -328,26 +316,26 @@ const Map map = const <String, Map>{
       0x00404023, 0x0040db0c, 0x0040db0d, 0x0070031a, 0x00880140,
       0x30060024, 0x300600c2, 0x300a0013 // No reformat
     ],
-    'remove': const [0x00081120]
+    'remove': [0x00081120]
   },
-  'RetainDeviceIdentity': const <String, List<int>>{
-    'retain': const [
+  'RetainDeviceIdentity': <String, List<int>>{
+    'retain': [
       0x00081010, 0x00181000, 0x00181002, 0x00181004, 0x00181005,
       0x00181007, 0x00181008, 0x0018700a, 0x00321020, 0x00321021,
       0x00400001, 0x00400010, 0x00400011, 0x00400241, 0x00400242,
       0x00404025, 0x00404027, 0x00404028, 0x00404030 // No reformat
     ],
-    'remove': const []
+    'remove': []
   },
-  'RetainPatientCharacteristics': const <String, List<int>>{
-    'retain': const [
+  'RetainPatientCharacteristics': <String, List<int>>{
+    'retain': [
       0x00100040, 0x00101010, 0x00101020, 0x00101030, 0x00102160,
       0x001021a0, 0x001021c0, 0x00102203 // No reformat
     ],
-    'remove': const [0x00102110, 0x00380050, 0x00380500, 0x00400012]
+    'remove': [0x00102110, 0x00380050, 0x00380500, 0x00400012]
   },
-  'RetainLongFullDates': const <String, List<int>>{
-    'retain': const [
+  'RetainLongFullDates': <String, List<int>>{
+    'retain': [
       0x00080020, 0x00080021, 0x00080022, 0x00080023, 0x00080024,
       0x00080025, 0x0008002a, 0x00080030, 0x00080031, 0x00080032,
       0x00080033, 0x00080034, 0x00080035, 0x00080201, 0x001021d0,
@@ -355,11 +343,11 @@ const Map map = const <String, Map>{
       0x00400005, 0x00400244, 0x00400245, 0x00400250,
       0x00400251 // No Reformat
     ],
-    'remove': const []
+    'remove': []
   },
-  'RetainLongModifiedDates': const <String, List<int>>{
-    'retain': const [],
-    'remove': const [
+  'RetainLongModifiedDates': <String, List<int>>{
+    'retain': [],
+    'remove': [
       0x00080020, 0x00080021, 0x00080022, 0x00080023, 0x00080024,
       0x00080025, 0x0008002a, 0x00080030, 0x00080031, 0x00080032,
       0x00080033, 0x00080034, 0x00080035, 0x00080201, 0x001021d0,
@@ -368,9 +356,9 @@ const Map map = const <String, Map>{
       0x00400251 // No reformat
     ]
   },
-  'CleanDescriptors': const <String, List<int>>{
-    'retain': const [],
-    'remove': const [
+  'CleanDescriptors': <String, List<int>>{
+    'retain': [],
+    'remove': [
       0x00081030, 0x0008103e, 0x00081080, 0x00081084, 0x00082111,
       0x00084000, 0x00102000, 0x00102110, 0x00102180, 0x001021b0,
       0x00104000, 0x00180010, 0x00181030, 0x00181400, 0x00184000,
@@ -381,18 +369,18 @@ const Map map = const <String, Map>{
       0x40080115, 0x40080300, 0x40084000 // No reformat
     ]
   },
-  'CleanStructucturedContent': const <String, List<int>>{
-    'retain': const [],
-    'remove': const [0x00400555, 0x0040a730]
+  'CleanStructucturedContent': <String, List<int>>{
+    'retain': [],
+    'remove': [0x00400555, 0x0040a730]
   },
-  'CleanGraphics': const <String, List<int>>{
-    'retain': const [],
-    'remove': const [0x00700001]
+  'CleanGraphics': <String, List<int>>{
+    'retain': [],
+    'remove': [0x00700001]
   }
 };
 
 class InvalidActionError extends Error {
-  Action action;
+  BPAction action;
   String msg;
 
   InvalidActionError(this.action, [this.msg = 'Invalid Action Error']);

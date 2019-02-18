@@ -5,19 +5,19 @@
 // See the AUTHORS file for other contributors.
 
 class Basic {
-  static const List<int> dummy = const <int>[
+  static const List<int> dummy = <int>[
     // No reformat
     0x00401101, 0x0040a073, 0x0040a075, 0x0040a123, 0x00700001
   ];
 
-  static const List<int> zero = const <int>[
+  static const List<int> zero = <int>[
     // No reformat
     0x00080020, 0x00080030, 0x00080050, 0x00080090, 0x00100010, 0x00100020,
     0x00100030, 0x00100040, 0x00200010, 0x00402016, 0x00402017, 0x0040a088,
     0x00700084
   ];
 
-  static const List<int> remove = const <int>[
+  static const List<int> remove = <int>[
     // No reformat
     0x00001000, 0x00080024, 0x00080025, 0x00080034, 0x00080035, 0x00080081,
     0x00080092, 0x00080094, 0x00080096, 0x00080201, 0x00081030, 0x0008103e,
@@ -50,11 +50,11 @@ class Basic {
     0x4008011a, 0x40080202, 0x40080300, 0x40084000, 0xfffafffa, 0xfffcfffc
   ];
 
-  static const List<int> keep = const <int>[];
+  static const List<int> keep = <int>[];
 
-  static const List<int> clean = const <int>[];
+  static const List<int> clean = <int>[];
 
-  static const List<int> replaceUid = const <int>[
+  static const List<int> replaceUid = <int>[
     // No reformat
     0x00001001, 0x00020003, 0x00041511, 0x00080014, 0x00080018, 0x00080058,
     0x0008010d, 0x00081155, 0x00081195, 0x00083010, 0x00089123, 0x00181002,
@@ -63,23 +63,23 @@ class Basic {
     0x0070031a, 0x00880140, 0x30060024, 0x300600c2, 0x300a0013
   ];
 
-  static const List<int> zeroOrDummy = const <int>[];
+  static const List<int> zeroOrDummy = <int>[];
 
-  static const List<int> removeOrZero = const <int>[];
+  static const List<int> removeOrZero = <int>[];
 
-  static const List<int> removeOrDummy = const <int>[
+  static const List<int> removeOrDummy = <int>[
     // No reformat
     0x00080021, 0x00080022, 0x00080023, 0x0008002a, 0x00080031, 0x00080032,
     0x00080033, 0x00081072, 0x00081110, 0x00102203, 0x00180010, 0x00181030,
     0x00181400, 0x0018700a, 0x00321060, 0x300e0008
   ];
 
-  static const List<int> removeOrZeroOrDummy = const <int>[
+  static const List<int> removeOrZeroOrDummy = <int>[
     // No reformat
     0x00080080, 0x00080082, 0x00081010, 0x00081070, 0x00081111, 0x00181000
   ];
 
-  static const List<int> removeOrZeroOrReplaceUid = const <int>[
+  static const List<int> removeOrZeroOrReplaceUid = <int>[
     // No reformat
     0x00081140, 0x00082112
   ];

@@ -5,8 +5,9 @@
 // See the AUTHORS file for other contributors.
 //
 import 'package:core/core.dart';
-
 import 'package:profile/src/dictionary/action.dart';
+
+// ignore_for_file: public_member_api_docs
 
 //TODO: add the ability to do this.
 /// Clean Pixel Data Option to the Basic De-Identification Profile.
@@ -18,10 +19,10 @@ class CleanPixelData {
   CleanPixelData(this.tag, this.keyword, this.action);
 
   bool call(Dataset ds,
-      {bool removePixelDataFlag: false,
-      bool removeIconPixelDataFlag: false,
-      bool removeFloatPixelDataFlag: false,
-      bool removeDoubleFloatPixelDataFlag: false}) {
+      {bool removePixelDataFlag = false,
+      bool removeIconPixelDataFlag = false,
+      bool removeFloatPixelDataFlag = false,
+      bool removeDoubleFloatPixelDataFlag = false}) {
     final a = ds[PTag.kBurnedInAnnotation.code];
     if ((a != null) && (a.value == 'NO')) return true;
     if (removeIconPixelDataFlag) removeIconPixelData(ds);
@@ -48,8 +49,7 @@ class CleanRecognizableVisualFeaturesOptions {
   const CleanRecognizableVisualFeaturesOptions(
       this.tag, this.keyword, this.action);
 
-  static final CleanRecognizableVisualFeaturesOptions
-      kAttributeBurnedInAnnotation =
-      const CleanRecognizableVisualFeaturesOptions(
+  static const CleanRecognizableVisualFeaturesOptions
+      kAttributeBurnedInAnnotation = CleanRecognizableVisualFeaturesOptions(
           0x00280301, 'Attribute Burned In Annotation', Action.kA);
 }

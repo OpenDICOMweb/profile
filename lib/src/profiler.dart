@@ -11,7 +11,8 @@ import 'package:core/core.dart';
 import 'profile_report.dart';
 import 'subject.dart';
 
-typedef Element Updater(Element element);
+// ignore_for_file: public_member_api_docs
+typedef Updater = Element Function(Element element);
 
 enum ProfileFormat { text, json, xml }
 
@@ -302,36 +303,6 @@ class Profiler {
     return report.zeroed;
   }
 
-/*
-  List<Element> noValuesAll(Dataset ds, {bool recursive = true, bool required = false}) {
-    List<Element> eList;
-    for (int code in profile.keysToZero)
-      eList = noValue(ds, code, r required: required);
-    report.deletedElements.addAll(eList);
-    return eList;
-  }
-*/
-
-  //String get extension => '.dvp';
-
-/*
-    Map<String, dynamic> get map => {
-        'name': name,
-        'path': url,
-        'parameters': parameters,
-        //  'global': globalMap,
- //       'rules': rules,
-        'comments': comments,
-        'errors': errors
-    };
-*/
-
-/*
-    void addRule(Rule rule) {
-        rules.add(rule);
-    }
-*/
-
   bool keep(int tag) => profile.keysToRetain.contains(tag);
 
   RegExp lookup(String key) => parameters[key];
@@ -356,14 +327,6 @@ class Profiler {
     errors['$lineNo'] = '$msg';
     return false;
   }
-
-/*
-    String get rulesToJson {
-        List<String> rList = [];
-        rules.forEach((Rule rule) => rList.add(rule.json));
-        return '[\n${rList.join(',\n')}\n]';
-    }
-*/
 
   String get json => '''{
     '@type': 'Clinical Study Profile',

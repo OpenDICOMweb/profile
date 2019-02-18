@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
+//
 import 'package:core/core.dart';
+
+// ignore_for_file: public_member_api_docs
 
 // *** This is a generated class ***
 // ----------------------------------------------------------
@@ -21,15 +23,15 @@ class CleanGraphicsOption {
   static CleanGraphicsOption lookup(int tag) => map[tag];
 
   static const CleanGraphicsOption kGraphicAnnotationSequence =
-      const CleanGraphicsOption('GraphicAnnotationSequence', 0x00700001, VR.kSQ, 'C');
+      CleanGraphicsOption('GraphicAnnotationSequence', 0x00700001, VR.kSQ, 'C');
 
-  static const List<int> retain = const [];
+  static const List<int> retain = [];
 
-  static const List<int> remove = const [0x00700001];
+  static const List<int> remove = [0x00700001];
 
-  static const Map<int, CleanGraphicsOption> map = const {
+  static const Map<int, CleanGraphicsOption> map = {
     0x00700001: kGraphicAnnotationSequence
   };
 
-  static const List<int> tags = const [0x00700001];
+  static const List<int> tags = [0x00700001];
 }

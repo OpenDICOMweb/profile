@@ -17,7 +17,7 @@ void main() {
       name: 'replace_dates', level: Level.debug2, throwOnError: true);
 
   // Edit this line
-  final path = path1;
+  const path = path1;
   log.debug2('Reading: $path');
   final ds = TagReader.readPath(path);
   log.debug('rds.isRoot: ${ds.isRoot}');

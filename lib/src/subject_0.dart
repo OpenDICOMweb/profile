@@ -3,14 +3,17 @@
 // that can be found in the LICENSE file.
 // Original author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
+//
 import 'subject.dart';
 
-final Parameters _parameters =  Parameters(
+// ignore_for_file: public_member_api_docs
+
+final Parameters _parameters = Parameters(
     1,
     '20091110',
     '6688',
-    'PHASE II STUDY OF 3-DEOXY-3-18F FLUOROTHYMIDINE (FLT) IN INVASIVE BREAST CNCR',
+    'PHASE II STUDY OF 3-DEOXY-3-18F FLUOROTHYMIDINE (FLT) '
+        'IN INVASIVE BREAST CNCR',
     '4277',
     'Virginia Commonwealth University/Massey Cancer Center',
     '',
@@ -21,5 +24,5 @@ final Parameters _parameters =  Parameters(
     '',
     'bbialecki');
 
-final TrialSubject subject0 =  TrialSubject('001-001 FDG 1 Regional^4277^6688^^',
-    '001-001 FDG 1 Regional', '0', '19900301',  '20091110', _parameters);
+final TrialSubject subject0 = TrialSubject('001-001 FDG 1 Regional^4277^6688^^',
+    '001-001 FDG 1 Regional', '0', '19900301', '20091110', _parameters);

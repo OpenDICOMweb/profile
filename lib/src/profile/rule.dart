@@ -1,15 +1,16 @@
 // Copyright (c) 2016, Open DICOMweb Project. All rights reserved.
 // Use of this source code is governed by the open source license
 // that can be found in the LICENSE file.
-// Original author: Jim Philbin <jfphilbin@gmail.edu> - 
+// Original author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
+//
 import 'dart:convert' as cvt;
 
 import 'package:core/core.dart';
 
+// ignore_for_file: public_member_api_docs
 
-const List<String> ruleNames = const [
+const List<String> ruleNames = [
   '@add',
   '@always',
   '@append',
@@ -44,7 +45,7 @@ final RegExp actionRE =  RegExp(action);
 const String condition = r'exists|isblank|equals|contains|matches';
 final RegExp conditionRE =  RegExp(condition);
 
-const Map<String, int> conditionMap = const {
+const Map<String, int> conditionMap = {
   'exists': 2,
   'isBlank': 2,
   'equals': 3,

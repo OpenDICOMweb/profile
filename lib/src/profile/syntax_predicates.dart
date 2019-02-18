@@ -3,6 +3,9 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu>
 // See the AUTHORS file for other contributors.
+//
+
+// ignore_for_file: public_member_api_docs
 
 const String id = r'(\w+)';
 const String atId = r'(@\w+)';
@@ -17,14 +20,14 @@ final RegExp parameterValueRE =  RegExp(pValue);
 
 bool isValidParameterKey(String key) {
   final m = parameterKeyRE.firstMatch(key);
-  return ((m == null) || (m.end != key.length)) ? false : true;
+  return !(m == null || m.end != key.length);
 }
 
 bool isNotValidParameterKey(String key) => ! isValidParameterKey(key);
 
 bool isValidParameterValue(String value) {
   final m = parameterValueRE.firstMatch(value);
-  return ((m == null) || (m.end != value.length)) ? false : true;
+  return !(m == null || m.end != value.length);
 }
 
 bool isNotValidParameterValue(String key) => ! isValidParameterValue(key);

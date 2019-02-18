@@ -17,7 +17,7 @@ void main() {
       name: 'replace_uids', level: Level.debug2, throwOnError: true);
 
   // Edit this line
-  final path = path0;
+  const path = path0;
 //  Profile basic =  BasicProfile();
 //  Profiler profiler =  Profiler("basic", "", basic, subject0, {});
 
@@ -83,7 +83,7 @@ void walkUids(Iterable<Element> elements, List<Element> uiElements,
       }
       ui = Uid.generateSecureUidString();
       uidMap[value] = ui;
-      final te = TagElement.fromBytes((e).bytes, tagDS);
+      final te = TagElement.fromBytes(e.bytes, tagDS);
       final nte = te.update(<String>[ui]);
       tagDS.add(nte);
     } else if (e is SQ) {

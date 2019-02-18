@@ -1,11 +1,11 @@
 // Copyright (c) 2016, Open DICOMweb Project. All rights reserved.
 // Use of this source code is governed by the open source license
 // that can be found in the LICENSE file.
-// Original author: Jim Philbin <jfphilbin@gmail.edu> - 
+// Original author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
 /// Multi-Valued Data Elements in Basic De-Identification Profile.
-const List<int> multiValuedTags = const [
+const List<int> multiValuedTags = [
   0x00080058,
   0x00080094,
   0x00081048,

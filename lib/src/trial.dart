@@ -4,6 +4,8 @@
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
 
+// ignore_for_file: public_member_api_docs
+
 //Questions:
 // 1. where does case number go?
 

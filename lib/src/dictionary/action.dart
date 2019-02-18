@@ -6,31 +6,36 @@
 //
 import 'package:core/core.dart';
 
+// ignore_for_file: public_member_api_docs
+
 /// This library implements DICOM study de-identification.  It conforms to
 /// DICOM PS3.15 Appendix E.
 ///
-/// D   - Replace with a non-zero length value that may be a dummy value and consistent
-///       with the VR.
-/// Z   - Replace with a zero length value, or a non-zero length value that may be a dummy
+/// D   - Replace with a non-zero length value that may be a dummy
 ///       value and consistent with the VR.
+/// Z   - Replace with a zero length value, or a non-zero length value
+///       that may be a dummy value and consistent with the VR.
 /// X   - Remove.
 /// K   - Keep (unchanged for non-sequence attributes, cleaned for sequences).
-/// C   - Clean, that is update with values of similar meaning known not to contain
-///       identifying information and consistent with the VR.
-/// U   - Replace with a non-zero length UID that is internally consistent within a set
-///       of Instances.
-/// ZD  - Z unless D is required to maintain IOD conformance (Type 2 versus Type 1).
-/// XZ  - X unless Z is required to maintain IOD conformance (Type 3 versus Type 2).
-/// XD  - X unless D is required to maintain IOD conformance (Type 3 versus Type 1).
+/// C   - Clean, that is update with values of similar meaning known
+///       not to contain identifying information and consistent with the VR.
+/// U   - Replace with a non-zero length UID that is internally
+///       consistent within a set of Instances.
+/// ZD  - Z unless D is required to maintain IOD conformance
+///       (Type 2 versus Type 1).
+/// XZ  - X unless Z is required to maintain IOD conformance
+///       (Type 3 versus Type 2).
+/// XD  - X unless D is required to maintain IOD conformance
+///       (Type 3 versus Type 1).
 /// XZD - X unless Z or D is required to maintain IOD conformance
-///         (Type 3 versus Type 2 versus Type 1).
-/// XZU - X unless Z or replacement of contained instance UIDs (U) is required to
-///         maintain IOD conformance (Type 3 versus Type 2 versus Type 1 sequences
-///         containing UID references).
+///       (Type 3 versus Type 2 versus Type 1).
+/// XZU - X unless Z or replacement of contained instance UIDs (U)
+///       is required to maintain IOD conformance (Type 3 versus
+///       Type 2 versus Type 1 sequences containing UID references).
 
 //TODO: make this work with IODs, which means all have to have an AType argument
 
-const List<String> defaultDummyValue = const ['Open DICOMweb De-Identifier'];
+const List<String> defaultDummyValue = ['Open DICOMweb De-Identifier'];
 
 /// De-identification [Action]s as defined in PS3.15 Annex E.
 class Action {
@@ -44,37 +49,36 @@ class Action {
       this.index, this.id, this.keyword, this.description, this.action);
 
   static const Action kInvalid =
-      const Action(1, '', 'Invalid', 'Invalid/Undefined Action', invalid);
+      Action(1, '', 'Invalid', 'Invalid/Undefined Action', invalid);
 
-  static const Action kX =
-      const Action(1, 'X', 'Remove', 'Remove Element', remove);
+  static const Action kX = Action(1, 'X', 'Remove', 'Remove Element', remove);
 
   static const Action kU =
-      const Action(2, 'U', 'ReplaceUid', 'Replace UID value(s)', replaceUids);
+      Action(2, 'U', 'ReplaceUid', 'Replace UID value(s)', replaceUids);
 
-  static const Action kZ = const Action(3, 'Z', 'ReplaceWithNoValue',
+  static const Action kZ = Action(3, 'Z', 'ReplaceWithNoValue',
       'Replace with NoValue (or Dummy value(s))', replaceNoValues);
 
-  static const Action kXD = const Action(4, 'XD', 'RemoveUnlessDummy',
+  static const Action kXD = Action(4, 'XD', 'RemoveUnlessDummy',
       'Remove(X) unless Dummy(D)', removeUnlessDummy);
 
-  static const Action kXZ = const Action(5, 'XZ', 'RemoveUnlessNoValue',
+  static const Action kXZ = Action(5, 'XZ', 'RemoveUnlessNoValue',
       'Remove(X) unless NoValue(Z)', removeUnlessZero);
 
-  static const Action kXZD = const Action(
+  static const Action kXZD = Action(
       6,
       'XZD',
       'RemoveUnlessZeroOrDummy',
       'Remove(X) unless Replace with NoValue(Z) unless Replace with Dummy(D)',
       removeUnlessZeroOrDummy);
 
-  static const Action kD = const Action(7, 'D', 'ReplaceWithDummy',
+  static const Action kD = Action(7, 'D', 'ReplaceWithDummy',
       'Replace with Dummy value(S)', updateWithDummy);
 
-  static const Action kZD = const Action(8, 'ZD', 'NoValueUnlessDummy',
+  static const Action kZD = Action(8, 'ZD', 'NoValueUnlessDummy',
       'Replace with NoValue(Z) unless Dummy required', zeroUnlessDummy);
 
-  static const Action kXZU = const Action(
+  static const Action kXZU = Action(
       9,
       'XZU',
       'RemoveUidUnlessNoValueOrReplace',
@@ -82,21 +86,20 @@ class Action {
       'unless Z '
       'unless U',
       removeUidUnlessNoValuesOrReplace);
-  static const Action kK =
-      const Action(10, 'K', 'Keep', 'Keep Element', retain);
+  static const Action kK = Action(10, 'K', 'Keep', 'Keep Element', retain);
 
   //Urgent: figure out what this means
   static const Action kKB =
-      const Action(11, 'KB', 'KeepBe___', 'Keep Because ????', retainBlank);
+      Action(11, 'KB', 'KeepBe___', 'Keep Because ????', retainBlank);
 
   static const Action kC =
-      const Action(12, 'C', 'Clean', 'Remove PII from value(s)', clean);
+      Action(12, 'C', 'Clean', 'Remove PII from value(s)', clean);
 
   static const Action kA =
-      const Action(13, 'A', 'Add', 'Add If Missing', addIfMissing);
+      Action(13, 'A', 'Add', 'Add If Missing', addIfMissing);
 
   static const Action kUN =
-      const Action(14, 'UN', 'Unknown', 'Action Unknown', unknownAction);
+      Action(14, 'UN', 'Unknown', 'Action Unknown', unknownAction);
 
   Element call(Dataset ds, Tag tag, [List values]) => action(ds, tag, values);
 
@@ -104,7 +107,7 @@ class Action {
       values == null || emptyAllowed;
 
   static Action invalid(Dataset ds, Tag tag, [List values]) =>
-      throw  UnsupportedError('Invalid Action');
+      throw UnsupportedError('Invalid Action');
 
   static Element updateWithDummy<V>(Dataset ds, Tag tag, [List<V> values]) =>
       ds.update<V>(tag.code, values);
@@ -157,7 +160,8 @@ class Action {
     return ds.update<V>(tag.code, values);
   }
 
-  /// X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)';
+  /// X unless Z is required to maintain IOD conformance
+  /// (Type 3 versus Type 2)';
   static Element removeUnlessZero<V>(Dataset ds, Tag tag, [List<V> values]) {
     //TODO: make this work with IODs
     // AType aType = ds.IOD.lookup(a.tag).aType;
@@ -169,7 +173,8 @@ class Action {
     return ds.update<V>(tag.code, values);
   }
 
-  /// X unless D is required to maintain IOD conformance (Type 3 versus Type 1)';
+  /// X unless D is required to maintain IOD conformance
+  /// (Type 3 versus Type 1)';
   static Element removeUnlessDummy<V>(Dataset ds, Tag tag, List<V> values) {
     //TODO: make this work with IODs
     // AType aType = ds.IOD.lookup(a.tag).aType;
@@ -195,7 +200,7 @@ class Action {
   static Element removeUidUnlessNoValuesOrReplace(
       Dataset ds, Tag tag, List<Uid> values) {
     if (ds.lookup(tag.code) is! SQ)
-      throw  InvalidTagError('in RemoveUid', tag, UI);
+      throw InvalidTagError('in RemoveUid', tag, UI);
     //TODO: fix when AType info available
     if (_isEmpty(values, true)) return ds.noValues(tag.code);
     return ds.update<Uid>(tag.code, values);
@@ -203,21 +208,29 @@ class Action {
 
   static Element addIfMissing(Dataset ds, Tag tag, List<Item> values) {
     final e = ds.lookup(tag.code);
-    if (e is! SQ) throw  InvalidTagError('addIfMissing', tag, Element);
+    if (e is! SQ) throw InvalidTagError('addIfMissing', tag, Element);
     //TODO: fix when AType info available
     if (_isEmpty(values, true)) return ds.noValues(tag.code);
     return ds.update<Item>(tag.code, values);
   }
 
   static Element unknownAction(Dataset ds, Tag tag, List values) =>
-      throw  UnimplementedError();
+      throw UnimplementedError();
 
   @override
   String toString() => 'De-idenfication Action.$id';
 
-  static const Map<String, Action> map = const {
+  static const Map<String, Action> map = {
     //TODO: Turn into Jump table
-    'X': kX, 'Z': kZ, 'D': kD, 'U': kU, 'XZ': kXZ, 'XD': kXZ,
-    'ZD': kZD, 'A': kA, 'K': kK, 'C': kC
+    'X': kX,
+    'Z': kZ,
+    'D': kD,
+    'U': kU,
+    'XZ': kXZ,
+    'XD': kXZ,
+    'ZD': kZD,
+    'A': kA,
+    'K': kK,
+    'C': kC
   };
 }

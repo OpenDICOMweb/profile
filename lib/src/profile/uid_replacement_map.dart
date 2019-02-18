@@ -3,10 +3,12 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
+//
 import 'dart:collection';
 
 import 'package:core/core.dart';
+
+// ignore_for_file: public_member_api_docs
 
 /// A [Map<Uid, Uid>] from original [Uid] to replacement [Uid].
 /// Once in the table an entry can not be updated.
@@ -16,18 +18,18 @@ class UidReplacementMap extends MapBase<Uid, Uid> {
   UidReplacementMap() : replacements = <Uid, Uid>{};
 
   @override
-  Uid operator [](Object original) =>
-      (original is Uid)
-      ? replacements[original]
-      : invalidUid(original);
+  Uid operator [](Object key) =>
+      (key is Uid)
+      ? replacements[key]
+      : invalidUid(key);
 
   @override
-  void operator []=(Object original, Uid replacement) {
-    if (original is! Uid) return invalidUid(original);
-    if (replacement is! Uid) return invalidUid(replacement);
-    if (original is Uid && replacement is Uid) {
-      final old = replacements.putIfAbsent(original, () => replacement);
-      if (old != null) return invalidDuplicateUid(original);
+  void operator []=(Uid key, Uid value) {
+    if (key is! Uid) return invalidUid(key);
+    if (value is! Uid) return invalidUid(value);
+    if (key is Uid && value is Uid) {
+      final old = replacements.putIfAbsent(key, () => value);
+      if (old != null) return invalidDuplicateUid(key);
     }
   }
 
@@ -38,8 +40,8 @@ class UidReplacementMap extends MapBase<Uid, Uid> {
   void clear() => replacements.clear();
 
   @override
-  Uid remove(Object original) =>
-      (original is Uid) ? replacements.remove(original) : invalidUid(original);
+  Uid remove(Object key) =>
+      (key is Uid) ? replacements.remove(key) : invalidUid(key);
 
   void initialize(Dataset ds) {
     final UI study = ds.lookup(kStudyInstanceUID);

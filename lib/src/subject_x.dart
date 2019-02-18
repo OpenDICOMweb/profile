@@ -8,10 +8,12 @@ import 'dart:convert' as cvt;
 
 import 'package:core/core.dart';
 
+// ignore_for_file: public_member_api_docs
+
 class SubjectDB {
   final List<Subject> db;
 
-  SubjectDB(List<Subject> subjects) : db =  List.from(subjects, growable: false);
+  SubjectDB(List<Subject> subjects) : db = List.from(subjects, growable: false);
 
   Subject operator [](int i) => db[i];
 
@@ -26,7 +28,7 @@ class SubjectDB {
   }
 }
 
-const List<int> defaultNormalizedDates = const <int> [
+const List<int> defaultNormalizedDates = <int>[
   kInstanceCreationDate, // No reformat
   kStudyDate,
   kSeriesDate,
@@ -39,7 +41,7 @@ const List<int> defaultNormalizedDates = const <int> [
   kPatientDeathDateInAlternativeCalendar, //??
   kLastMenstrualDate,
   kEthicsCommitteeApprovalEffectivenessStartDate, //??
-  kEthicsCommitteeApprovalEffectivenessEndDate,   //??
+  kEthicsCommitteeApprovalEffectivenessEndDate, //??
   kSecondaryReviewDate, //??
   kExpiryDate, //??
   kDateOfGainCalibration, //??
@@ -85,7 +87,7 @@ const List<int> defaultNormalizedDates = const <int> [
   kInterpretationApprovalDate, //??
 ];
 
-const List<int> defaultNormalizedDateTimes = const <int> [
+const List<int> defaultNormalizedDateTimes = <int>[
   kInstanceCoercionDateTime,
   kAcquisitionDateTime,
   kRadiopharmaceuticalStartDateTime, kRadiopharmaceuticalStopDateTime,
@@ -125,9 +127,9 @@ class Subject {
   final String id;
   final String accession;
   final Date studyDate;
-  final int caseNumber;      // Should be caseID
+  final int caseNumber; // Should be caseID
   final Date enrollmentDate;
-  final String trialNumber;  // Should be trialID
+  final String trialNumber; // Should be trialID
   final String trialName;
   final String siteNumber; // Should be siteID
   final String siteName;
@@ -206,20 +208,23 @@ Additional Trial Input: "$additionalTrialInput",
 
   bool standardModifications(Dataset rds) {
     /// Required Modifications
-    rds..replace(kInstanceCoercionDateTime, [DcmDateTime.now.dcm])
-    ..update(kPatientName, <String>[name])
-    ..update(kPatientID, <String>[id]);
+    rds
+      ..replace(kInstanceCoercionDateTime, [DcmDateTime.now.dcm])
+      ..update(kPatientName, <String>[name])
+      ..update(kPatientID, <String>[id]);
     normalize(rds, kPatientBirthDate);
-    rds..update(kClinicalTrialSubjectID, <String>[id])
-    ..update(kAccessionNumber, <String>[accession])
-    ..update(kStudyDate, <Date>[studyDate])
-    ..update(kClinicalTrialProtocolID, <String>[trialNumber])
-    ..update(kClinicalTrialProtocolName, <String>[id])
-    ..update(kClinicalTrialSiteID, <String>[siteNumber])
-    ..update(kClinicalTrialSiteName, <String>[siteNumber])
-    ..update(kClinicalTrialTimePointID, <String>[timepointID])
-    ..update(kClinicalTrialTimePointID, <String>[timepointID])
-    ..update(kClinicalTrialTimePointDescription, <String>[timepointDescription]);
+    rds
+      ..update(kClinicalTrialSubjectID, <String>[id])
+      ..update(kAccessionNumber, <String>[accession])
+      ..update(kStudyDate, <Date>[studyDate])
+      ..update(kClinicalTrialProtocolID, <String>[trialNumber])
+      ..update(kClinicalTrialProtocolName, <String>[id])
+      ..update(kClinicalTrialSiteID, <String>[siteNumber])
+      ..update(kClinicalTrialSiteName, <String>[siteNumber])
+      ..update(kClinicalTrialTimePointID, <String>[timepointID])
+      ..update(kClinicalTrialTimePointID, <String>[timepointID])
+      ..update(
+          kClinicalTrialTimePointDescription, <String>[timepointDescription]);
 
     return true;
   }
@@ -232,11 +237,13 @@ Additional Trial Input: "$additionalTrialInput",
     final oDate = rds.getString(code);
     if (oDate == null) return false;
     final nDate = Date.normalizeString(oDate, enrollmentDate);
+
     /// TODO: add replaceByCode to Dataset
     rds.replace(code, [nDate]);
     return true;
   }
 
   @override
-  String toString() => 'name:"$name", id:"$id", date:"$studyDate", case: $caseNumber';
+  String toString() =>
+      'name:"$name", id:"$id", date:"$studyDate", case: $caseNumber';
 }

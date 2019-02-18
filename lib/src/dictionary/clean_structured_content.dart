@@ -6,10 +6,11 @@
 
 // *** This is a generated class ***
 // ----------------------------------------------------------
-
+//
 import 'package:core/core.dart';
-
 import 'package:profile/src/dictionary/action.dart';
+
+// ignore_for_file: public_member_api_docs
 
 /// Clean Structured Content Option to the Basic De-Identification Profile.
 class CleanStructuredContentOption {
@@ -23,19 +24,19 @@ class CleanStructuredContentOption {
   static CleanStructuredContentOption lookup(int tag) => map[tag];
 
   static const CleanStructuredContentOption kAcquisitionContextSequence =
-      const CleanStructuredContentOption(PTag.kAcquisitionContextSequence, 'C');
+      CleanStructuredContentOption(PTag.kAcquisitionContextSequence, 'C');
 
   static const CleanStructuredContentOption kContentSequence =
-      const CleanStructuredContentOption(PTag.kContentSequence, 'C');
+      CleanStructuredContentOption(PTag.kContentSequence, 'C');
 
-  static const List<int> retain = const [];
+  static const List<int> retain = [];
 
-  static const List<int> remove = const [0x00400555, 0x0040a730];
+  static const List<int> remove = [0x00400555, 0x0040a730];
 
-  static const Map<int, CleanStructuredContentOption> map = const {
+  static const Map<int, CleanStructuredContentOption> map = {
     0x00400555: kAcquisitionContextSequence,
     0x0040a730: kContentSequence
   };
 
-  static const List<int> tags = const [0x00400555, 0x0040a730];
+  static const List<int> tags = [0x00400555, 0x0040a730];
 }

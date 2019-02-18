@@ -6,7 +6,9 @@
 
 import 'package:core/server.dart';
 
-const List<String> columns = const [
+// ignore_for_file: public_member_api_docs
+
+const List<String> columns = [
   'Case Numbers Images',
   'Case Number Clinical',
   'Baseline date',
@@ -382,7 +384,6 @@ void main() {
 
   var i = 0;
   for (var dates in testDates) {
-
     final study = makeDate(dates[3]);
     final enrollment = makeDate(dates[2]);
     final normal = makeDate(dates[4]);
@@ -406,7 +407,6 @@ enrollment: ${enrollment.inet}
     i++;
   }
 }
-
 
 Date makeDate(String s) {
   final v = s.replaceAll('-', '');

@@ -16,7 +16,7 @@ void main() {
   Server.initialize(name: 'profile/remove_test', level: Level.debug);
 
   // Edit this line
-  final path = path0;
+  const path = path0;
 
   log.debug2('Reading: $path');
   final bdRds = ByteReader.readPath(path);

@@ -16,7 +16,7 @@ void main() {
   Server.initialize(level: Level.debug, throwOnError: true);
 
   // Edit this line
-  final path = path2;
+  const path = path2;
   final bds = ByteReader.readPath(path);
   log
     ..info(bds.summary)

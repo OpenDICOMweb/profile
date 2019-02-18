@@ -23,11 +23,10 @@ void main() {
 
 //  countSubmissionSet(sets);
   final subjects = parseSubmissionSet(sets);
-//  for (int i = 0; i < subjects.length; i++) print('[$i]: ${subjects[i].json}');
   print('${subjects.json}');
 
    File('C:/odw/sdk/profile/lib/data/submission_set.json')
-    ..writeAsStringSync(subjects.json);
+    .writeAsStringSync(subjects.json);
 }
 
 SubjectDB parseSubmissionSet(List<Map<String, String>> sets) {
@@ -35,12 +34,9 @@ SubjectDB parseSubmissionSet(List<Map<String, String>> sets) {
   var i = 0;
   for (Map set in sets) {
     i++;
-//     print('$i set: $set');
     final subject = makeSubject(i, set);
-//    print('Subject: $subject');
     subjects.add(subject);
   }
-//  print('Subject Count: ${subjects.length}');
   return  SubjectDB(subjects);
 }
 

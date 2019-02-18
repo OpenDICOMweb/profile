@@ -3,13 +3,16 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
-
+//
 import 'package:core/core.dart';
+
+// ignore_for_file: public_member_api_docs
 
 class SubjectDB {
   final List<TrialSubject> db;
 
-  SubjectDB(List<TrialSubject> subjects) : db =  List.from(subjects, growable: false);
+  SubjectDB(List<TrialSubject> subjects)
+      : db = List.from(subjects, growable: false);
 
   TrialSubject operator [](int i) => db[i];
 
@@ -33,8 +36,9 @@ class TrialSubject {
   final String studyDate;
   final Parameters parameters;
 
-  TrialSubject(this.name, this.id, String enrollment, this.accession, this.studyDate,
-      this.parameters) : enrollment = Date.parse(enrollment);
+  TrialSubject(this.name, this.id, String enrollment, this.accession,
+      this.studyDate, this.parameters)
+      : enrollment = Date.parse(enrollment);
 
 //  String operator [](String name)  => parameters[name];
   String get info => '''

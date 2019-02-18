@@ -3,8 +3,11 @@
 // that can be found in the LICENSE file.
 // Author: Jim Philbin <jfphilbin@gmail.edu> -
 // See the AUTHORS file for other contributors.
+//
 
-const Map<String, dynamic> testTrial = const <String, Object>{
+// ignore_for_file: public_member_api_docs
+
+const Map<String, dynamic> testTrial = <String, Object>{
   'TRIALNO': 9999,
   'TRIAL': '_TRIAL_',
   'SPONSOR': '_SPONSOR_',
