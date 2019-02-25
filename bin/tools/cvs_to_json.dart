@@ -14,7 +14,7 @@ void main() {
   final lines = file.readAsLinesSync();
 
   final sb = StringBuffer();
-  for(var line in lines) {
+  for(final line in lines) {
     sb.writeln(lineToString(line));
   }
   print('$sb');

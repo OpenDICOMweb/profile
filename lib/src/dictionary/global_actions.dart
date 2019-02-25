@@ -80,7 +80,7 @@ class GlobalActions {
   void process(Dataset ds) {
     processPrivateTags(ds);
     final tags = ds.keys;
-    for (var tag in tags) {
+    for (final tag in tags) {
       if (isKeeper(tag)) continue;
       if (remove.contains(tag) || inRemoveGroup(tag)) ds.remove(tag);
     }
@@ -100,7 +100,7 @@ class GlobalActions {
   /// Verifies that the [retainGroups] and [removeGroups] [List]s
   /// are mutually exclusive.
   bool get areRetainedGroupsInconsistent {
-    for (var group in retainGroups)
+    for (final group in retainGroups)
       if (removeGroups.contains(group)) return false;
     return true;
   }
@@ -108,7 +108,7 @@ class GlobalActions {
   /// Verifies that the [retain] Tag Code and [remove] [tag] [List]s
   /// are mutually exclusive.
   bool get areRemoveTagsInconsistent {
-    for (var code in retain) if (removeGroups.contains(code)) return false;
+    for (final code in retain) if (removeGroups.contains(code)) return false;
     return true;
   }
 }

@@ -38,7 +38,7 @@ void main() {
   print('enrollment: "$enrollment"');
   print('${tds.length} Date Elements:');
   var i = 0;
-  for (var e in tds.elements) {
+  for (final e in tds.elements) {
     print('$i: $e\n   "${e.value}"');
     i++;
   }
@@ -47,7 +47,7 @@ void main() {
 }
 
 void walkDates(Dataset ds, Date enrollment) {
-  for (var e in ds.elements) {
+  for (final e in ds.elements) {
     if (e is DA) {
       print('old: $e');
       final list = Date.normalizeStrings(e.values, enrollment);

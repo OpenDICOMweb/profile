@@ -120,7 +120,7 @@ class DeIdentifier {
 
     final bpList = BasicProfile.map.values.toList(growable: false);
 
-    for (var bp in bpList) {
+    for (final bp in bpList) {
       final tag = bp.tag;
 
       if (tag == null) continue;

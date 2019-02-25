@@ -52,7 +52,7 @@ class Profile {
         comments = {},
         rules = [],
         errors = {} {
-    for (var code in keysToRemove)
+    for (final code in keysToRemove)
       if (keysToRetain.contains(code))
         throw  ArgumentError('removeTags cannot contain and tags in'
             ' the keepTags list.');
@@ -75,6 +75,26 @@ class Profile {
       this.comments,
       this.errors,
       this.rules);
+
+  factory Profile.parse(String s) {
+    final Map map = cvt.json.decode(s);
+    return  Profile._(
+        map['name'],
+        map['url'],
+        map['trialServer'],
+        map['quarantineUrl'],
+        map['globals'],
+        map['trialMap'],
+        map['parameters'],
+        map['retainGroups'],
+        map['removeGroups'],
+        map['retainTags'],
+        map['removeTags'],
+        map['updateMap'],
+        map['comments'],
+        map['rules'],
+        map['errors']);
+  }
 
   //String get extension => '.dvp';
 
@@ -119,7 +139,7 @@ class Profile {
 
   String get rulesToJson {
     final rList = <String>[];
-    for (var rule in rules) rList.add(rule.json);
+    for (final rule in rules) rList.add(rule.json);
     return '[\n${rList.join(',\n')}\n]';
   }
 
@@ -153,24 +173,4 @@ class Profile {
 
   @override
   String toString() => 'Profile: $name';
-
-  static Profile parse(String s) {
-    final Map map = cvt.json.decode(s);
-    return  Profile._(
-        map['name'],
-        map['url'],
-        map['trialServer'],
-        map['quarantineUrl'],
-        map['globals'],
-        map['trialMap'],
-        map['parameters'],
-        map['retainGroups'],
-        map['removeGroups'],
-        map['retainTags'],
-        map['removeTags'],
-        map['updateMap'],
-        map['comments'],
-        map['rules'],
-        map['errors']);
-  }
 }

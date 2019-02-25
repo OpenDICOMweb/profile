@@ -117,7 +117,7 @@ class Profiler {
   // Returns a [List<int>] of conflicting values.
   List<int> _checkForListConflicts(List<int> retain, List<int> remove) {
     final conflicts = <int>[];
-    for (var key in retain) if (remove.contains(key)) conflicts.add(key);
+    for (final key in retain) if (remove.contains(key)) conflicts.add(key);
     return conflicts;
   }
 
@@ -125,12 +125,12 @@ class Profiler {
   List<Element> processGroupsToDelete(Dataset ds,
       {bool recursive = true, bool required = false}) {
     List<Element> eList;
-    for (var group in profile.groupsToRemove) {
+    for (final group in profile.groupsToRemove) {
       if (profile.groupsToRetain.contains(group)) {
         log.error('Tried to remove retainedGroup(${hex16(group)})');
         continue;
       }
-      for (var e in ds.elements) {
+      for (final e in ds.elements) {
         if (Tag.toGroup(e.code) == group) {
           ds.remove(e.code);
           report.deleted.add(e);
@@ -147,13 +147,13 @@ class Profiler {
   /// Delete all Elements in the [keysToDelete] [List].
   List<Element> processKeysToDelete(Dataset ds,
       {bool recursive = true, bool required = false, int depth = 0}) {
-    for (var code in profile.keysToRemove)
+    for (final code in profile.keysToRemove)
       _delete(ds, code, recursive: recursive, required: required);
 
-    for (var e in ds.elements.toList()) {
+    for (final e in ds.elements.toList()) {
       if (e is SQ) {
         print('$depth sq: $e');
-        for (Dataset item in e.values) {
+        for (final item in e.values) {
           // ignore: parameter_assignments
           processKeysToDelete(item, depth: depth++);
         }
@@ -180,7 +180,7 @@ class Profiler {
   List<Element> processDeleteAllPrivate(Dataset ds,
       {bool recursive = true, bool required = false, int depth = 0}) {
     var i = 0;
-    for (var e in ds.elements.toList()) {
+    for (final e in ds.elements.toList()) {
       if (e.isPrivate) {
         _delete(ds, e.code);
         print('$i private: $e');
@@ -242,7 +242,7 @@ class Profiler {
   List<Element> walkSequences(Dataset ds, int code, Uid uid,
       {bool recursive = true, bool required = false}) {
     final results = <Element>[];
-    for (var e in ds.elements) {
+    for (final e in ds.elements) {
       if (e is SQ) {
         results.addAll(walkSequence(ds, e, code, uid));
       }
@@ -253,8 +253,8 @@ class Profiler {
   List<Element> walkSequence(Dataset ds, SQ sq, int code, Uid uid,
       {bool recursive = true, bool required = false}) {
     final results = <Element>[];
-    for (Dataset item in sq.items) {
-      for (var e in item.elements) {
+    for (final item in sq.items) {
+      for (final e in item.elements) {
         if (e is SQ) {
           results.addAll(walkSequence(ds, e, code, uid));
         } else if (e.code == code) {
@@ -296,7 +296,7 @@ class Profiler {
       {bool recursive = true, bool required = false}) {
     if (isRetained(code)) return retainedElementError(code);
 
-    for (var code in BasicProfile.keysToZero) {
+    for (final code in BasicProfile.keysToZero) {
       final e = ds.noValues(code);
       if (e != null) report.deletedElements.add(e);
     }

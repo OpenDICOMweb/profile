@@ -19,17 +19,15 @@ class UidReplacementMap extends MapBase<Uid, Uid> {
 
   @override
   Uid operator [](Object key) =>
-      (key is Uid)
-      ? replacements[key]
-      : invalidUid(key);
+      (key is Uid) ? replacements[key] : invalidUid(key);
 
   @override
   void operator []=(Uid key, Uid value) {
-    if (key is! Uid) return invalidUid(key);
-    if (value is! Uid) return invalidUid(value);
+    if (key is! Uid) invalidUid(key);
+    if (value is! Uid) invalidUid(value);
     if (key is Uid && value is Uid) {
       final old = replacements.putIfAbsent(key, () => value);
-      if (old != null) return invalidDuplicateUid(key);
+      if (old != null) invalidDuplicateUid(key);
     }
   }
 
@@ -45,28 +43,27 @@ class UidReplacementMap extends MapBase<Uid, Uid> {
 
   void initialize(Dataset ds) {
     final UI study = ds.lookup(kStudyInstanceUID);
-    replacements[study.uid] =  Uid();
+    replacements[study.uid] = Uid();
     final UI series = ds.lookup(kSeriesInstanceUID);
-    replacements[series.uid] =  Uid();
+    replacements[series.uid] = Uid();
     final UI instance = ds.lookup(kSOPInstanceUID);
-    replacements[instance.uid] =  Uid();
+    replacements[instance.uid] = Uid();
   }
 
   Dataset convert(Dataset original, [Dataset updated]) {
     updated ??= original;
-    for(var e0 in original.elements) {
+    for (final e0 in original.elements) {
       if (e0 is UI) {
         final uids = e0.uids;
         if (uids.isEmpty) continue;
 
         final list = <String>[];
         var same = true;
-        for(var uid in uids) {
+        for (final uid in uids) {
           final s = replacements[uid];
-           if (s == null) continue;
-//           Uids ??= _copyUids(uids, i);
-           list.add(s.asString);
-           same = false;
+          if (s == null) continue;
+          list.add(s.asString);
+          same = false;
         }
 
         if (same) continue;
@@ -88,7 +85,6 @@ class UidReplacementMap extends MapBase<Uid, Uid> {
     return nList;
   }
 */
-
 
   @override
   String toString() => '$runtimeType: $map';

@@ -29,12 +29,12 @@ void main() {
   final removeResults = <Element>[];
 
   // Delete Elements that should be removed
-  for (var code in BasicProfile.removeCodes) {
+  for (final code in BasicProfile.removeCodes) {
     final results = byteRds.lookupAll(code);
     if (results != null && results.isNotEmpty) removeTargets.addAll(results);
   }
   // Check that all appropriate Elements are removed.
-  for (var code in BasicProfile.removeCodes) {
+  for (final code in BasicProfile.removeCodes) {
     final results = byteRds.deleteAll(code);
     if (results != null && results.isNotEmpty) {
       log.debug('Error results: $results');
@@ -48,13 +48,13 @@ void main() {
     ..info('removeTargets: length(${removeTargets.length})');
   var i = 0;
 
-  for (var e in removeTargets) {
+  for (final e in removeTargets) {
     log.debug('  $i: $e');
     i++;
   }
 
   i = 0;
-  for (var e in removeTargets) {
+  for (final e in removeTargets) {
     if (e is SQ) {
       log.debug('  $i: Sequence: total(${e.total})');
     } else {
@@ -66,9 +66,9 @@ void main() {
   }
 
   log.debug('results: length(${removeTargets.length})');
-  for (var e in removeTargets) log.debug('  $e');
+  for (final e in removeTargets) log.debug('  $e');
 
-  for (var code in BasicProfile.removeCodes) {
+  for (final code in BasicProfile.removeCodes) {
     final e = byteRds.lookup(code);
     if (e != null) throw 'Element still present';
   }
@@ -84,7 +84,7 @@ void main() {
   log.debug(byteRds.summary);
 
   i = 0;
-  for (var e in removeResults) {
+  for (final e in removeResults) {
     if (e is SQ) {
       i += e.total;
       log.debug('  $i ${e.info}\n  Total: ${e.total}');

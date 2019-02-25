@@ -22,17 +22,17 @@ void main() {
   print('$startTopLevel top level elements in Dataset');
 
   var count = 0;
-  for (var e in rds.elements) {
+  for (final e in rds.elements) {
     if (group == e.group) count++;
   }
   print('$count top level group elements found');
 
   final removed = <Element>[];
-  for (var e in rds.elements) {
+  for (final e in rds.elements) {
     if (e is SQ) {
       // Urgent: this should be recursive it isn't
-      for (Dataset item in e.items) {
-        for (var e in item.elements) {
+      for (final item in e.items) {
+        for (final e in item.elements) {
           if (group == e.group) {
             final deleted = item.deleteAll(e.code);
             removed.addAll(deleted);
@@ -52,9 +52,9 @@ void main() {
   print('$endTotal total elements in Dataset');
   print('$endTopLevel top level elements in Dataset');
   print('Removed ${removed.length} elements:');
-  for (var e in removed) print('  $e');
+  for (final e in removed) print('  $e');
 
-  for (var e in rds.elements) {
+  for (final e in rds.elements) {
     if (group == e.group) print('*** group element not removed: $e');
   }
 }

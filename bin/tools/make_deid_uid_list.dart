@@ -19,7 +19,7 @@ void main() {
   final removeOrZeroOrDummy = <int>[];
   final removeOrZeroOrReplaceUid = <int>[];
 
-  for (var v in BasicProfile.map.values) {
+  for (final v in BasicProfile.map.values) {
     switch (v.name) {
       case 'D':
         dummy.add(v.tag.code);
@@ -113,7 +113,7 @@ String makeList(String id, List<int> pList) {
 
 //  print('pList length: ${pList.length}');
   final codes = <String>[];
-  for (var n in pList) {
+  for (final n in pList) {
     codes.add(hex32(n));
   }
   final lines = <String>[];

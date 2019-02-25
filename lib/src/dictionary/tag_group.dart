@@ -42,7 +42,7 @@ class TagGroup {
   static const List<TagGroup> defaultRemoveGroups = [k50, k60];
 
   static bool inOne(int tag) {
-    for (var group in groups) if (group.contains(tag)) return true;
+    for (final group in groups) if (group.contains(tag)) return true;
     return false;
   }
 }

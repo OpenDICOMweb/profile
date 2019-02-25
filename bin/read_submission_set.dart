@@ -32,7 +32,7 @@ void main() {
 SubjectDB parseSubmissionSet(List<Map<String, String>> sets) {
   final subjects = <TrialSubject>[];
   var i = 0;
-  for (Map set in sets) {
+  for (final set in sets) {
     i++;
     final subject = makeSubject(i, set);
     subjects.add(subject);
@@ -88,10 +88,10 @@ void countSubmissionSet(List<Map<String, List>> sets) {
   final toplevel = <String, int>{};
   final parameters = <String, int>{};
 
-  for (var set in sets) {
+  for (final set in sets) {
     set.forEach((key, value) {
       if (key == 'parameters') {
-        for (String s in value[0].keys) {
+        for (final s in value[0].keys) {
           if (parameters[s] == null) {
             parameters[s] = 1;
           } else {

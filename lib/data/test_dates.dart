@@ -383,7 +383,7 @@ void main() {
   Server.initialize(name: 'test_dates', level: Level.info);
 
   var i = 0;
-  for (var dates in testDates) {
+  for (final dates in testDates) {
     final study = makeDate(dates[3]);
     final enrollment = makeDate(dates[2]);
     final normal = makeDate(dates[4]);

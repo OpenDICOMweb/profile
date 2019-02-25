@@ -19,11 +19,12 @@ class PatientIdMap {
 
   PatientIdMap(this.trial, this._map);
 
-  int lookup(int ptId) => _map[ptId];
-
-  static PatientIdMap load(String jsonTrial, String jsonPatientIdMap) {
+  factory PatientIdMap.load(String jsonTrial, String jsonPatientIdMap) {
     final Trial trial = cvt.json.decode(jsonTrial);
     final Map<int, int> map = cvt.json.decode(jsonPatientIdMap);
     return  PatientIdMap(trial, map);
   }
+
+  int lookup(int ptId) => _map[ptId];
+
 }

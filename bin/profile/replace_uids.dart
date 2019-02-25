@@ -66,7 +66,7 @@ void main() {
 
 void walkUids(Iterable<Element> elements, List<Element> uiElements,
     List<Element> dicomUids, Map<String, String> uidMap, Dataset tagDS) {
-  for (var e in elements) {
+  for (final e in elements) {
     if (e is UI) {
       print(e);
       uiElements.add(e);
@@ -87,7 +87,7 @@ void walkUids(Iterable<Element> elements, List<Element> uiElements,
       final nte = te.update(<String>[ui]);
       tagDS.add(nte);
     } else if (e is SQ) {
-      for (Dataset item in e.values) {
+      for (final item in e.values) {
         walkUids(item.elements, uiElements, dicomUids, uidMap, tagDS);
       }
     }
